@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Allergan Moxie — Agentforce Demo Walkthrough</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f0f4f8; padding: 40px 24px; color: #1a1a2e; }
+    .wrap { max-width: 980px; margin: 0 auto; }
+
+    .page-header { margin-bottom: 28px; }
+    .page-title  { font-size: 24px; font-weight: 800; color: #032d60; }
+    .page-sub    { font-size: 13px; color: #5a7896; margin-top: 4px; }
+
+    /* ── tabs ── */
+    .tabs { display: flex; }
+    .tab  { padding: 11px 28px; font-size: 13px; font-weight: 700; cursor: pointer; border-radius: 8px 8px 0 0; border: 1px solid #d1dce8; border-bottom: none; background: #e9ecef; color: #5a7896; }
+    .tab.active { background: white; color: #032d60; }
+    .tab:hover:not(.active) { background: #dde3ea; }
+
+    /* ── panels ── */
+    .panel { background: white; border: 1px solid #d1dce8; border-radius: 0 8px 8px 8px; padding: 32px; display: none; }
+    .panel.active { display: block; }
+
+    h2 { font-size: 18px; font-weight: 800; color: #032d60; margin-bottom: 8px; }
+    h3 { font-size: 14px; font-weight: 800; color: #032d60; margin: 24px 0 10px; }
+    p  { font-size: 13px; color: #3a4a5c; line-height: 1.65; margin-bottom: 12px; }
+
+    .note { background: #e8f4fd; border-left: 4px solid #0dcaf0; border-radius: 0 6px 6px 0; padding: 13px 16px; font-size: 13px; color: #0a4a6e; margin: 12px 0; line-height: 1.6; }
+    .warn { background: #fff8e1; border-left: 4px solid #ffc107; border-radius: 0 6px 6px 0; padding: 13px 16px; font-size: 13px; color: #664d03; margin: 12px 0; line-height: 1.6; }
+
+    /* ── opening statement ── */
+    .opening { background: #032d60; color: white; border-radius: 10px; padding: 24px 28px; margin-bottom: 32px; }
+    .opening .label { font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: #90b8e0; margin-bottom: 10px; }
+    .opening p { color: #c0d8f0; font-size: 14px; line-height: 1.75; margin: 0; font-style: italic; }
+
+    /* ── case cards ── */
+    .case-card { border: 1px solid #d1dce8; border-radius: 10px; margin-bottom: 28px; overflow: hidden; }
+    .case-hdr  { padding: 16px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .case-num  { font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px; white-space: nowrap; }
+    .case-title { font-size: 15px; font-weight: 800; color: #032d60; flex: 1; min-width: 200px; }
+    .badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+    .path-a  { background: #d4edda; color: #155724; }
+    .path-b  { background: #cce5ff; color: #004085; }
+    .tmpl-a  { background: #e3d9f7; color: #4a0080; }
+    .tmpl-b  { background: #fde8d0; color: #7a3800; }
+    .tmpl-c  { background: #fcd7d7; color: #7a0000; }
+    .case-1 .case-hdr { background: #f7f4fc; }
+    .case-2 .case-hdr { background: #fef9f2; }
+    .case-3 .case-hdr { background: #fff3f3; }
+    .case-4 .case-hdr { background: #f2f6ff; }
+
+    .case-body { padding: 22px 22px 22px; border-top: 1px solid #eef2f7; }
+
+    .section-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #8fa8c0; margin-bottom: 8px; margin-top: 22px; }
+    .section-label:first-child { margin-top: 0; }
+
+    .say-box { background: #f0f7ff; border-left: 4px solid #0070d2; border-radius: 0 6px 6px 0; padding: 14px 18px; font-size: 13.5px; color: #1e3a5f; line-height: 1.7; font-style: italic; }
+    .say-box strong { font-style: normal; color: #032d60; }
+
+    .steps { list-style: none; counter-reset: step; margin: 0; padding: 0; }
+    .steps li { counter-increment: step; display: flex; gap: 13px; margin-bottom: 10px; font-size: 13px; line-height: 1.55; color: #2a3a4c; }
+    .steps li::before { content: counter(step); min-width: 26px; height: 26px; background: #032d60; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 0px; }
+    .steps li strong { color: #032d60; }
+
+    .output-box { background: #f8fafc; border: 1px solid #d1dce8; border-radius: 6px; padding: 16px 18px; font-size: 12px; font-family: 'Courier New', Courier, monospace; line-height: 1.75; color: #1a2e3f; white-space: pre-wrap; }
+    .output-hl  { background: #fff3cd; padding: 1px 2px; border-radius: 2px; }
+
+    .tp-box { border: 1px solid #e8d5f7; border-radius: 6px; overflow: hidden; }
+    .tp-row { display: flex; gap: 0; border-bottom: 1px solid #e8d5f7; }
+    .tp-row:last-child { border-bottom: none; }
+    .tp-icon { width: 36px; display: flex; align-items: flex-start; justify-content: center; padding: 12px 0; font-size: 16px; background: #f7f2ff; flex-shrink: 0; }
+    .tp-text { padding: 10px 14px; font-size: 13px; line-height: 1.6; color: #2a1a40; flex: 1; }
+    .tp-text strong { color: #4a0080; }
+
+    .bridge { background: #f0faf2; border-left: 4px solid #27ae60; border-radius: 0 6px 6px 0; padding: 12px 16px; font-size: 13px; color: #1a3a1e; font-style: italic; margin-top: 22px; }
+
+    /* ── How It Works ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+    @media(max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+    .arch-block { border: 2px solid #d1dce8; border-radius: 8px; padding: 18px 20px; }
+    .arch-block.blue  { border-color: #0070d2; background: #f0f7ff; }
+    .arch-block-title { font-size: 13px; font-weight: 800; color: #032d60; margin-bottom: 6px; }
+    .arch-block-sub   { font-size: 12px; color: #3a5a78; line-height: 1.65; }
+
+    .section-block { border-left: 4px solid #ccc; border-radius: 0 8px 8px 0; padding: 16px 20px; margin-bottom: 10px; background: #fafcff; }
+    .section-block.blue   { border-color: #0070d2; }
+    .section-block.purple { border-color: #8e44ad; }
+    .section-block.green  { border-color: #27ae60; }
+    .section-block.orange { border-color: #e67e22; }
+    .section-block-title  { font-size: 13px; font-weight: 800; color: #032d60; margin-bottom: 6px; }
+    .section-block-desc   { font-size: 12.5px; color: #3a5a78; line-height: 1.6; margin-bottom: 10px; }
+
+    .code-block { background: #1e2a3a; border-radius: 6px; padding: 16px 18px; font-size: 11.5px; font-family: 'Courier New', Courier, monospace; line-height: 1.75; overflow-x: auto; margin: 10px 0; color: #c8d8e8; }
+    .c-comment { color: #6a9ab5; }
+    .c-key     { color: #5cc8ff; }
+    .c-val     { color: #f0c060; }
+    .c-merge   { color: #c080f0; }
+    .c-rule    { color: #80e0a0; }
+
+    .mono { font-family: 'Courier New', Courier, monospace; background: #f0f4f8; padding: 2px 6px; border-radius: 3px; font-size: 11px; color: #032d60; }
+
+    /* ── Requirements ── */
+    .phase-hdr { font-size: 14px; font-weight: 800; color: #032d60; padding: 12px 0 10px; border-bottom: 2px solid #d1dce8; margin: 28px 0 16px; }
+    .phase-hdr:first-child { margin-top: 0; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    th { background: #f0f4f8; text-align: left; padding: 10px 14px; font-weight: 800; border-bottom: 2px solid #d1dce8; color: #2c4a6e; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { padding: 10px 14px; border-bottom: 1px solid #eef2f7; vertical-align: top; line-height: 1.55; }
+    tr:last-child td { border-bottom: none; }
+
+    .status { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+    .s-done    { background: #d4edda; color: #155724; }
+    .s-partial { background: #fff3cd; color: #856404; }
+    .s-pending { background: #f8d7da; color: #721c24; }
+
+    .recovery-table table { font-size: 12px; }
+
+    hr.dashed { border: none; border-top: 2px dashed #e4ebf3; margin: 32px 0; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="page-header">
+    <div class="page-title">Allergan Moxie — Agentforce Email Draft Demo</div>
+    <div class="page-sub">Demo script &nbsp;·&nbsp; Architecture deep-dive &nbsp;·&nbsp; Requirements tracker &nbsp;·&nbsp; For customer walkthrough</div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="show('demo',this)">Demo Script</div>
+    <div class="tab" onclick="show('arch',this)">How It Works</div>
+    <div class="tab" onclick="show('status',this)">Requirements Status</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       TAB 1 — DEMO SCRIPT
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="panel active" id="tab-demo">
+
+    <div class="opening">
+      <div class="label">Opening Statement — Say This Before You Touch the Keyboard</div>
+      <p>"What you are about to see is Agentforce reading a Case, understanding what type of situation it is, selecting the right email template automatically, and drafting a personalised email — all from a single click. The CSR does not choose a template. The AI reads the Case and picks it based on the business scenario. And once it picks the template, the mandatory language — your form references, your SLAs, your compliance statements — cannot be altered. The CSR can refine the personalised parts, but the structure stays intact. Let me show you three different templates being selected across four different cases."</p>
+    </div>
+
+
+    <!-- ── CASE 1 ── -->
+    <div class="case-card case-1">
+      <div class="case-hdr">
+        <span class="case-num" style="background:#e3d9f7;color:#4a0080;">CASE 1 OF 4</span>
+        <span class="case-title">Medical Director Change Request — New Director Dr. Patel</span>
+        <span class="badge path-a">Path A — Fresh Case</span>
+        <span class="badge tmpl-a">→ Template A</span>
+      </div>
+      <div class="case-body">
+
+        <div class="section-label">What to say</div>
+        <div class="say-box">"First case — a practice has a new Medical Director coming in. This case just arrived. No prior email thread. The CSR opens it and wants to send a first response. <strong>I haven't told the AI anything about which template to use. Watch what it picks.</strong>"</div>
+
+        <div class="section-label">Click path</div>
+        <ol class="steps">
+          <li>Go to the <strong>Cases</strong> tab → search <strong>Medical Director Change Request</strong> → open <strong>Medical Director Change Request - New Director Dr. Patel</strong></li>
+          <li>On the case record, click <strong>Activity</strong> in the right panel → click <strong>Email</strong> to open the compose window — notice the <strong>To</strong> field is already populated with Sarah Chen</li>
+          <li>In the compose toolbar, find and click <strong>Draft with AI</strong></li>
+          <li>A template picker appears — select <strong>Custom CSR Response</strong> → click <strong>Generate</strong></li>
+          <li>Wait 3–5 seconds for the draft to appear</li>
+        </ol>
+
+        <div class="section-label">Expected output</div>
+        <div class="output-box"><span class="output-hl">Selected template: Template A</span>
+
+Dear Sarah,
+
+Thank you for contacting the Allergan Moxie Provider Services team
+regarding your request for a Medical Director Change at Sunset
+Aesthetics Medical Group.
+
+We have received your request and are currently reviewing the required
+documentation for Case #[case number].
+
+To complete the Medical Director change, please ensure the following
+items are submitted:
+
+<span class="output-hl">1. Completed Change of Medical Director Form (Form AM-CMD-001), signed
+   by both the outgoing and incoming Medical Directors.</span>
+2. A copy of the incoming Medical Director's current medical license
+   (must be active and valid in the state of practice).
+3. An updated W-9 form if the new Medical Director is associated with
+   a different tax entity.
+
+Please return all completed documents to your dedicated Allergan Moxie
+representative or upload them directly to your account portal.
+
+<span class="output-hl">Once all required documentation is received and verified, please allow
+5–7 business days for processing.</span> You will receive a confirmation
+email when the change has been finalized.
+
+Warm regards,
+[Your name]
+Provider Services Representative
+Allergan Moxie</div>
+
+        <div class="section-label">Key talking points — point to these on screen</div>
+        <div class="tp-box">
+          <div class="tp-row">
+            <div class="tp-icon">📌</div>
+            <div class="tp-text"><strong>"Selected template: Template A" on the first line</strong> — the AI declared its choice. Every output is auditable. You can see exactly which template was used and why.</div>
+          </div>
+          <div class="tp-row">
+            <div class="tp-icon">🔒</div>
+            <div class="tp-text"><strong>Form AM-CMD-001</strong> — preserved word for word. The AI is explicitly instructed it cannot remove, reorder, or paraphrase any form name, legal statement, or SLA. This is structural, not generated.</div>
+          </div>
+          <div class="tp-row">
+            <div class="tp-icon">⏱</div>
+            <div class="tp-text"><strong>5–7 business days</strong> — the processing timeline is from the template, not invented by the LLM. It cannot hallucinate a different SLA.</div>
+          </div>
+          <div class="tp-row">
+            <div class="tp-icon">🎯</div>
+            <div class="tp-text"><strong>Sarah Chen, Case number, Sunset Aesthetics Medical Group</strong> — pulled from the Case record. The CSR typed nothing. These came from the Case's Contact, Account, and CaseNumber fields.</div>
+          </div>
+        </div>
+
+        <div class="bridge">"Now let me open a completely different case — a brand new clinic wanting to enroll. I haven't changed any settings. Let's see which template the AI picks this time."</div>
+      </div>
+    </div>
+
+
+    <!-- ── CASE 2 ── -->
+    <div class="case-card case-2">
+      <div class="case-hdr">
+        <span class="case-num" style="background:#fde8d0;color:#7a3800;">CASE 2 OF 4</span>
+        <span class="case-title">New Practice Enrollment — Pacific Coast Aesthetics</span>
+        <span class="badge path-a">Path A — Fresh Case</span>
+        <span class="badge tmpl-b">→ Template B</span>
+      </div>
+      <div class="case-body">
+
+        <div class="section-label">What to say</div>
+        <div class="say-box">"Different case, different practice, completely different scenario — a brand new clinic in Malibu wanting to enroll as a provider. <strong>Same one-click process. Watch which template the AI selects.</strong>"</div>
+
+        <div class="section-label">Click path</div>
+        <ol class="steps">
+          <li>Go to <strong>Cases</strong> tab → search <strong>New Practice Enrollment</strong> → open <strong>New Practice Enrollment - Pacific Coast Aesthetics</strong></li>
+          <li>Click <strong>Activity</strong> → <strong>Email</strong> → compose window opens</li>
+          <li>Click <strong>Draft with AI</strong> → select <strong>Custom CSR Response</strong> → click <strong>Generate</strong></li>
+        </ol>
+
+        <div class="section-label">Expected output</div>
+        <div class="output-box"><span class="output-hl">Selected template: Template B</span>
+
+Dear Sarah,
+
+Thank you for your interest in enrolling Pacific Coast Aesthetics as
+an authorized Allergan Moxie provider. We are pleased to assist you
+through the credentialing and enrollment process for Case #[case number].
+
+To proceed with your new practice enrollment, the following
+documentation is required:
+
+<span class="output-hl">1. Completed Allergan Moxie Provider Enrollment Form (Form AM-PE-002),
+   signed by the Medical Director.
+2. Current DEA Certificate and State Controlled Substance License
+   (if applicable for your practice scope).
+3. Proof of malpractice/liability insurance — minimum $1,000,000 per
+   occurrence / $3,000,000 aggregate.
+4. A copy of the facility's business license or certificate of occupancy.
+5. Completed and signed Patient Consent and Privacy Policy
+   Acknowledgement (Form AM-PC-005).</span>
+
+Please note the following specifics for your submission:
+- Medical Director: Dr. Elena Vasquez. Please ensure the enrollment
+  form is signed by Dr. Elena Vasquez and include copies of active
+  medical licenses for CA and NV.
+- Malpractice coverage: your practice carries $2M/$4M coverage.
+  Please submit the insurance declaration page showing the coverage amounts.
+- Practice address: 789 Pacific Coast Highway, Malibu, CA 90265.
+  Include your business license or certificate of occupancy for this location.
+
+<span class="output-hl">Once we receive your complete submission, please allow 10–14 business
+days for review and credentialing verification.</span>
+
+Kind regards,
+[Your name]
+Provider Enrollment Team
+Allergan Moxie</div>
+
+        <div class="section-label">Key talking points</div>
+        <div class="tp-box">
+          <div class="tp-row">
+            <div class="tp-icon">🔀</div>
+            <div class="tp-text"><strong>"Selected template: Template B"</strong> — different case, different template, no manual intervention. The AI read the description ("new aesthetic medical practice… wants to enroll") and matched it to the enrollment template.</div>
+          </div>
+          <div class="tp-row">
+            <div class="tp-icon">🔒</div>
+            <div class="tp-text"><strong>Form AM-PE-002 and Form AM-PC-005</strong> — two different form numbers, both preserved exactly. Five mandatory checklist items intact.</div>
+          </div>
+          <div class="tp-row">
+            <div class="tp-icon">⏱</div>
+            <div class="tp-text"><strong>10–14 business days</strong> — a different SLA from Case 1's 5–7 days. The AI didn't invent this; it came from the enrollment template structure.</div>
+          </div>
+          <div class="tp-row">
+            <div class="tp-icon">✨</div>
+            <div class="tp-text"><strong>The personalised section</strong> — Dr. Elena Vasquez, $2M/$4M coverage, Malibu address, 150 patients/month — all extracted from the Case Description. <em>This is the AI adding value beyond a static template: the CSR would have had to write this paragraph manually.</em></div>
+          </div>
+        </div>
+
+        <div class="bridge">"Third scenario — a case where the answer is not good news. The practice doesn't meet eligibility requirements. This one needs precise language around forms and the dispute window. Watch the AI handle it."</div>
+      </div>
+    </div>
+
+
+    <!-- ── CASE 3 ── -->
+    <div class="case-card case-3">
+      <div class="case-hdr">
+        <span class="case-num" style="background:#fcd7d7;color:#7a0000;">CASE 3 OF 4</span>
+        <span class="case-title">Product Access Review — Eligibility Determination Needed</span>
+        <span class="badge path-a">Path A — Fresh Case</span>
+        <span class="badge tmpl-c">→ Template C</span>
+      </div>
+      <div class="case-body">
+
+        <div class="section-label">What to say</div>
+        <div class="say-box">"This one is more sensitive. The credentialing team has determined this practice doesn't meet eligibility requirements. The CSR needs to send a not-eligible determination — a message that has to be precise about which form to reference and exactly how long the practice has to dispute. <strong>If a CSR writes this from memory, they might get the form number wrong or quote the wrong window. Watch what the AI does.</strong>"</div>
+
+        <div class="section-label">Click path</div>
+        <ol class="steps">
+          <li>Go to <strong>Cases</strong> tab → search <strong>Product Access Review</strong> → open <strong>Product Access Review - Eligibility Determination Needed</strong></li>
+          <li>Click <strong>Activity</strong> → <strong>Email</strong> → compose window opens</li>
+          <li>Click <strong>Draft with AI</strong> → select <strong>Custom CSR Response</strong> → click <strong>Generate</strong></li>
+        </ol>
+
+        <div class="section-label">Expected output</div>
+        <div class="output-box"><span class="output-hl">Selected template: Template C</span>
+
+Dear Sarah,
+
+Thank you for contacting Allergan Moxie Provider Services regarding
+Case #[case number].
+
+After reviewing your account and the details submitted for Sunset
+Aesthetics Medical Group, we regret to inform you that based on our
+current eligibility criteria, your practice does not meet the
+requirements for the requested product or program at this time.
+
+This determination was made based on one or more of the following factors:
+- The primary injector does not hold an active California medical license.
+- The practice does not carry the required malpractice insurance of
+  $1M per occurrence / $3M aggregate.
+- Current credentialing status does not meet the minimum requirements
+  for this product category.
+
+Next steps to address eligibility:
+<span class="output-hl">1. Please review the enclosed Allergan Moxie Eligibility Requirements
+   document (Form AM-EL-010) to understand the specific criteria.
+2. If you believe this determination was made in error, please reply
+   to this email with supporting documentation within 30 days and we
+   will conduct a formal review.</span>
+3. If you would like guidance on meeting the eligibility requirements,
+   our Provider Services team is available to schedule a consultation.
+
+We remain committed to supporting your practice and look forward to
+working with you.
+
+Regards,
+[Your name]
+Provider Services Representative
+Allergan Moxie</div>
+
+        <div class="section-label">Key talking points</div>
+        <div class="tp-box">
+          <div class="tp-row">
+            <div class="tp-icon">🔀</div>
+            <div class="tp-text"><strong>"Selected template: Template C"</strong> — the AI recognised this as an eligibility determination, not a credentialing or enrollment case. Correct selection from three options with one click.</div>
+          </div>
+          <div class="tp-row">
+            <div class="tp-icon">🔒</div>
+            <div class="tp-text"><strong>Form AM-EL-010</strong> — the eligibility review form number, preserved exactly. A CSR writing from memory is likely to get this wrong. The template makes it impossible to omit.</div>
+          </div>
+          <div class="tp-row">
+            <div class="tp-icon">⚖️</div>
+            <div class="tp-text"><strong>30-day dispute window</strong> — the legal time commitment is locked in the template. It cannot be accidentally shortened, lengthened, or omitted. Your compliance team wrote this; it stays verbatim.</div>
+          </div>
+          <div class="tp-row">
+            <div class="tp-icon">💬</div>
+            <div class="tp-text"><strong>Tone shift</strong> — compare this email to Cases 1 and 2. The language is empathetic but precise. "We regret to inform you" and "We remain committed to supporting your practice" are from the template structure — your compliance team wrote those phrases, not the AI.</div>
+          </div>
+        </div>
+
+        <div class="bridge">"One more case — and this one demonstrates something different. Let me show you what happens when a case already has an ongoing email conversation."</div>
+      </div>
+    </div>
+
+
+    <!-- ── CASE 4 ── -->
+    <div class="case-card case-4">
+      <div class="case-hdr">
+        <span class="case-num" style="background:#cce5ff;color:#004085;">CASE 4 OF 4</span>
+        <span class="case-title">Medical Director Change — Awaiting Form AM-CMD-001</span>
+        <span class="badge path-b">Path B — Existing Thread</span>
+        <span class="badge tmpl-a">→ Template A</span>
+      </div>
+      <div class="case-body">
+
+        <div class="section-label">What to say</div>
+        <div class="say-box">"Same type as Case 1 — a Medical Director change. But this one is already in progress. There is an existing email thread — the first response was already sent, the forms were requested, and the practice came back with a follow-up. <strong>The AI needs to draft the next reply in a conversation, not a first-contact email. Watch how it adapts.</strong>"</div>
+
+        <div class="section-label">Click path</div>
+        <ol class="steps">
+          <li>Go to <strong>Cases</strong> tab → search <strong>Medical Director Change - Awaiting</strong> → open <strong>Medical Director Change - Awaiting Form AM-CMD-001</strong></li>
+          <li><strong>Scroll down the Activity feed</strong> and point to the existing email thread — pause here and say: <em>"There are already three emails in this conversation. The CSR needs to respond to the latest follow-up."</em></li>
+          <li>Click <strong>Email</strong> → <strong>Draft with AI</strong> → select <strong>Custom CSR Response</strong> → click <strong>Generate</strong></li>
+        </ol>
+
+        <div class="section-label">Expected output</div>
+        <div class="output-box"><span class="output-hl">Selected template: Template A</span>
+
+Dear Sarah,
+
+Thank you for following up regarding the Medical Director change for
+Sunset Aesthetics Medical Group — Case #[case number].
+
+We understand that Dr. Kim will be relocating and that you are in the
+process of transitioning the Medical Director role to Dr. Anita Patel.
+We are here to help ensure this process moves forward smoothly.
+
+As a reminder, to complete the Medical Director change, please ensure
+the following documentation is submitted:
+
+<span class="output-hl">1. Completed Change of Medical Director Form (Form AM-CMD-001), signed
+   by both the outgoing and incoming Medical Directors.
+2. A copy of Dr. Patel's current medical license (active and valid
+   in the state of practice).
+3. An updated W-9 form if Dr. Patel is associated with a different
+   tax entity.</span>
+
+<span class="output-hl">Once all required documentation is received and verified, please allow
+5–7 business days for processing.</span>
+
+If you have any questions about digital signature options for the form,
+please do not hesitate to contact us.
+
+Warm regards,
+[Your name]
+Provider Services Representative
+Allergan Moxie</div>
+
+        <div class="section-label">Key talking points</div>
+        <div class="tp-box">
+          <div class="tp-row">
+            <div class="tp-icon">🔀</div>
+            <div class="tp-text"><strong>Same template, different context</strong> — Template A selected again, correctly. It's still a Medical Director change. But the AI adapted the opening to a follow-up tone, not a first-contact tone. "Thank you for following up" vs "Thank you for contacting us."</div>
+          </div>
+          <div class="tp-row">
+            <div class="tp-icon">🔒</div>
+            <div class="tp-text"><strong>Form AM-CMD-001 still preserved</strong> — even in a follow-up, the mandatory reference stays. This prevents the common mistake of a CSR forgetting to re-reference the form in a reply.</div>
+          </div>
+          <div class="tp-row">
+            <div class="tp-icon">📚</div>
+            <div class="tp-text"><strong>Historical grounding at work</strong> — behind the scenes, the Prompt Flow queried three previously closed Medical Director change cases and fed their outbound emails as context. That is what calibrates the follow-up tone to sound like an experienced rep, not a first-time response.</div>
+          </div>
+          <div class="tp-row">
+            <div class="tp-icon">🚧</div>
+            <div class="tp-text"><strong>What is still pending here</strong> — in the production version, the AI will also read the actual emails in the current thread before drafting. Today it reads the Case description and historical closed cases. That is the one Path B gap. I will cover this in the Requirements tab.</div>
+          </div>
+        </div>
+
+        <div class="note" style="margin-top: 22px; font-style: italic;">
+          <strong>Closing statement after Case 4:</strong> "In four cases, the AI automatically selected three different templates, preserved all mandatory language, personalised each email with case-specific details, and adapted between a first contact and a follow-up reply. The CSR clicked one button each time. That is the core of what we are building."
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ── Recovery guide ── -->
+    <hr class="dashed"/>
+    <div class="recovery-table">
+      <h3 style="margin-top:0;">If Something Looks Wrong — Recovery Script</h3>
+      <table>
+        <tr><th>What happened</th><th>What to say</th><th>What to check backstage</th></tr>
+        <tr>
+          <td>Wrong template selected</td>
+          <td>"The AI misread the case context here — this is exactly why we work with your team on tuning the trigger conditions. With your real template names and Case field values, these conditions become much more precise."</td>
+          <td>Check that Prompt Template version 2 is the active/published version in Setup → Prompt Builder → Custom CSR Response</td>
+        </tr>
+        <tr>
+          <td>Output is generic — no personalisation</td>
+          <td>"The mandatory structure is intact — that is the important part. The personalisation improves as the Case Description becomes richer. In production, your reps' case notes feed this section."</td>
+          <td>Check that Case Description is populated (the demo Apex script set this — if it is blank the case may have been recreated)</td>
+        </tr>
+        <tr>
+          <td>Form name or SLA is missing from output</td>
+          <td>"This is the edge case the production guardrails prevent — let me regenerate. LLMs occasionally drop a detail on first attempt; the instruction is explicit but not 100% guaranteed every time."</td>
+          <td>Click Revise → type "Ensure Form AM-CMD-001 is included" → regenerate. Or click Undo and Generate again.</td>
+        </tr>
+        <tr>
+          <td>Draft with AI button not visible</td>
+          <td>Pause — do not say anything yet. Say you need 30 seconds.</td>
+          <td>Go to Setup → Prompt Builder → Custom CSR Response → confirm Status is <strong>Published</strong>, not Active Draft. If it shows Active Draft, publish it.</td>
+        </tr>
+      </table>
+    </div>
+
+  </div><!-- end demo panel -->
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       TAB 2 — HOW IT WORKS
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="panel" id="tab-arch">
+
+    <h2>How It Works — Architecture Deep-Dive</h2>
+    <p>Use this section to explain the technical architecture to Rohit and Shankar. It covers what you built, where the intelligence lives, and why it is designed the way it is.</p>
+
+    <h3>The two moving parts</h3>
+    <div class="two-col">
+      <div class="arch-block blue">
+        <div class="arch-block-title">1. GenAI Prompt Template</div>
+        <div class="arch-block-sub">The instruction set for the LLM. Contains the live Case merge fields, all three candidate email templates embedded as text, the selection rules, and the guardrails. This is what you (Nisar) own and maintain.<br><br>
+        File: <span class="mono">Custom_CSR_Response.genAiPromptTemplate-meta.xml</span><br>
+        Type: <span class="mono">einstein_gpt__caseEmailDraft</span> — this type activates the native "Draft with AI" button automatically. No LWC needed to trigger it.</div>
+      </div>
+      <div class="arch-block">
+        <div class="arch-block-title">2. Prompt Flow</div>
+        <div class="arch-block-sub">A standard Salesforce Flow that runs before the LLM generates. It queries closed historical cases with the same Case Type and Reason, reads the outbound email bodies from those cases, and injects them into the Prompt Template as grounding context.<br><br>
+        File: <span class="mono">Add_Historical_Case_Emails_to_Prompt2.flow-meta.xml</span><br>
+        This flow was not modified for this demo — it was already built.</div>
+      </div>
+    </div>
+
+    <h3>Inside the Prompt Template — 4 sections</h3>
+    <p>The template has four clearly separated sections. Each section has a specific job. When the CSR clicks Generate, these four sections are assembled in sequence and sent to the LLM as a single prompt.</p>
+
+    <div class="section-block blue">
+      <div class="section-block-title">Section 1 — CURRENT CASE &nbsp; <span style="font-size:11px;color:#5a7896;font-weight:400;">(the signal)</span></div>
+      <div class="section-block-desc">Injects live Case data using Salesforce merge fields at runtime. The LLM reads Type, Reason, Subject, and Description to understand what kind of case it is dealing with. The merge fields resolve to real values before the LLM sees the prompt.</div>
+      <div class="code-block"><span class="c-comment">### CURRENT CASE</span>
+<span class="c-key">Case Number:</span>  <span class="c-merge">{!$Input:Case.CaseNumber}</span>
+<span class="c-key">Type:</span>         <span class="c-merge">{!$Input:Case.Type}</span>
+<span class="c-key">Reason:</span>       <span class="c-merge">{!$Input:Case.Reason}</span>
+<span class="c-key">Description:</span>  <span class="c-merge">{!$Input:Case.Description}</span>
+<span class="c-key">Customer:</span>     <span class="c-merge">{!$Input:Case.Contact.FirstName} {!$Input:Case.Contact.LastName}</span>
+<span class="c-key">Account:</span>      <span class="c-merge">{!$Input:Case.Account.Name}</span>
+<span class="c-key">CSR Name:</span>     <span class="c-merge">{!$Input:Sender.FirstName} {!$Input:Sender.LastName}</span></div>
+      <div class="note" style="margin-bottom:0;"><strong>What to say to the customer:</strong> "The purple tokens are Salesforce merge fields. They resolve to real values at runtime — the LLM never sees {!$Input:Case.Type}, it sees 'Account Support'. This is standard Salesforce merge field syntax, nothing custom."</div>
+    </div>
+
+    <div class="section-block purple">
+      <div class="section-block-title">Section 2 — CANDIDATE EMAIL TEMPLATES &nbsp; <span style="font-size:11px;color:#5a7896;font-weight:400;">(the selection logic)</span></div>
+      <div class="section-block-desc">All three email templates are embedded directly in the prompt. Each has a <strong>Use when:</strong> condition that tells the LLM when to pick it. The LLM pattern-matches the Case Description against these three conditions and selects one. This is the entire template selection mechanism — no rules engine, no code, no Flow logic.</div>
+      <div class="code-block"><span class="c-comment">### CANDIDATE EMAIL TEMPLATES</span>
+Choose the single most appropriate template based on Case Type,
+Reason, and Description. After selecting, use it as your structural
+foundation — fill in all placeholders with real case values.
+Do NOT remove, reorder, or paraphrase any mandatory language,
+form names, or legal statements.
+
+<span class="c-key">TEMPLATE A:</span> Credentialing - Medical Director Change Request
+<span class="c-val">Use when: Case involves a request to change or update the Medical
+Director on a credentialed account.</span>
+---
+[full email body — Form AM-CMD-001, 5–7 business days, placeholders]
+
+<span class="c-key">TEMPLATE B:</span> Credentialing - New Practice Enrollment
+<span class="c-val">Use when: Case involves a new practice or facility requesting to
+enroll as an Allergan Moxie provider.</span>
+---
+[full email body — Forms AM-PE-002 + AM-PC-005, 10–14 business days]
+
+<span class="c-key">TEMPLATE C:</span> Product Support - Not Eligible for Products
+<span class="c-val">Use when: Case involves a provider being informed they do not
+meet eligibility requirements.</span>
+---
+[full email body — Form AM-EL-010, 30-day dispute window]</div>
+      <div class="note" style="margin-bottom:0;"><strong>This is the key design decision.</strong> Rather than asking the LLM to write an email from scratch — which risks hallucinating form numbers or SLAs — we give it the pre-approved templates as structure. The LLM's job is to pick the right one and fill the placeholders. It cannot rewrite the mandatory language. Think of it as: <em>the template is the rails, the LLM is the engine that personalises the journey.</em></div>
+    </div>
+
+    <div class="section-block green">
+      <div class="section-block-title">Section 3 — HISTORICAL CONTEXT &nbsp; <span style="font-size:11px;color:#5a7896;font-weight:400;">(the tone calibration)</span></div>
+      <div class="section-block-desc">A single merge field that expands at runtime to the outbound email bodies of up to three previously closed cases with the same Type and Reason. The Prompt Flow queries these records and produces this text before the LLM generates. The LLM uses the examples to calibrate tone — it learns how your experienced reps write, not from generic training data.</div>
+      <div class="code-block"><span class="c-comment">### HISTORICAL CONTEXT</span>
+The following are real outbound responses from similar closed cases.
+Use these to calibrate tone and solution steps — but always use
+the selected template above as your structure:
+
+<span class="c-merge">{!$Flow:Add_Historical_Case_Emails_to_Prompt2.Prompt}</span></div>
+      <div class="note" style="margin-bottom:0;"><strong>What to say to the customer:</strong> "This one token expands to the actual email text your experienced reps wrote on similar closed cases. The AI learns your team's tone from real examples. In the production version, as your team closes more cases, the grounding pool improves automatically."</div>
+    </div>
+
+    <div class="section-block orange">
+      <div class="section-block-title">Section 4 — INSTRUCTIONS &nbsp; <span style="font-size:11px;color:#5a7896;font-weight:400;">(the guardrails)</span></div>
+      <div class="section-block-desc">Explicit rules the LLM must follow. These are the compliance guardrails that make the output auditable and prevent the most common failure modes.</div>
+      <div class="code-block"><span class="c-comment">### INSTRUCTIONS</span>
+<span class="c-rule">1.</span> State which template you selected on line 1:
+   "Selected template: [Template A / B / C]"
+<span class="c-rule">2.</span> Then output the complete email body — fill every [placeholder]
+   with real values from the Case Details above.
+<span class="c-rule">3.</span> Do NOT invent form names, case numbers, or contact details.
+   Use only what is provided.
+<span class="c-rule">4.</span> Do NOT remove any form names (e.g. AM-CMD-001), legal statements,
+   or processing time commitments from the template.
+<span class="c-rule">5.</span> Adjust the tone to be warm and professional.
+<span class="c-rule">6.</span> End with the CSR's real name from the Case Details above.</div>
+      <div class="note" style="margin-bottom:0;"><strong>Rule 1</strong> makes selection auditable — you can always see which template was chosen. <strong>Rule 3 and 4</strong> are the compliance guardrails — the AI is explicitly forbidden from inventing or removing form references and SLAs. <strong>Rule 6</strong> ensures the CSR's actual name appears in the sign-off, not a generic placeholder.</div>
+    </div>
+
+    <h3>Why embed templates in the prompt instead of querying EmailTemplate records?</h3>
+    <p>Rohit may ask why the templates are baked into the prompt text rather than queried dynamically from Salesforce's EmailTemplate object. This is a deliberate Phase 1 decision.</p>
+    <table>
+      <tr><th>Approach</th><th>How it works</th><th>When to use</th></tr>
+      <tr>
+        <td><strong>Embedded (current demo)</strong></td>
+        <td>All candidate templates are inside the prompt text. The LLM picks from what it can read directly.</td>
+        <td>Proof of concept and demos. Fast to build, easy to test and tune. Works until the candidate set grows beyond ~5–7 templates.</td>
+      </tr>
+      <tr>
+        <td><strong>Query and inject (Phase 2)</strong></td>
+        <td>A Prompt Flow queries EmailTemplate records, filters to the top N candidates based on Case Type/Reason tags, then injects only those into the prompt.</td>
+        <td>Production with many templates. Requires EmailTemplate records to be tagged with metadata (Type, Reason, Category). This is Rohit's team's build.</td>
+      </tr>
+      <tr>
+        <td><strong>LLM picks by name (Phase 3)</strong></td>
+        <td>The LLM sees only template names and use-case descriptions (not full bodies), selects a name, then a second step fetches and fills the chosen template.</td>
+        <td>Scale to thousands of templates. Requires a two-step prompt chain. Future roadmap.</td>
+      </tr>
+    </table>
+
+    <h3>How the type activates the native "Draft with AI" button</h3>
+    <p>The Prompt Template is set to type <span class="mono">einstein_gpt__caseEmailDraft</span>. Salesforce treats this type as a signal: "this prompt template is intended for the Case email compose window." When a template of this type is Published, Salesforce automatically adds it to the picker that appears when a CSR clicks Draft with AI — no custom code, no LWC, no page layout change needed to trigger it.</p>
+    <div class="warn"><strong>What this means for the demo vs production:</strong> The demo uses the native Draft with AI button. Rohit's custom LWC adds tone controls (shorter / standard / longer) and a "stamp to compose" action that sit on top of the same AI output. The core logic — template selection, personalisation, guardrails — is identical whether triggered from the native button or the LWC. The LWC is a UX layer, not a different architecture.</div>
+
+  </div><!-- end arch panel -->
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       TAB 3 — REQUIREMENTS STATUS
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="panel" id="tab-status">
+
+    <h2>Requirements Status</h2>
+    <p>This maps the requirements from the first customer meeting against what is built in the demo today, and what is still needed for production. Use this to set expectations before the demo and address questions about what is missing.</p>
+
+    <div class="note">The goal of this demo session is to <strong>prove the architecture is correct and get alignment on the approach</strong> — not to deliver a production-ready integration. Everything in Phase 1 is live and working. Phase 2 items are integration work, not rebuilds.</div>
+
+    <h3 style="margin-top:0;">What the flow diagram required vs what's built</h3>
+    <p>This is a direct comparison against Rohit's two-path flow diagram shared in the first meeting.</p>
+    <table style="margin-bottom:28px;">
+      <tr><th>Requirement from diagram</th><th>Status</th><th>Notes</th></tr>
+      <tr>
+        <td>AI reads Case and recommends best matching email template</td>
+        <td><span class="status s-done">✅ Built</span></td>
+        <td>Template selection working across 3 templates and 4 cases. No CSR input needed.</td>
+      </tr>
+      <tr>
+        <td>Mandatory template language preserved (forms, SLAs, compliance text)</td>
+        <td><span class="status s-done">✅ Built</span></td>
+        <td>Guardrail instructions prevent the LLM from removing or rephrasing any form name, processing time, or legal statement.</td>
+      </tr>
+      <tr>
+        <td>AI personalises the email with case-specific details</td>
+        <td><span class="status s-done">✅ Built</span></td>
+        <td>Contact name, account name, case number, and description details all injected automatically.</td>
+      </tr>
+      <tr>
+        <td>Historical grounding — tone calibrated from what experienced reps wrote</td>
+        <td><span class="status s-done">✅ Built</span></td>
+        <td>Prompt Flow queries up to 3 most recent closed cases with same Type + Reason and feeds their outbound emails to the LLM.</td>
+      </tr>
+      <tr>
+        <td>Path A — new case, no prior email thread, draft first outbound response</td>
+        <td><span class="status s-done">✅ Built</span></td>
+        <td>All 3 template scenarios demonstrated via Cases 1, 2, 3.</td>
+      </tr>
+      <tr>
+        <td>Path B — existing case with a reply thread, AI reads thread and drafts next reply</td>
+        <td><span class="status s-partial">⚠️ Partial</span></td>
+        <td>AI reads Case description and historical closed cases for context, but does not yet read the current open case's existing email thread. A flow element to loop through current case EmailMessages needs to be added.</td>
+      </tr>
+      <tr>
+        <td>Tone controls — CSR selects shorter / standard / longer output</td>
+        <td><span class="status s-pending">❌ Not in demo</span></td>
+        <td>This is a feature of Rohit's custom LWC. The Prompt Template needs a TonePreference input wired to the LWC toggle. Native Draft with AI button does not expose tone controls.</td>
+      </tr>
+      <tr>
+        <td>"Stamp to compose" button — AI draft populates the email compose body</td>
+        <td><span class="status s-pending">❌ Not in demo</span></td>
+        <td>Rohit's custom LWC feature. The native Done button in the Draft with AI panel fulfils the same action in the interim.</td>
+      </tr>
+      <tr>
+        <td>Selection from the real ~1,600 Allergan Moxie email templates</td>
+        <td><span class="status s-pending">❌ Not in demo</span></td>
+        <td>Demo uses 3 representative templates embedded in the prompt. Production requires EmailTemplate records tagged with Type/Reason and a dynamic flow query.</td>
+      </tr>
+      <tr>
+        <td>Category and Sub-Category as matching criteria on the flow query</td>
+        <td><span class="status s-pending">❌ Not in demo</span></td>
+        <td>API field names for Category and Sub-Category on Case not yet provided by customer. 30-minute change once confirmed.</td>
+      </tr>
+    </table>
+
+    <div class="phase-hdr">Phase 1 — Demo — Built and Deployed</div>
+    <table>
+      <tr><th>Requirement</th><th>Status</th><th>Evidence</th></tr>
+      <tr>
+        <td>AI reads Case context (Type, Reason, Description) and selects the most appropriate email template automatically</td>
+        <td><span class="status s-done">✅ Done</span></td>
+        <td>Demonstrated with 3 different templates across 4 cases — no manual template selection by the CSR</td>
+      </tr>
+      <tr>
+        <td>Mandatory language preserved — form names, SLAs, legal statements cannot be altered by the AI</td>
+        <td><span class="status s-done">✅ Done</span></td>
+        <td>Instruction 4 in the Prompt Template explicitly forbids removal. Validated in all 3 templates. Form numbers and SLAs appear verbatim in every output.</td>
+      </tr>
+      <tr>
+        <td>Case-level personalisation — contact name, account name, case number, and case-specific details from the description</td>
+        <td><span class="status s-done">✅ Done</span></td>
+        <td>AI reads Case Description and injects specifics (e.g. Dr. Vasquez, $2M/$4M coverage, practice address, patient volume) automatically</td>
+      </tr>
+      <tr>
+        <td>Historical grounding — AI calibrated by outbound emails from similar closed cases written by experienced reps</td>
+        <td><span class="status s-done">✅ Done</span></td>
+        <td>Prompt Flow queries closed cases with same Type + Reason, up to 3 most recent, feeds outbound email bodies to the LLM</td>
+      </tr>
+      <tr>
+        <td>Path A — fresh case with no prior thread, first outbound draft</td>
+        <td><span class="status s-done">✅ Done</span></td>
+        <td>Cases 1, 2, 3 in the demo all demonstrate Path A</td>
+      </tr>
+      <tr>
+        <td>AI selection is auditable — supervisor or QA can see which template was chosen</td>
+        <td><span class="status s-done">✅ Done</span></td>
+        <td>"Selected template: Template A/B/C" on line 1 of every output. Always visible before the CSR accepts the draft.</td>
+      </tr>
+      <tr>
+        <td>Integrates with native Salesforce Service Console — no custom build required to trigger the AI</td>
+        <td><span class="status s-done">✅ Done</span></td>
+        <td>Prompt Template type <span class="mono">einstein_gpt__caseEmailDraft</span> activates the native "Draft with AI" button automatically. Works in any org with Agentforce enabled.</td>
+      </tr>
+    </table>
+
+    <div class="phase-hdr">Phase 2 — Integration — Needs Customer Input or Rohit's Team</div>
+    <table>
+      <tr><th>Requirement</th><th>Status</th><th>What is needed</th><th>Owner</th></tr>
+      <tr>
+        <td>Path B — AI reads the current open case's existing email thread before drafting the next reply</td>
+        <td><span class="status s-partial">⚠️ Partial</span></td>
+        <td>AI currently reads closed historical cases for tone but does NOT read the current thread. A flow element to loop through the current case's EmailMessages (Incoming=false) needs to be added to the Prompt Flow.</td>
+        <td>Nisar — Prompt Flow update (~2 hours once EmailMessage read pattern is confirmed)</td>
+      </tr>
+      <tr>
+        <td>Tone controls — CSR adjusts output length to shorter / standard / longer</td>
+        <td><span class="status s-pending">❌ Not built</span></td>
+        <td>Two parts: (1) Prompt Template needs a TonePreference input and a tone instruction added. (2) UI toggle is in Rohit's custom LWC — it needs to pass the preference as a flow input variable.</td>
+        <td>Rohit's team (LWC toggle) + Nisar (Prompt Template input)</td>
+      </tr>
+      <tr>
+        <td>"Stamp to compose" action — CSR accepts the AI draft and it populates the email body</td>
+        <td><span class="status s-pending">❌ Not built</span></td>
+        <td>This is Rohit's custom LWC feature. The native "Draft with AI" button has its own Done / Revise / Undo actions that fulfil the same purpose in the interim.</td>
+        <td>Rohit's team</td>
+      </tr>
+      <tr>
+        <td>Real template library — AI selects from your actual ~1,600 Allergan Moxie email templates</td>
+        <td><span class="status s-pending">❌ Not built</span></td>
+        <td>Demo uses 3 representative templates embedded in the prompt. Production requires: (1) EmailTemplate records tagged with Type/Reason metadata, (2) a Prompt Flow that queries and injects the top N matching templates dynamically.</td>
+        <td>Rohit's team (template tagging) + Nisar (flow query logic)</td>
+      </tr>
+      <tr>
+        <td>Category and Sub-Category field filters on the historical case query</td>
+        <td><span class="status s-pending">❌ Not built</span></td>
+        <td>API field names for Category and Sub-Category on the Case object have not been provided. Once confirmed, these become additional WHERE conditions in the Prompt Flow SOQL query. Estimated effort: 30–60 minutes after fields are known.</td>
+        <td>Customer (provide API field names) → Nisar (flow update)</td>
+      </tr>
+      <tr>
+        <td>Closed case quality filter — only well-resolved cases used for historical grounding</td>
+        <td><span class="status s-partial">⚠️ Partial</span></td>
+        <td>Currently filters on IsClosed = true. A tighter filter (e.g. Status = "Closed – Resolved") requires confirmation of the actual picklist value your team uses to mark a case as genuinely resolved.</td>
+        <td>Customer (confirm Status value) → Nisar (flow update, ~30 minutes)</td>
+      </tr>
+      <tr>
+        <td>Template frequency scoring — surface templates most commonly used by experienced reps for a given case type</td>
+        <td><span class="status s-pending">❌ Not built</span></td>
+        <td>EmailMessage does not natively store which EmailTemplate was used to compose an email. This requires a custom lookup field <span class="mono">EmailTemplate__c</span> on EmailMessage, populated at send time via a Flow or trigger. This is a Phase 3 data foundation item.</td>
+        <td>Rohit's team — custom field + automation</td>
+      </tr>
+    </table>
+
+    <div class="phase-hdr" style="margin-top:32px;">What to say about the gaps — use this word for word</div>
+    <div class="say-box" style="margin-bottom: 16px;">"Everything you see today is live in a Salesforce org. The core intelligence — pick the right template, preserve mandatory language, personalise with case context — is working. The gaps are integration work, not architecture work. Tone controls and the stamp action are already in your LWC; we connect the prompt output to those controls. The real template library requires us to tag your EmailTemplate records with Type and Reason metadata so the flow can query them — that is primarily your team's data work. Category and Sub-Category filters are a 30-minute change the moment you give us the API field names. None of these are rebuilds. They are configuration and wiring on top of an architecture that is already proven."</div>
+
+    <div class="warn"><strong>One structural gap to be fully transparent about:</strong> EmailMessage in Salesforce does not natively record which EmailTemplate was used to compose an outbound email. If you want to score templates by frequency of use by experienced reps in Phase 3, your team will need to add a custom lookup field to EmailMessage and populate it at send time. This does not affect anything in the current demo — it is a future data foundation decision, and it is better to surface it now than to discover it late in the project.</div>
+
+  </div><!-- end status panel -->
+
+</div><!-- end wrap -->
+
+<script>
+  function show(tab, el) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>

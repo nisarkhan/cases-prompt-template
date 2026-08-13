@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Demo Run Guide — Agentforce Email Draft</title>
+  <style>
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:#f0f4f8; color:#1a1a2e; line-height:1.65; }
+
+    header { background:linear-gradient(135deg,#032d60,#0070d2); color:white; padding:36px 48px; }
+    header h1 { font-size:24px; font-weight:800; }
+    header p  { font-size:13px; opacity:.8; margin-top:5px; }
+
+    .page { max-width:960px; margin:0 auto; padding:36px 24px 60px; }
+
+    .sec { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:#5a7896; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+    .sec::after { content:''; flex:1; height:1px; background:#d1dce8; }
+
+    .card { background:white; border-radius:12px; padding:26px 30px; margin-bottom:24px; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+    h2 { font-size:16px; font-weight:800; margin-bottom:14px; }
+    h3 { font-size:14px; font-weight:700; margin-bottom:8px; }
+
+    .tag { display:inline-block; padding:2px 9px; border-radius:10px; font-size:11px; font-weight:700; }
+    .t-g { background:#d4edda; color:#155724; }
+    .t-b { background:#d3eaff; color:#0052cc; }
+    .t-y { background:#fff3cd; color:#856404; }
+    .t-r { background:#f8d7da; color:#721c24; }
+
+    .note  { background:#e8f4fd; border-left:4px solid #0dcaf0; border-radius:6px; padding:11px 15px; font-size:13px; color:#0a4a6e; margin:10px 0; }
+    .warn  { background:#fff8e1; border-left:4px solid #ffc107; border-radius:6px; padding:11px 15px; font-size:13px; color:#664d03; margin:10px 0; }
+    .good  { background:#d4edda; border-left:4px solid #28a745; border-radius:6px; padding:11px 15px; font-size:13px; color:#155724; margin:10px 0; }
+
+    /* step list */
+    .steps { counter-reset:s; padding:0; }
+    .step  { counter-increment:s; display:flex; gap:14px; margin-bottom:16px; }
+    .step::before { content:counter(s); background:#0070d2; color:white; min-width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; flex-shrink:0; margin-top:2px; }
+    .step-body { flex:1; font-size:13px; }
+    .step-title { font-weight:700; margin-bottom:3px; font-size:14px; }
+
+    /* click path */
+    .click { display:inline-block; background:#032d60; color:white; border-radius:4px; padding:2px 9px; font-size:12px; font-weight:700; font-family:monospace; margin:1px 2px; }
+    .arrow { color:#94a8be; font-size:13px; margin:0 2px; }
+
+    /* say box */
+    .say { background:#f0f7ff; border-left:3px solid #0070d2; border-radius:0 6px 6px 0; padding:10px 14px; font-size:13px; font-style:italic; color:#1e3a5f; margin:10px 0; }
+    .handle { background:#fff8e1; border-left:3px solid #ffc107; border-radius:0 6px 6px 0; padding:10px 14px; font-size:13px; color:#664d03; margin:10px 0; }
+    .handle strong { display:block; margin-bottom:3px; }
+
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th { background:#f0f4f8; text-align:left; padding:9px 13px; font-weight:700; border-bottom:2px solid #d9e4f0; }
+    td { padding:9px 13px; border-bottom:1px solid #eef2f7; vertical-align:top; }
+    tr:last-child td { border-bottom:none; }
+
+    .code { font-family:monospace; background:#f0f4f8; border:1px solid #d1dce8; border-radius:4px; padding:1px 6px; font-size:12px; color:#032d60; }
+    pre { background:#f0f7ff; border:1px dashed #90bfe8; border-radius:8px; padding:14px 18px; font-size:12px; font-family:monospace; white-space:pre-wrap; color:#1e3a5f; line-height:1.7; margin-top:8px; }
+
+    footer { text-align:center; padding:28px; font-size:12px; color:#8a9ab0; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Demo Run Guide — Agentforce Email Draft</h1>
+  <p>Step-by-step: deploy, verify, run both paths, handle questions. Everything in one place.</p>
+</header>
+
+<div class="page">
+
+  <!-- ══ SETUP ══ -->
+  <div class="sec">Before the Demo — Setup (Do Once)</div>
+  <div class="card">
+    <h2>Step 1 — Deploy metadata to your dev org</h2>
+    <p style="font-size:13px; margin-bottom:14px;">From the terminal in your project root. This pushes the email templates, updated prompt template, and flow to your org.</p>
+    <pre>sf org open --target-org &lt;your-org-alias&gt;
+
+# Deploy everything
+sf project deploy start --target-org &lt;your-org-alias&gt;
+
+# Confirm deploy succeeded — look for "Deployed successfully"</pre>
+    <div class="warn">If you get a prompt template conflict error, go to Setup → Prompt Template Builder → deactivate the existing version first, then redeploy.</div>
+  </div>
+
+  <div class="card">
+    <h2>Step 2 — Run the data setup script</h2>
+    <p style="font-size:13px; margin-bottom:14px;">This creates the Account, Contact, 3 closed historical cases with emails, and the 2 open demo cases.</p>
+    <pre>sf apex run \
+  --file scripts/apex/setup_demo_data.apex \
+  --target-org &lt;your-org-alias&gt;</pre>
+    <p style="font-size:13px; margin-top:10px;">Watch the debug log output — it prints the IDs of both demo cases. Bookmark those case URLs now.</p>
+    <div class="note">If you run the script twice you will get duplicate data. Run it once. If you need to reset, delete the Account "Sunset Aesthetics Medical Group" — it cascades to everything else.</div>
+  </div>
+
+  <div class="card">
+    <h2>Step 3 — Verify before the meeting</h2>
+    <ol class="steps">
+      <li><div class="step-body"><div class="step-title">Check the email templates deployed</div>Go to <span class="click">Setup</span> <span class="arrow">→</span> <span class="click">Email Templates</span> <span class="arrow">→</span> look for folder "Allergan Demo Templates". You should see 3 templates: Credentialing - Medical Director Change, Credentialing - New Practice Enrollment, Product Support - Not Eligible for Products.</div></li>
+      <li><div class="step-body"><div class="step-title">Check the Prompt Template is active</div>Go to <span class="click">Setup</span> <span class="arrow">→</span> <span class="click">Prompt Template Builder</span> <span class="arrow">→</span> open "Custom CSR Response" <span class="arrow">→</span> confirm status is Published and the template content shows all three TEMPLATE A / B / C options.</div></li>
+      <li><div class="step-body"><div class="step-title">Open Demo Case A — confirm no emails on it</div>Open the case "Medical Director Change Request - New Director Dr. Patel". Go to the Email tab. Confirm there are zero emails listed. This is your Path A scenario.</div></li>
+      <li><div class="step-body"><div class="step-title">Open Demo Case B — confirm the thread is there</div>Open "Medical Director Change - Awaiting Form AM-CMD-001". Go to the Email tab. You should see 3 emails: inbound question, outbound reply, inbound follow-up about Dr. Kim travelling and digital signatures. This is your Path B scenario.</div></li>
+      <li><div class="step-body"><div class="step-title">Do a dry run of both paths</div>Do this 24 hours before the demo, not 5 minutes before. The first call to the LLM can be slow. Verify the output looks good and save a screenshot as backup.</div></li>
+    </ol>
+  </div>
+
+  <!-- ══ PATH A ══ -->
+  <div class="sec">Demo Path A — New Case (No Emails Sent Yet)</div>
+  <div class="card">
+    <h2>What you are showing</h2>
+    <p style="font-size:13px; margin-bottom:12px;">A brand-new credentialing case. The CSR has never touched it. The AI recommends the correct email template, fills in the merge fields, and produces a ready-to-send draft — all in one click.</p>
+
+    <div class="note"><strong>Key point to make:</strong> Before Agentforce, a new CSR would open a new case like this and not know which of 1,600 templates to pick. They'd either pick the wrong one, ask a senior colleague, or write the email from scratch. This eliminates all three of those problems.</div>
+
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          <div class="step-title">Open Demo Case A in your org</div>
+          Case: "Medical Director Change Request - New Director Dr. Patel"<br/>
+          Account: Sunset Aesthetics Medical Group | Contact: Dr. Sarah Chen
+          <div class="say">"This is a brand new case — it just came in. The CSR has no idea what template to use. Let me show you what happens when they click one button."</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Go to the Email tab on the Case</div>
+          Click <span class="click">Email</span> tab on the Case record. Click <span class="click">New Email</span> to open the compose window.
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Click "Draft with AI"</div>
+          The button appears in the email compose footer. Click it. A dialog appears asking you to select a Prompt Template.
+          <div class="say">"This is the native Salesforce 'Draft with AI' button — no custom code needed to trigger it. In your org it would be the same button your existing LWC already has."</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Select "Custom CSR Response" template</div>
+          Click <span class="click">Custom CSR Response</span> <span class="arrow">→</span> <span class="click">Generate</span>.
+          <div class="say">"Behind the scenes, three things are happening simultaneously: the Prompt Template reads the Case attributes — Type, Reason, Description. It queries historical closed cases with the same attributes and retrieves the outbound emails your experienced reps sent. And it presents three template candidates to the LLM and asks it to pick the right one."</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Show the output</div>
+          The draft should begin with "Selected template: Template A — Credentialing - Medical Director Change Request" then produce the full email with merge fields filled.<br/><br/>
+          <strong>Point out these specific things:</strong>
+          <ul style="font-size:13px; padding-left:18px; margin-top:6px;">
+            <li style="margin-bottom:4px;">The form name <strong>AM-CMD-001</strong> is in the draft — exactly as prescribed, not invented</li>
+            <li style="margin-bottom:4px;">The contact name <strong>Sarah Chen</strong> is filled in correctly</li>
+            <li style="margin-bottom:4px;">The case number is filled in correctly</li>
+            <li style="margin-bottom:4px;">The "5–7 business days" processing time is preserved verbatim from the template</li>
+            <li style="margin-bottom:4px;">The CSR (your logged-in user) name appears in the sign-off</li>
+          </ul>
+          <div class="say">"Notice that the mandatory language — the form number, the processing timeline, the legal statements — are all exactly as they appear in the template. The AI did not rephrase or invent anything. It selected the right template and filled in the blanks."</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Show the human review step</div>
+          Point to the draft in the compose window. The CSR can edit any part of it.
+          <div class="say">"The CSR sees the draft here. They can change anything they want before sending. Nothing goes out automatically. This is a tool that helps the CSR — it does not replace their judgment."</div>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ══ PATH B ══ -->
+  <div class="sec">Demo Path B — Existing Case (Has Reply Thread)</div>
+  <div class="card">
+    <h2>What you are showing</h2>
+    <p style="font-size:13px; margin-bottom:12px;">A case that is mid-conversation. The customer has asked a follow-up question. The AI reads the entire thread, understands the context, and drafts the next reply — without repeating what was already said.</p>
+
+    <div class="note"><strong>Key point to make:</strong> This is harder than Path A because the AI must understand what has already been said and what is still unresolved. It needs to address Dr. Kim's travel situation and the digital signature question — two specific things from the last inbound email — without repeating the forms list that was already sent.</div>
+
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          <div class="step-title">Open Demo Case B</div>
+          Case: "Medical Director Change - Awaiting Form AM-CMD-001"<br/>
+          <div class="say">"This case has a three-email thread already. An inbound request, our reply with the forms, and a new inbound from Sarah asking two specific questions: is there a deadline, and can they use a digital signature because Dr. Kim is travelling. Let me show the AI's next reply."</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Go to Email tab → New Email → Draft with AI → Custom CSR Response → Generate</div>
+          Same sequence as Path A.
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Show the output — point out context awareness</div>
+          The draft should address both questions from Sarah's last email. Specifically look for:
+          <ul style="font-size:13px; padding-left:18px; margin-top:6px;">
+            <li style="margin-bottom:4px;">A response to the deadline question</li>
+            <li style="margin-bottom:4px;">A response to the digital signature question</li>
+            <li style="margin-bottom:4px;"><strong>No repetition</strong> of the forms list that was already sent in the previous reply</li>
+          </ul>
+          <div class="say">"Notice what the AI did not do: it did not resend the forms list. It read the thread, understood that the forms were already sent, and focused only on the two new questions Sarah asked. That is the grounding working correctly."</div>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ══ Q&A HANDLING ══ -->
+  <div class="sec">Handling Questions During the Demo</div>
+  <div class="card">
+    <h2>Questions they will likely ask — and how to answer them</h2>
+    <table>
+      <tr><th>Question</th><th>What they really mean</th><th>How to answer</th></tr>
+      <tr>
+        <td>"But this is not using our real templates."</td>
+        <td>They are worried the demo is not representative.</td>
+        <td><div class="handle"><strong>Agree, then reframe:</strong> "Correct — I built representative templates based on the scenarios you described in our last meeting. The template selection logic, the placeholder filling, the structure preservation — all of that is exactly how it would work with your real templates. Once you share the structure, I can swap these in about 30 minutes and the demo runs identically with your actual templates."</div></td>
+      </tr>
+      <tr>
+        <td>"How does it know which template to pick?"</td>
+        <td>They want to understand the selection logic — is it random? Rule-based?</td>
+        <td><div class="handle"><strong>Show the prompt template instruction:</strong> "The prompt template presents the candidate templates to the LLM and provides the Case attributes. The LLM reads the Case Type, Reason, and Description, then reasons about which template fits best — same way an experienced CSR would. Right now it picks from 3 candidates filtered by record type. When we add the custom tracking field in Phase 2, it will also consider which templates your best reps historically used for cases like this one."</div></td>
+      </tr>
+      <tr>
+        <td>"What if the AI picks the wrong template?"</td>
+        <td>They are worried about reliability and the CSR having to override it.</td>
+        <td><div class="handle"><strong>Acknowledge it will sometimes be wrong, then show the human loop:</strong> "It will not always be perfect — especially in the early days before it has usage data. That is why the CSR always reviews the draft before sending. The AI is giving a recommendation, not making a decision. And every time a CSR sends a different template than recommended, we can use that signal to improve the model."</div></td>
+      </tr>
+      <tr>
+        <td>"The tone is not quite right — can we make it more formal / shorter?"</td>
+        <td>They want to see tone control in action.</td>
+        <td><div class="handle"><strong>This is your Phase 2 hook:</strong> "Yes — and this is exactly where the tone controls your team built in the LWC come in. We would wire the Shorter / Standard / Longer selector to a parameter in the prompt template. The LLM then adjusts the verbosity while keeping all the mandatory language intact. I can show you that wiring in the next session."</div></td>
+      </tr>
+      <tr>
+        <td>"What about the 1,600 templates — do we need to clean them up?"</td>
+        <td>They are worried about the maintenance burden.</td>
+        <td><div class="handle"><strong>Reframe the cleanup as optional, not required for MVP:</strong> "For the initial rollout you do not need to touch the other templates. The AI narrows candidates by record type and folder — so a credentialing case only ever sees credentialing templates. The 1,600 templates do not all compete at once. Cleanup becomes worthwhile in Phase 3 if you want semantic matching across categories, but it is not a prerequisite."</div></td>
+      </tr>
+      <tr>
+        <td>"Does this require Data Cloud?"</td>
+        <td>They want to understand licensing and cost.</td>
+        <td><div class="handle"><strong>Clearly: no, not for this.</strong> "Everything you have seen today runs on standard Salesforce objects — Case, EmailMessage, EmailTemplate — and the Einstein Generative AI platform you already have. Data Cloud is not required for this use case. It becomes relevant if you later want semantic search across templates, but that is a future option, not a prerequisite."</div></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ══ WHAT IF LLM OUTPUT IS WRONG ══ -->
+  <div class="card">
+    <h2>What to do if the LLM output looks wrong during the demo</h2>
+    <div class="warn"><strong>Do not panic.</strong> LLM output is non-deterministic — it will sometimes produce something unexpected. Here is how to handle it gracefully in front of the customer.</div>
+    <ol class="steps">
+      <li><div class="step-body"><div class="step-title">Wrong template selected</div>Say: <em>"It picked Template B here — for your real data it would use the naming convention from your template folders to narrow the candidates more precisely, so the selection would be more accurate."</em> Then show them the prompt template instruction where the selection logic lives.</div></li>
+      <li><div class="step-body"><div class="step-title">Placeholder not filled (shows [Contact.FirstName] literally)</div>This means the merge field syntax in the prompt template does not match the demo data. Say: <em>"The placeholder syntax here is what I need to confirm with your real templates — that is one of the four things I asked for before this meeting."</em> This is actually a live demonstration of exactly why you need the template structure.</div></li>
+      <li><div class="step-body"><div class="step-title">Output is incoherent or very short</div>Say: <em>"The LLM is occasionally unpredictable on the first call — let me regenerate."</em> Click Generate again. If it fails twice, move on: <em>"I have a screenshot of a clean run from yesterday — let me show you that while I troubleshoot the org connection."</em></div></li>
+    </ol>
+    <div class="good">Always do a dry run the day before and save screenshots of clean output for both paths. These are your insurance policy.</div>
+  </div>
+
+  <!-- ══ QUICK REFERENCE ══ -->
+  <div class="sec">Quick Reference</div>
+  <div class="card">
+    <h2>Files created for this demo</h2>
+    <table>
+      <tr><th>File</th><th>What it is</th><th>Deploy?</th></tr>
+      <tr>
+        <td><span class="code">force-app/.../email/AllerganDemo/</span></td>
+        <td>3 dummy email templates (folder + 3 template files + metadata)</td>
+        <td><span class="tag t-g">Yes — sf project deploy start</span></td>
+      </tr>
+      <tr>
+        <td><span class="code">genAiPromptTemplates/Custom_CSR_Response...xml</span></td>
+        <td>Updated Prompt Template with Template A / B / C candidates embedded</td>
+        <td><span class="tag t-g">Yes — sf project deploy start</span></td>
+      </tr>
+      <tr>
+        <td><span class="code">flows/Add_Historical_Case_Emails_to_Prompt2...xml</span></td>
+        <td>Your existing Prompt Flow — unchanged, already deployed</td>
+        <td><span class="tag t-b">Already deployed</span></td>
+      </tr>
+      <tr>
+        <td><span class="code">scripts/apex/setup_demo_data.apex</span></td>
+        <td>Creates Account, Contact, 3 closed historical cases + emails, 2 open demo cases</td>
+        <td><span class="tag t-y">sf apex run — run once</span></td>
+      </tr>
+      <tr>
+        <td><span class="code">customer-email.html</span></td>
+        <td>Pre-written email to Rohit requesting the 4 blockers + tone guide</td>
+        <td><span class="tag t-b">Open in browser, copy-paste to send</span></td>
+      </tr>
+      <tr>
+        <td><span class="code">demo-guide.html</span></td>
+        <td>This file — keep open during the demo session</td>
+        <td><span class="tag t-b">Reference only</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Deploy commands — copy-paste ready</h2>
+    <pre># 1. Deploy metadata (templates + prompt template)
+sf project deploy start --target-org &lt;alias&gt;
+
+# 2. Create demo data
+sf apex run --file scripts/apex/setup_demo_data.apex --target-org &lt;alias&gt;
+
+# 3. Open org to verify
+sf org open --target-org &lt;alias&gt;
+
+# 4. Reset demo data (if you need a clean run)
+# Delete Account "Sunset Aesthetics Medical Group" in the org UI — cascades to all related records
+# Then re-run the apex script</pre>
+  </div>
+
+</div>
+
+<footer>Allergan Moxie · Agentforce Email Draft Demo · Nisar Khan · August 2026</footer>
+
+</body>
+</html>

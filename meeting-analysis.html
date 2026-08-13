@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meeting Analysis – Agentforce Email Draft Use Case</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f4f6f9; color: #1a1a2e; line-height: 1.6; }
+
+    header { background: linear-gradient(135deg, #0070d2, #032d60); color: white; padding: 36px 40px; }
+    header h1 { font-size: 26px; font-weight: 700; }
+    header p  { font-size: 14px; opacity: 0.85; margin-top: 6px; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 36px 24px; }
+
+    .card { background: white; border-radius: 10px; padding: 28px 32px; margin-bottom: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+    .card h2 { font-size: 18px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+
+    .tag { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+    .tag-blue   { background: #d3eaff; color: #0052cc; }
+    .tag-green  { background: #d4edda; color: #155724; }
+    .tag-orange { background: #fff3cd; color: #856404; }
+    .tag-red    { background: #f8d7da; color: #721c24; }
+    .tag-purple { background: #e8d5f5; color: #5b2c8d; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th { background: #f0f4f8; text-align: left; padding: 10px 14px; font-weight: 600; border-bottom: 2px solid #d9e4f0; }
+    td { padding: 10px 14px; border-bottom: 1px solid #eef2f7; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+    .path-box { border-radius: 8px; padding: 20px 24px; }
+    .path-new  { background: #e8f0fe; border-left: 5px solid #4285f4; }
+    .path-exist{ background: #e6f4ea; border-left: 5px solid #34a853; }
+
+    .approach-box { border-radius: 8px; padding: 20px 24px; }
+    .approach-customer { background: #fff8e1; border-left: 5px solid #f59e0b; }
+    .approach-nisar    { background: #e8f5e9; border-left: 5px solid #22c55e; }
+
+    .verdict { background: linear-gradient(135deg, #e8f5e9, #d4edda); border: 1px solid #a8d5b0; border-radius: 10px; padding: 24px 28px; margin-bottom: 28px; }
+    .verdict h2 { color: #155724; font-size: 18px; margin-bottom: 12px; }
+
+    .step-list { counter-reset: steps; padding: 0; }
+    .step-list li { counter-increment: steps; list-style: none; display: flex; gap: 16px; margin-bottom: 14px; font-size: 14px; }
+    .step-list li::before { content: counter(steps); background: #0070d2; color: white; min-width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+
+    .flow-box { background: #f0f7ff; border: 1px dashed #90bfe8; border-radius: 8px; padding: 16px 20px; font-size: 13px; font-family: monospace; white-space: pre-wrap; color: #1e3a5f; }
+
+    .challenge { background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 6px; padding: 12px 16px; margin-top: 10px; font-size: 13px; color: #664d03; }
+    .note      { background: #e8f4fd; border-left: 4px solid #0dcaf0; border-radius: 6px; padding: 12px 16px; margin-top: 10px; font-size: 13px; color: #0a4a6e; }
+    .success   { background: #d4edda; border-left: 4px solid #28a745; border-radius: 6px; padding: 12px 16px; margin-top: 10px; font-size: 13px; color: #155724; }
+
+    .highlight { background: #fffde7; border: 1px solid #ffe57f; border-radius: 6px; padding: 14px 18px; font-size: 14px; }
+
+    /* LWC mockup */
+    .lwc-mock { border: 1px solid #c9d7e8; border-radius: 8px; overflow: hidden; font-size: 13px; max-width: 520px; }
+    .lwc-header { background: #0070d2; color: white; padding: 10px 16px; font-weight: 700; font-size: 14px; }
+    .lwc-body   { padding: 16px; background: #f8fafc; }
+    .lwc-label  { font-size: 11px; font-weight: 700; color: #5a6a7e; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+    .lwc-value  { font-size: 13px; color: #1a1a2e; margin-bottom: 12px; }
+    .lwc-row    { display: flex; gap: 10px; margin-bottom: 12px; }
+    .lwc-btn    { padding: 6px 16px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: default; border: none; }
+    .lwc-btn-primary  { background: #0070d2; color: white; }
+    .lwc-btn-outline  { background: white; color: #0070d2; border: 1px solid #0070d2; }
+    .lwc-btn-selected { background: #032d60; color: white; }
+    .lwc-draft { background: white; border: 1px solid #dce4ef; border-radius: 6px; padding: 10px 14px; font-size: 12px; color: #333; line-height: 1.5; min-height: 80px; }
+    .lwc-footer { padding: 10px 16px; background: #eef3f9; border-top: 1px solid #d1dce8; font-size: 11px; color: #6b7a8d; }
+
+    /* diagram */
+    .diagram-row { display: flex; gap: 0; margin: 20px 0; }
+    .d-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
+    .d-box { border-radius: 6px; padding: 10px 14px; font-size: 12px; text-align: center; width: 100%; max-width: 200px; margin: 4px 0; font-weight: 600; }
+    .d-blue   { background: #d3eaff; color: #0052cc; border: 1px solid #90bfe8; }
+    .d-green  { background: #d4edda; color: #155724; border: 1px solid #8ecda0; }
+    .d-purple { background: #e8d5f5; color: #5b2c8d; border: 1px solid #c7a8e8; }
+    .d-yellow { background: #fff3cd; color: #664d03; border: 1px solid #ffd666; }
+    .d-arrow  { font-size: 18px; color: #888; margin: 2px 0; }
+    .d-merge  { display: flex; align-items: center; justify-content: center; font-size: 22px; color: #888; margin: 8px 0; }
+    .d-center { display: flex; flex-direction: column; align-items: center; }
+
+    footer { text-align: center; padding: 28px; font-size: 12px; color: #888; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Agentforce Email Draft — Full Meeting Analysis &amp; Recommendation</h1>
+  <p>First Customer-Facing Meeting · Allergan Moxie · Nisar Khan · Updated with Rohit's Diagram · August 2026</p>
+</header>
+
+<div class="container">
+
+  <!-- ─── SECTION 1: THE DIAGRAM — what Rohit shared ─── -->
+  <div class="card">
+    <h2>📊 What Rohit's Diagram Actually Shows (Two-Path Flow)</h2>
+    <p style="font-size:14px; margin-bottom:20px;">
+      The PDF Rohit shared makes the design crystal clear. There are <strong>two separate paths</strong> depending on whether the case already has emails or not. Both paths converge on a grounded draft that a human reviews before sending.
+    </p>
+
+    <!-- simplified diagram recreation -->
+    <div style="background:#f8fafc; border:1px solid #d1dce8; border-radius:10px; padding:24px; overflow-x:auto;">
+      <div style="text-align:center; margin-bottom:16px;">
+        <div class="d-box d-green" style="display:inline-block; padding:12px 24px; font-size:14px;">Case created / updated<br/><span style="font-weight:400; font-size:11px;">(Email-to-Case — most cases carry an email)</span></div>
+        <div class="d-arrow">▼</div>
+        <div class="d-box d-yellow" style="display:inline-block; padding:12px 24px; font-size:13px;">Has ANY email ever been sent on this Case?</div>
+      </div>
+
+      <div class="two-col" style="margin-top:8px;">
+        <!-- LEFT: NEW CASE -->
+        <div class="path-box path-new" style="padding:16px 20px;">
+          <div style="font-weight:700; font-size:13px; color:#0052cc; margin-bottom:12px;">⬅ NO — NEW CASE (no email sent yet)</div>
+          <ol style="font-size:13px; padding-left:18px; color:#1a1a2e;">
+            <li style="margin-bottom:8px;">Gather <strong>Case Attributes</strong> + historical emails / decision metrics</li>
+            <li style="margin-bottom:8px;">Evaluate <strong>candidate email templates</strong> (e.g. Template 1 vs Template 2) using historical data + metrics<br/>
+              <span style="font-size:11px; color:#555; font-style:italic;">Example: ALLERGAN NC – CASE ###### / ACCOUNT DESC – MEDICAL DIRECTOR NOT ELIGIBLE FOR ALL PRODUCTS → Template 1 vs Template 2 → Winner selected on metrics</span>
+            </li>
+            <li style="margin-bottom:8px;"><strong>Select winning template</strong> (e.g. Template 1 = winner)</li>
+            <li><strong>Inject Case Attributes</strong> into the email draft</li>
+          </ol>
+        </div>
+
+        <!-- RIGHT: EXISTING CASE -->
+        <div class="path-box path-exist" style="padding:16px 20px;">
+          <div style="font-weight:700; font-size:13px; color:#155724; margin-bottom:12px;">➡ YES — EXISTING CASE (has replies)</div>
+          <ol style="font-size:13px; padding-left:18px; color:#1a1a2e;">
+            <li style="margin-bottom:8px;">Read <strong>ALL email responses</strong> / full conversation on the case</li>
+            <li style="margin-bottom:8px;"><strong>Ground the reply</strong> on the conversation + Case Attributes</li>
+            <li style="margin-bottom:8px;">Pass Case Attributes (<strong>Status / Category / Sub-Category</strong>) to determine best response</li>
+            <li><strong>Insert Case-related attributes</strong> by default</li>
+          </ol>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:16px;">
+        <div class="d-arrow">▼</div>
+        <div class="d-box d-purple" style="display:inline-block; padding:12px 28px; font-size:13px;"><strong>Grounded draft ready</strong><br/>(selected template or reply + Case Attributes)</div>
+        <div class="d-arrow">▼</div>
+        <div class="d-box d-green" style="display:inline-block; padding:12px 28px; font-size:13px;"><strong>Rep reviews &amp; sends</strong><br/>(human approval — no auto-send)</div>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:16px;">
+      <strong>Critical clarification from the diagram:</strong> The two paths are NOT about "Web-to-Case vs Email-to-Case" at the technical level. They are about whether any outbound email has already been sent on this case. A new Web-to-Case will follow the LEFT path. An Email-to-Case that already has a reply thread follows the RIGHT path. Your flow needs to detect this at runtime.
+    </div>
+  </div>
+
+  <!-- ─── SECTION 2: LWC COMPONENT — the tone controls ─── -->
+  <div class="card">
+    <h2>🖥️ The Custom LWC Component — What They Built &amp; What It Does</h2>
+    <p style="font-size:14px; margin-bottom:16px;">
+      From Rohit's demo in the meeting, the team already has a <strong>custom LWC (Lightning Web Component)</strong> embedded on the Case record. This is NOT the native Service Grounding "Draft with AI" button — it's a custom component they built themselves. Here's what it does:
+    </p>
+
+    <div class="two-col" style="margin-bottom:20px;">
+      <div>
+        <h3>What the LWC already does</h3>
+        <ol class="step-list">
+          <li>CSR clicks a custom button on the Case page (Rohit showed this — a "Generate Draft" style button in the email area).</li>
+          <li>Component reads Case attributes (status, category, subcategory, comments, existing emails).</li>
+          <li>Calls a Prompt Template behind the scenes that generates a response draft.</li>
+          <li>Displays the draft to the CSR.</li>
+          <li>CSR reviews it. If satisfied, clicks another button to <strong>stamp the draft into the email compose window</strong>.</li>
+        </ol>
+        <div class="challenge">
+          <strong>Business pushed back on this.</strong> Rohit said: "When we did that show and tell to the business, they were like, no, we want more, more to this. More flavors to it." — The draft was generated freely without reference to their official email templates, so it didn't match the expected structure.
+        </div>
+      </div>
+
+      <div>
+        <h3>The tone controls (longer / shorter)</h3>
+        <p style="font-size:13px; margin-bottom:12px;">Rohit said: <em>"they want to modify the tone of the email — that can be longer or shorter — the template is your base to pick up, then you can modify the contents based on the selection options that are there."</em></p>
+
+        <!-- LWC mockup -->
+        <div class="lwc-mock">
+          <div class="lwc-header">AI Email Draft Assistant</div>
+          <div class="lwc-body">
+            <div class="lwc-label">Recommended Template</div>
+            <div class="lwc-value" style="background:#e8f0fe; padding:6px 10px; border-radius:4px; font-weight:600;">ALLERGAN NC – Medical Director Change ✓</div>
+            <div class="lwc-label">Tone / Length</div>
+            <div class="lwc-row">
+              <button class="lwc-btn lwc-btn-outline">Shorter</button>
+              <button class="lwc-btn lwc-btn-selected">Standard</button>
+              <button class="lwc-btn lwc-btn-outline">Longer</button>
+            </div>
+            <div class="lwc-label">Generated Draft</div>
+            <div class="lwc-draft">Dear Dr. [Name],<br/><br/>Thank you for contacting Allergan. Regarding Case #[######] — [Medical Director Change Request]...<br/><br/><em style="color:#888;">[template body injected here]</em></div>
+          </div>
+          <div class="lwc-footer">⚠ Review before sending — human approval required</div>
+        </div>
+        <div class="note" style="margin-top:10px; font-size:12px;">
+          This is a conceptual mockup. The actual LWC has a similar layout. The key point is: tone selection is a <strong>post-template-selection</strong> control, not a replacement for it.
+        </div>
+      </div>
+    </div>
+
+    <h3>How the tone control works with the template — what Rohit meant</h3>
+    <div class="flow-box">
+Step 1:  AI selects the winning email template  →  "ALLERGAN NC – Medical Director Change" template wins
+Step 2:  AI injects Case Attributes into the template's merge fields  →  name, case number, form names filled in
+Step 3:  CSR sees the draft and selects tone: [Shorter] [Standard] [Longer]
+Step 4:  LLM re-generates / trims / expands the body WITHIN the template structure
+         — cannot remove mandatory language —
+         — cannot change section order —
+         — only adjusts verbosity of explanatory text —
+Step 5:  Final draft stamped into the email compose window  →  CSR edits if needed  →  sends
+    </div>
+  </div>
+
+  <!-- ─── SECTION 3: What they are asking for (updated) ─── -->
+  <div class="card">
+    <h2>🎯 What the Customer Is Actually Asking For (Complete Picture)</h2>
+    <p style="font-size:14px; margin-bottom:16px;">Combining the diagram + meeting transcript, the full requirement is:</p>
+
+    <div class="two-col">
+      <div class="path-box path-new" style="padding:16px 20px;">
+        <h3 style="color:#0052cc;">Path A — New Case (no email yet)</h3>
+        <ol style="font-size:13px; padding-left:18px;">
+          <li style="margin-bottom:6px;">Read Case: Type, Reason, Category, Sub-Category, Record Type</li>
+          <li style="margin-bottom:6px;">Query historical <strong>closed</strong> cases with same attributes</li>
+          <li style="margin-bottom:6px;">From those cases, find which <strong>email templates were used</strong> for outbound replies</li>
+          <li style="margin-bottom:6px;">"Vote" — most-used template by experienced reps wins; factor in resolution speed</li>
+          <li style="margin-bottom:6px;">Fetch the winning <code>EmailTemplate.Body</code></li>
+          <li style="margin-bottom:6px;">LLM fills merge fields (name, case #, forms)</li>
+          <li style="margin-bottom:6px;">CSR picks tone (shorter / standard / longer)</li>
+          <li>LWC stamps draft → CSR reviews → sends</li>
+        </ol>
+      </div>
+      <div class="path-box path-exist" style="padding:16px 20px;">
+        <h3 style="color:#155724;">Path B — Existing Case (has reply thread)</h3>
+        <ol style="font-size:13px; padding-left:18px;">
+          <li style="margin-bottom:6px;">Read <strong>all</strong> emails on this case (inbound + outbound) in chronological order</li>
+          <li style="margin-bottom:6px;">Read Case: Status, Category, Sub-Category</li>
+          <li style="margin-bottom:6px;">Understand context: is this a follow-up? Are forms pending? Is there a delay?</li>
+          <li style="margin-bottom:6px;">Ground reply on the <strong>current conversation thread</strong> — do not repeat what was already said</li>
+          <li style="margin-bottom:6px;">May still reference historical templates for format, but conversation context takes priority</li>
+          <li style="margin-bottom:6px;">LLM injects current Case attributes (status update, form names)</li>
+          <li style="margin-bottom:6px;">CSR picks tone</li>
+          <li>LWC stamps draft → CSR reviews → sends</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:16px;">
+      <strong>The ~1,600 email templates fact:</strong> Rohit said they've "been carrying that baggage for a long time." Not all 1,600 are relevant — there are templates per record type (Credentialing, Facial Inbound, etc.) and per scenario. The AI needs to narrow down candidates based on Case attributes BEFORE doing frequency scoring. You don't feed all 1,600 into the LLM.
+    </div>
+  </div>
+
+  <!-- ─── SECTION 4: The core data gap ─── -->
+  <div class="card">
+    <h2>⚠️ The Core Technical Gap — This Is the Real Blocker</h2>
+    <p style="font-size:14px; margin-bottom:12px;">
+      Everything in the customer's design depends on one thing being true: <strong>you can look at a past outbound EmailMessage and know which EmailTemplate was used to compose it.</strong> That is currently not possible natively in Salesforce.
+    </p>
+    <div class="two-col">
+      <div>
+        <h3>What Salesforce stores natively</h3>
+        <ul style="font-size:13px; padding-left:18px;">
+          <li style="margin-bottom:6px;"><code>EmailMessage.TextBody</code> / <code>HtmlBody</code> — the final sent content</li>
+          <li style="margin-bottom:6px;"><code>EmailMessage.Subject</code></li>
+          <li style="margin-bottom:6px;"><code>EmailMessage.FromAddress</code>, <code>ToAddress</code></li>
+          <li style="margin-bottom:6px;"><code>EmailMessage.Incoming</code> (true = inbound, false = outbound)</li>
+          <li style="margin-bottom:6px;"><code>EmailMessage.ParentId</code> → links to the Case</li>
+          <li style="margin-bottom:6px;"><code>EmailMessage.MessageDate</code></li>
+        </ul>
+        <div class="challenge" style="margin-top:10px;">
+          <strong>NOT stored:</strong> which <code>EmailTemplate</code> was used. When a rep selects a template in the compose window and hits send, Salesforce does not stamp <code>EmailTemplateId</code> on the resulting <code>EmailMessage</code> record.
+        </div>
+      </div>
+      <div>
+        <h3>Two ways to bridge this gap</h3>
+        <div style="margin-bottom:12px; background:#e8f4fd; border-radius:6px; padding:12px 14px; font-size:13px; color:#0a4a6e;">
+          <strong>Option 1 (Recommended — Forward-looking):</strong><br/>
+          Add a custom field <code>EmailTemplate__c (Lookup → EmailTemplate)</code> on <code>EmailMessage</code>. Populate it via a Flow triggered when the LWC stamps the draft (you already control that button). From this point forward, every AI-assisted email is tagged. Historical data won't be available but you build the dataset over time.
+        </div>
+        <div style="background:#fff8e1; border-radius:6px; padding:12px 14px; font-size:13px; color:#664d03;">
+          <strong>Option 2 (Inference — Fragile):</strong><br/>
+          For historical emails already sent, attempt to match <code>EmailMessage.HtmlBody</code> against known <code>EmailTemplate.HtmlValue</code> using fuzzy text comparison. Fragile if reps modified the template before sending. Useful only as a one-time bootstrap exercise.
+        </div>
+        <div class="success" style="margin-top:10px;">
+          <strong>Interim MVP (no data gap blocker):</strong> Skip frequency scoring for now. Instead, use Case Type + Reason + Category + Sub-Category to query <code>EmailTemplate</code> records directly (by name/folder/developer name conventions). Let the LLM pick the best candidate from a filtered shortlist of 3–5 templates. This is feasible immediately without any schema changes.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SECTION 5: Your approach vs their approach ─── -->
+  <div class="card">
+    <h2>⚖️ Your Approach vs Their Approach — Honest Comparison</h2>
+    <table>
+      <tr>
+        <th>Dimension</th>
+        <th><span class="tag tag-orange">Their Ask — Template Recommendation</span></th>
+        <th><span class="tag tag-green">Your Current Approach — Single Prompt Template</span></th>
+      </tr>
+      <tr>
+        <td><strong>What the LLM generates</strong></td>
+        <td>Fills merge fields in a winning Email Template — structure is prescribed</td>
+        <td>Generates full email body freely, styled after historical email text</td>
+      </tr>
+      <tr>
+        <td><strong>Template format preserved</strong></td>
+        <td>✅ Yes — mandatory language, form names, section order intact</td>
+        <td>❌ No — LLM may rephrase or omit required content</td>
+      </tr>
+      <tr>
+        <td><strong>Tone control (shorter/longer)</strong></td>
+        <td>✅ Intended — CSR adjusts verbosity within template constraints</td>
+        <td>⚠️ Possible but unconstrained — LLM may change meaning too</td>
+      </tr>
+      <tr>
+        <td><strong>Handles Path B (existing conversation)</strong></td>
+        <td>✅ Yes — Rohit's diagram has a dedicated green path for this</td>
+        <td>✅ Yes — your flow appends all historical emails as context</td>
+      </tr>
+      <tr>
+        <td><strong>Business buy-in</strong></td>
+        <td>✅ This is exactly what they asked for</td>
+        <td>❌ Already shown and rejected — "they want more flavors"</td>
+      </tr>
+      <tr>
+        <td><strong>Maintenance</strong></td>
+        <td>Medium — need to manage template tagging/categorization</td>
+        <td>✅ Low — one prompt template</td>
+      </tr>
+      <tr>
+        <td><strong>Data dependency</strong></td>
+        <td>Needs EmailTemplate tracking (custom field) for full frequency scoring</td>
+        <td>Works today with existing EmailMessage data</td>
+      </tr>
+      <tr>
+        <td><strong>LWC integration</strong></td>
+        <td>✅ Fits naturally — LWC shows recommended template + tone controls</td>
+        <td>⚠️ Works but tone controls don't have a structural anchor to constrain them</td>
+      </tr>
+    </table>
+
+    <div class="challenge" style="margin-top:16px;">
+      <strong>Bottom line:</strong> Your single Prompt Template approach works as the <em>engine</em> but it cannot satisfy the "template structure must be preserved" requirement on its own. The tone control (shorter/longer) only makes sense when there's a prescribed template to constrain what gets trimmed or expanded. Without a template anchor, "shorter" might accidentally drop a legally required sentence.
+    </div>
+  </div>
+
+  <!-- ─── SECTION 6: Verdict ─── -->
+  <div class="verdict">
+    <h2>✅ Verdict — Hybrid Architecture Is the Right Answer</h2>
+    <p style="margin-bottom:12px;">
+      <strong>You are right about the architecture: one Prompt Template does orchestrate everything.</strong> But it needs to include the Email Template's body as a structural anchor inside the prompt. The diagram Rohit shared is not asking for two separate systems — it is asking for one intelligent flow with two execution paths (new case vs existing case), both powered by the same Prompt Template framework.
+    </p>
+    <p style="margin-bottom:12px;">
+      <strong>They are right about the requirement:</strong> The Email Templates contain mandatory language, form references, and brand-specific structure. The LLM must work <em>within</em> the template, not replace it. The tone controls (shorter/longer) only make sense when there's a template to constrain what can change.
+    </p>
+    <p>
+      <strong>The real ask in one sentence:</strong> "Use AI to pick the right Email Template, fill its placeholders, let the CSR adjust tone, and stamp the result into the compose window — all without the CSR having to search through 1,600 templates."
+    </p>
+  </div>
+
+  <!-- ─── SECTION 7: Recommended architecture ─── -->
+  <div class="card">
+    <h2>🏗️ Recommended Hybrid Architecture — Full Technical Design</h2>
+
+    <div class="flow-box" style="margin-bottom:20px;">
+=== RUNTIME FLOW (both paths use the same Prompt Template) ===
+
+CSR opens Case email compose tab
+            │
+            ▼
+    [LWC Component triggered]
+            │
+            ├─── DETECT: Does this Case have any outbound EmailMessage? ───────────────────────┐
+            │                                                                                   │
+       NO (Path A)                                                                     YES (Path B)
+            │                                                                                   │
+            ▼                                                                                   ▼
+[Prompt Flow: Path A]                                                         [Prompt Flow: Path B]
+  1. Read Case: Type, Reason,                                                   1. Read ALL EmailMessages
+     Category, Sub-Category                                                        on this Case (asc order)
+  2. SOQL: closed Cases same attrs                                              2. Read Case: Status,
+  3. Count template usage per                                                      Category, Sub-Category
+     EmailTemplate__c (custom field)                                            3. Identify conversation state
+  4. Filter EmailTemplate candidates                                               (pending forms? follow-up?)
+     by record type / folder / name                                             4. Pull relevant template if needed
+  5. Fetch winning template Body                                                    (may skip for pure replies)
+  6. Build prompt with template anchor
+            │                                                                                   │
+            └─────────────────────────────┬─────────────────────────────────────────────────────┘
+                                          │
+                                          ▼
+                          [Single Prompt Template — Einstein LLM]
+                           Instruction set:
+                           - PATH A: "Use this template as structure. Fill placeholders. Do not alter mandatory text."
+                           - PATH B: "Continue this conversation. Match tone of previous replies. Insert case attributes."
+                           - BOTH: "Output only the email body."
+                                          │
+                                          ▼
+                          [LWC displays draft + tone selector]
+                          [Shorter]  [Standard ✓]  [Longer]
+                                          │
+                          CSR selects tone → LLM adjusts verbosity
+                          (within template constraints for Path A)
+                                          │
+                                          ▼
+                          Draft stamped into email compose window
+                                          │
+                          CSR reviews, edits if needed, sends
+    </div>
+
+    <h3 style="margin-bottom:10px;">What each Salesforce component does</h3>
+    <table>
+      <tr><th>Component</th><th>Salesforce Object / Feature</th><th>What it does in this design</th></tr>
+      <tr>
+        <td><strong>Custom LWC</strong></td>
+        <td>Lightning Web Component on Case layout</td>
+        <td>Detects Path A vs B, calls the Prompt Template, shows recommended template name, tone controls, draft output, stamp-to-compose button</td>
+      </tr>
+      <tr>
+        <td><strong>Prompt Template</strong></td>
+        <td>Einstein Generative AI → Prompt Templates</td>
+        <td>One template with conditional instruction blocks for Path A vs B. Accepts template body, case attributes, historical emails as inputs.</td>
+      </tr>
+      <tr>
+        <td><strong>Prompt Flow (Path A)</strong></td>
+        <td>Flow (processType: PromptFlow) — extend your existing flow</td>
+        <td>Queries closed Cases → fetches EmailTemplate candidates → scores by frequency → returns winning template body + case attributes</td>
+      </tr>
+      <tr>
+        <td><strong>Prompt Flow (Path B)</strong></td>
+        <td>Your existing <code>Add_Historical_Case_Emails_to_Prompt2</code></td>
+        <td>Already fetches historical outbound emails from similar closed cases. Extend to also read the current case's full email thread.</td>
+      </tr>
+      <tr>
+        <td><strong>EmailTemplate object</strong></td>
+        <td><code>EmailTemplate</code> (standard Salesforce object)</td>
+        <td>Source of truth for template structure, merge fields, mandatory language. Queried by the Prompt Flow.</td>
+      </tr>
+      <tr>
+        <td><strong>EmailMessage object</strong></td>
+        <td><code>EmailMessage</code> (standard, + custom field needed)</td>
+        <td>Stores all emails on a case. Add <code>EmailTemplate__c</code> lookup field to track which template was used going forward.</td>
+      </tr>
+      <tr>
+        <td><strong>Case object</strong></td>
+        <td><code>Case</code></td>
+        <td>Source of Type, Reason, Category, Sub-Category, Status, Record Type — the matching criteria for template selection.</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ─── SECTION 8: Prompt Template content ─── -->
+  <div class="card">
+    <h2>📝 What the Single Prompt Template Should Contain</h2>
+    <div class="flow-box">
+You are a customer service email assistant for Allergan Moxie. Your job is to draft an outbound email for a Case.
+
+== CASE DETAILS ==
+Case Number:     {!CaseRecord.CaseNumber}
+Record Type:     {!CaseRecord.RecordType.Name}
+Type:            {!CaseRecord.Type}
+Reason:          {!CaseRecord.Reason}
+Category:        {!CaseRecord.Category__c}
+Sub-Category:    {!CaseRecord.SubCategory__c}
+Status:          {!CaseRecord.Status}
+Customer Name:   {!CaseRecord.Contact.Name}
+Account Name:    {!CaseRecord.Account.Name}
+
+== PATH: {!InputPath} ==            ← "NEW_CASE" or "EXISTING_CASE" injected by LWC
+
+[IF PATH = NEW_CASE]
+== SELECTED EMAIL TEMPLATE ==
+Template Name: {!WinningTemplateName}
+Template Body:
+{!WinningTemplateBody}              ← injected by Prompt Flow Path A
+
+INSTRUCTIONS:
+1. Use the SELECTED EMAIL TEMPLATE above as your structural foundation.
+2. Replace all merge field placeholders (e.g. [Name], [CaseNumber], [FormName]) with the actual Case values above.
+3. Do NOT remove, reorder, or paraphrase any mandatory language, form names, or legal statements.
+4. Adjust verbosity based on the selected tone: {!TonePreference} (shorter / standard / longer)
+   - shorter: trim explanatory sentences, keep all required content
+   - longer: add context and empathy while keeping all required content
+5. Output only the final email body. No subject line. No commentary.
+
+[IF PATH = EXISTING_CASE]
+== CURRENT CASE EMAIL CONVERSATION ==
+{!$Input:CurrentCaseEmails}         ← injected by Prompt Flow Path B
+
+== HISTORICAL CONTEXT FROM SIMILAR CLOSED CASES ==
+{!$Input:HistoricalEmails}          ← injected by your existing Add_Historical_Case_Emails_to_Prompt2 flow
+
+INSTRUCTIONS:
+1. Read the full email conversation above.
+2. Understand the context: is this a follow-up? Are there pending forms? Has there been a delay?
+3. Draft the NEXT outbound reply that continues this conversation naturally.
+4. Insert Case attributes (status, form names, dates) where relevant.
+5. Adjust verbosity based on the selected tone: {!TonePreference}
+6. Do NOT repeat information already communicated in previous emails.
+7. Output only the final email body. No subject line. No commentary.
+    </div>
+  </div>
+
+  <!-- ─── SECTION 9: Action items ─── -->
+  <div class="card">
+    <h2>📋 Action Items Before the Demo</h2>
+    <table>
+      <tr><th>#</th><th>Action</th><th>Owner</th><th>Priority</th><th>Why it matters</th></tr>
+      <tr>
+        <td>1</td>
+        <td>Rohit to share 2–3 sample Email Templates (dummy data OK) — we need to see the actual structure, merge fields, and mandatory language blocks</td>
+        <td>Rohit</td>
+        <td><span class="tag tag-red">Critical</span></td>
+        <td>Cannot design the "fill placeholders" instruction in the Prompt Template without seeing real template anatomy</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Confirm: does <code>EmailMessage</code> have any existing field that tracks which template was used? If not, agree to add <code>EmailTemplate__c</code> lookup field</td>
+        <td>Rohit / Nisar</td>
+        <td><span class="tag tag-red">Critical</span></td>
+        <td>Without this, frequency-based template selection cannot work on historical data</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Clarify which case statuses = "successfully closed" for historical email matching (Shankar's point)</td>
+        <td>Shankar / Rohit</td>
+        <td><span class="tag tag-red">Critical</span></td>
+        <td>Your existing flow currently uses <code>IsClosed = true</code> — this may include cases closed for wrong reasons</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Share the folder / naming convention used for Email Templates — how are they organized by Record Type, Category?</td>
+        <td>Rohit / Shankar</td>
+        <td><span class="tag tag-orange">High</span></td>
+        <td>Needed to build the SOQL filter that narrows 1,600 templates to a shortlist of 3–5 candidates for a given case</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Nisar: extend existing Prompt Flow to also fetch the top matched EmailTemplate body (interim: by name/folder filter, not frequency scoring yet)</td>
+        <td>Nisar</td>
+        <td><span class="tag tag-orange">High</span></td>
+        <td>Core of the demo — show template recommendation + fill + tone control</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>Nisar: add Path A vs Path B detection logic in LWC (check if any outbound <code>EmailMessage</code> exists on the Case)</td>
+        <td>Nisar</td>
+        <td><span class="tag tag-orange">High</span></td>
+        <td>The two-path routing is the foundation of the diagram Rohit shared</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td>Confirm Service Grounding license availability — if available, can replace or complement the custom LWC button</td>
+        <td>Candace / Rohit</td>
+        <td><span class="tag tag-blue">Medium</span></td>
+        <td>Determines whether to use native "Draft with AI" button or keep the custom LWC</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td>Agree on MVP scope: interim template selection by name/folder filter (no custom field needed) vs full frequency scoring (needs custom field)</td>
+        <td>All</td>
+        <td><span class="tag tag-blue">Medium</span></td>
+        <td>Sets expectations for the demo and sprint 1 deliverable</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ─── SECTION 10: Glossary ─── -->
+  <div class="card">
+    <h2>📖 Glossary — Agree on These Terms Before Next Meeting</h2>
+    <div class="highlight" style="margin-bottom:16px;">
+      <strong>Source of all confusion in meeting 1:</strong> everyone said "template" but meant different things. Use these definitions going forward.
+    </div>
+    <table>
+      <tr><th>Term</th><th>Means in this project</th><th>Salesforce Object</th></tr>
+      <tr>
+        <td><strong>Email Template</strong></td>
+        <td>Predefined HTML/text email with merge-field placeholders. ~1,600 exist. Reps select one in the email compose window. Contains mandatory language and form names. <em>This is what the customer wants the AI to recommend.</em></td>
+        <td><code>EmailTemplate</code></td>
+      </tr>
+      <tr>
+        <td><strong>Prompt Template</strong></td>
+        <td>Einstein / Agentforce feature. A set of LLM instructions with input variables. Controls HOW the AI generates content. <em>This is the single orchestration engine Nisar proposes.</em></td>
+        <td>Einstein Generative AI → Prompt Templates</td>
+      </tr>
+      <tr>
+        <td><strong>Prompt Flow</strong></td>
+        <td>A Salesforce Flow that feeds data into a Prompt Template at runtime (historical emails, template body, case attributes). The existing <code>Add_Historical_Case_Emails_to_Prompt2</code> is one.</td>
+        <td>Flow (<code>processType: PromptFlow</code>)</td>
+      </tr>
+      <tr>
+        <td><strong>EmailMessage</strong></td>
+        <td>Every email sent or received on a Case. Stores the actual body text. Does NOT natively store which Email Template was used.</td>
+        <td><code>EmailMessage</code></td>
+      </tr>
+      <tr>
+        <td><strong>LWC (custom component)</strong></td>
+        <td>The custom button/panel already built by Rohit's team that triggers the AI draft and lets the CSR pick tone (shorter/longer).</td>
+        <td>Lightning Web Component</td>
+      </tr>
+      <tr>
+        <td><strong>Service Grounding</strong></td>
+        <td>Native Salesforce feature (requires license) that adds a "Draft with AI" button to the email compose window. Alternative to the custom LWC for triggering Prompt Templates.</td>
+        <td>Einstein Service Grounding</td>
+      </tr>
+      <tr>
+        <td><strong>Path A (New Case)</strong></td>
+        <td>No outbound email has been sent on this case yet. AI selects and fills an Email Template to start the conversation.</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><strong>Path B (Existing Case)</strong></td>
+        <td>At least one email has been exchanged. AI reads the thread and drafts the next contextual reply.</td>
+        <td>—</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ─── SECTION 11: Your existing flow status ─── -->
+  <div class="card">
+    <h2>🔄 Your Existing Flow — What It Already Solves &amp; What Needs Adding</h2>
+    <p style="font-size:14px; margin-bottom:14px;">
+      <code>Add_Historical_Case_Emails_to_Prompt2</code> (the flow file open in your IDE) is a <code>PromptFlow</code> already covering the core of Path B — historical context retrieval. Here's its current state vs what needs extending:
+    </p>
+    <table>
+      <tr><th>What it does today</th><th>What needs to be added</th></tr>
+      <tr>
+        <td>Takes <code>CaseRecord</code> as input variable</td>
+        <td>Also accept <code>TonePreference</code> input variable (shorter / standard / longer)</td>
+      </tr>
+      <tr>
+        <td>Queries closed Cases where <code>Type</code> AND <code>Reason</code> match</td>
+        <td>Also filter on <code>Category__c</code> and <code>SubCategory__c</code> for better precision</td>
+      </tr>
+      <tr>
+        <td>Loops up to 3 historical closed cases (counter limit)</td>
+        <td>Add Path A branch: if no outbound email on current case, switch to template-selection mode</td>
+      </tr>
+      <tr>
+        <td>For each historical case, fetches the latest outbound <code>EmailMessage.TextBody</code></td>
+        <td>Also fetch <code>EmailMessage.EmailTemplate__c</code> (once custom field added) to enable frequency scoring</td>
+      </tr>
+      <tr>
+        <td>Appends email body to <code>$Output.Prompt</code></td>
+        <td>Add a second output variable: <code>WinningTemplateName</code> + <code>WinningTemplateBody</code> from <code>EmailTemplate</code></td>
+      </tr>
+      <tr>
+        <td>Falls back to "no historical data" message</td>
+        <td>Interim fallback: query EmailTemplates by folder/name matching the Case RecordType — return top 3 candidates for LLM to choose from</td>
+      </tr>
+    </table>
+    <div class="success" style="margin-top:14px;">
+      <strong>Good news:</strong> The current flow's architecture is sound. It does not need to be rewritten — it needs branching logic added and output variables expanded. The processType <code>PromptFlow</code> and the <code>$Output.Prompt</code> variable pattern is already correct.
+    </div>
+  </div>
+
+  <!-- ─── SECTION 12: Demo plan ─── -->
+  <div class="card">
+    <h2>📅 Demo Plan — 45–60 Minutes</h2>
+    <ol class="step-list">
+      <li><strong>(5 min)</strong> Quick alignment — confirm the two-path diagram is correct, get agreement on "Email Template vs Prompt Template" distinction, confirm data gap plan.</li>
+      <li><strong>(5 min)</strong> Rohit walks through 2 real Email Templates so Nisar can show the demo uses real template structure.</li>
+      <li><strong>(15 min)</strong> Demo Path A — New Case: CSR on a new credentialing case, clicks the LWC button, sees "Recommended: [Template Name]", sees draft with merge fields filled, picks "Shorter", sees adjusted draft, stamps to compose, reviews, done.</li>
+      <li><strong>(10 min)</strong> Demo Path B — Existing Case: CSR on a case with 3 prior emails (including a pending forms situation), clicks button, sees conversation-aware draft ("it's been 3 days, please send the signed forms"), adjusts tone, sends.</li>
+      <li><strong>(10 min)</strong> Technical walkthrough — show the Prompt Template, the flow, how template body is injected, how tone parameter is passed.</li>
+      <li><strong>(10 min)</strong> Q&amp;A, agree on MVP scope, confirm sprint 1 deliverable, discuss custom field for template tracking.</li>
+    </ol>
+  </div>
+
+</div>
+
+<footer>
+  Generated by Nisar Khan · Allergan Moxie Agentforce Project · August 2026 · Updated with Rohit's diagram
+</footer>
+
+</body>
+</html>

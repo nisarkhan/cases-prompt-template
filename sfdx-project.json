@@ -1,0 +1,12 @@
+{
+  "packageDirectories": [
+    {
+      "path": "force-app",
+      "default": true
+    }
+  ],
+  "name": "Allergan Moxie",
+  "namespace": "",
+  "sfdcLoginUrl": "https://trailsignup-97bb8c2f72f885.my.salesforce.com",
+  "sourceApiVersion": "67.0"
+}
