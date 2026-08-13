@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>AM Medical Director Change Follow Up</label>
+    <protected>false</protected>
+    <values>
+        <field>When_To_Use__c</field>
+        <value xsi:type="xsd:string">Use when following up on an existing Medical Director Change request where the document checklist has already been sent. Addresses customer questions about the process without repeating the full document list.</value>
+    </values>
+    <values>
+        <field>Case_Type__c</field>
+        <value xsi:type="xsd:string">Account Support</value>
+    </values>
+    <values>
+        <field>Case_Reason__c</field>
+        <value xsi:type="xsd:string">Credentialing</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Template_Body__c</field>
+        <value xsi:type="xsd:string">Dear [Contact.FirstName],
+
+Thank you for your follow-up regarding Case #[Case.CaseNumber] for [Account.Name].
+
+[Address the customer's specific questions here based on the email thread above.]
+
+Once all required documentation is received and verified, please allow 5-7 business days for processing. You will receive a confirmation email when the change has been finalized.
+
+If you have any additional questions, please do not hesitate to reply to this email or call our Provider Services line.
+
+Warm regards,
+[User.FirstName] [User.LastName]
+Provider Services Representative
+Allergan Moxie</value>
+    </values>
+</CustomMetadata>

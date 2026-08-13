@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>AM Product Access Not Eligible</label>
+    <protected>false</protected>
+    <values>
+        <field>When_To_Use__c</field>
+        <value xsi:type="xsd:string">Use when notifying a provider that their practice does not currently meet eligibility requirements for a product or program, and to explain the 30-day dispute process.</value>
+    </values>
+    <values>
+        <field>Case_Type__c</field>
+        <value xsi:type="xsd:string">Account Support</value>
+    </values>
+    <values>
+        <field>Case_Reason__c</field>
+        <value xsi:type="xsd:string">Credentialing</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Template_Body__c</field>
+        <value xsi:type="xsd:string">Dear [Contact.FirstName],
+
+Thank you for contacting Allergan Moxie Provider Services regarding Case #[Case.CaseNumber].
+
+After reviewing your account and the details submitted for [Account.Name], we regret to inform you that based on our current eligibility criteria, your practice does not meet the requirements for the requested product or program at this time.
+
+This determination was made based on one or more of the following factors:
+- Current credentialing status does not meet the minimum requirements for this product category.
+- The Medical Director's specialization does not fall within the approved scope for this product.
+- Required training or certification for this product has not been completed or is not on file.
+
+We understand this may not be the outcome you were expecting, and we want to help you understand the path forward.
+
+Next steps to address eligibility:
+1. Please review the enclosed Allergan Moxie Eligibility Requirements document (Form AM-EL-010) to understand the specific criteria.
+2. If you believe this determination was made in error, please reply to this email with supporting documentation within 30 days and we will conduct a formal review.
+3. If you would like guidance on meeting the eligibility requirements, our Provider Services team is available to schedule a consultation.
+
+We remain committed to supporting your practice and look forward to working with you.
+
+Regards,
+[User.FirstName] [User.LastName]
+Provider Services Representative
+Allergan Moxie</value>
+    </values>
+</CustomMetadata>

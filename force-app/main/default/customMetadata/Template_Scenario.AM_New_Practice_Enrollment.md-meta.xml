@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>AM New Practice Enrollment</label>
+    <protected>false</protected>
+    <values>
+        <field>When_To_Use__c</field>
+        <value xsi:type="xsd:string">Use when a new practice or facility is requesting to enroll as an authorized Allergan Moxie provider for the first time.</value>
+    </values>
+    <values>
+        <field>Case_Type__c</field>
+        <value xsi:type="xsd:string">Account Support</value>
+    </values>
+    <values>
+        <field>Case_Reason__c</field>
+        <value xsi:type="xsd:string">Credentialing</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Template_Body__c</field>
+        <value xsi:type="xsd:string">Dear [Contact.FirstName],
+
+Thank you for your interest in enrolling [Account.Name] as an authorized Allergan Moxie provider. We are pleased to assist you through the credentialing and enrollment process for Case #[Case.CaseNumber].
+
+To proceed with your new practice enrollment, the following documentation is required:
+
+1. Completed Allergan Moxie Provider Enrollment Form (Form AM-PE-002), signed by the Medical Director.
+2. Current DEA Certificate and State Controlled Substance License (if applicable for your practice scope).
+3. Proof of malpractice/liability insurance — minimum $1,000,000 per occurrence / $3,000,000 aggregate.
+4. A copy of the facility's business license or certificate of occupancy.
+5. Completed and signed Patient Consent and Privacy Policy Acknowledgement (Form AM-PC-005).
+
+Please note that incomplete applications may delay processing. All forms must be submitted together as a complete package.
+
+Once we receive your complete submission, please allow 10-14 business days for review and credentialing verification. Our team will contact you if additional information is required.
+
+We look forward to welcoming [Account.Name] to the Allergan Moxie provider network.
+
+Kind regards,
+[User.FirstName] [User.LastName]
+Provider Enrollment Team
+Allergan Moxie</value>
+    </values>
+</CustomMetadata>

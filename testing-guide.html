@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Allergan Moxie — Path A/B Testing Guide</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f0f4f8; padding: 40px 24px; color: #1a1a2e; }
+    .wrap { max-width: 1000px; margin: 0 auto; }
+
+    .page-title { font-size: 24px; font-weight: 800; color: #032d60; margin-bottom: 4px; }
+    .page-sub   { font-size: 13px; color: #5a7896; margin-bottom: 28px; }
+
+    /* tabs */
+    .tabs { display: flex; gap: 0; flex-wrap: wrap; }
+    .tab  { padding: 11px 22px; font-size: 13px; font-weight: 700; cursor: pointer; border-radius: 8px 8px 0 0; border: 1px solid #d1dce8; border-bottom: none; background: #e9ecef; color: #5a7896; }
+    .tab.active { background: white; color: #032d60; }
+    .tab:hover:not(.active) { background: #dde3ea; }
+
+    .panel { background: white; border: 1px solid #d1dce8; border-radius: 0 8px 8px 8px; padding: 32px; display: none; }
+    .panel.active { display: block; }
+
+    h2 { font-size: 18px; font-weight: 800; color: #032d60; margin-bottom: 6px; }
+    h3 { font-size: 14px; font-weight: 800; color: #032d60; margin: 24px 0 10px; }
+    p  { font-size: 13px; color: #3a4a5c; line-height: 1.65; margin-bottom: 12px; }
+
+    .note { background: #e8f4fd; border-left: 4px solid #0dcaf0; padding: 12px 16px; border-radius: 0 6px 6px 0; font-size: 13px; color: #0a4a6e; margin: 12px 0; line-height: 1.6; }
+    .warn { background: #fff8e1; border-left: 4px solid #ffc107; padding: 12px 16px; border-radius: 0 6px 6px 0; font-size: 13px; color: #664d03; margin: 12px 0; line-height: 1.6; }
+    .pass { background: #d4edda; border-left: 4px solid #28a745; padding: 12px 16px; border-radius: 0 6px 6px 0; font-size: 13px; color: #155724; margin: 12px 0; line-height: 1.6; }
+    .fail { background: #f8d7da; border-left: 4px solid #dc3545; padding: 12px 16px; border-radius: 0 6px 6px 0; font-size: 13px; color: #721c24; margin: 12px 0; line-height: 1.6; }
+
+    /* overview grid */
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+    @media(max-width:640px){.grid{grid-template-columns:1fr;}}
+    .path-card { border-radius: 10px; padding: 20px 22px; }
+    .path-a-card { background: #f0f9f0; border: 2px solid #28a745; }
+    .path-b-card { background: #f0f4ff; border: 2px solid #0070d2; }
+    .path-card-title { font-size: 15px; font-weight: 800; margin-bottom: 8px; }
+    .path-a-card .path-card-title { color: #155724; }
+    .path-b-card .path-card-title { color: #003580; }
+    .path-card p { margin-bottom: 0; }
+
+    /* test case cards */
+    .test-card { border: 1px solid #d1dce8; border-radius: 10px; margin-bottom: 24px; overflow: hidden; }
+    .tc-header  { padding: 14px 20px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .tc-id   { font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+    .tc-title{ font-size: 14px; font-weight: 800; color: #032d60; flex: 1; min-width: 180px; }
+    .badge   { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+
+    .path-a-hdr { background: #f4faf4; }
+    .path-b-hdr { background: #f2f6ff; }
+    .path-a-id  { background: #d4edda; color: #155724; }
+    .path-b-id  { background: #cce5ff; color: #004085; }
+    .tmpl-a { background: #e3d9f7; color: #4a0080; }
+    .tmpl-b { background: #fde8d0; color: #7a3800; }
+    .tmpl-c { background: #fcd7d7; color: #7a0000; }
+
+    .tc-body { padding: 20px 22px; border-top: 1px solid #eef2f7; }
+
+    .section-lbl { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #8fa8c0; margin: 18px 0 8px; }
+    .section-lbl:first-child { margin-top: 0; }
+
+    .case-id-box { background: #f0f4f8; border: 1px solid #d1dce8; border-radius: 6px; padding: 8px 14px; font-family: 'Courier New', monospace; font-size: 12px; color: #032d60; display: inline-block; margin-bottom: 4px; }
+
+    .steps { list-style: none; counter-reset: step; padding: 0; }
+    .steps li { counter-increment: step; display: flex; gap: 12px; margin-bottom: 9px; font-size: 13px; line-height: 1.55; color: #2a3a4c; }
+    .steps li::before { content: counter(step); min-width: 24px; height: 24px; background: #032d60; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+
+    .thread-box { background: #f8f9fa; border: 1px solid #d1dce8; border-radius: 8px; overflow: hidden; margin: 10px 0; }
+    .thread-msg { padding: 12px 16px; border-bottom: 1px solid #eef2f7; font-size: 12px; line-height: 1.6; }
+    .thread-msg:last-child { border-bottom: none; }
+    .thread-from-cust { background: #fff; }
+    .thread-from-csr  { background: #f0f7ff; }
+    .thread-meta { font-size: 10px; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 5px; display: flex; justify-content: space-between; }
+    .from-cust-lbl { color: #7a3800; }
+    .from-csr-lbl  { color: #004085; }
+    .thread-day    { color: #8fa8c0; }
+    .thread-body   { color: #2a3a4c; white-space: pre-wrap; }
+
+    .checklist { list-style: none; padding: 0; }
+    .checklist li { display: flex; gap: 10px; font-size: 13px; padding: 5px 0; border-bottom: 1px solid #f0f4f8; line-height: 1.5; }
+    .checklist li:last-child { border-bottom: none; }
+    .chk { width: 18px; height: 18px; border: 2px solid #d1dce8; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+    .chk-pass { background: #28a745; border-color: #28a745; }
+    .chk-text { flex: 1; }
+    .must { font-weight: 700; color: #032d60; }
+
+    .output-box { background: #1e2a3a; border-radius: 6px; padding: 14px 16px; font-size: 11.5px; font-family: 'Courier New', monospace; line-height: 1.75; color: #c8d8e8; white-space: pre-wrap; margin: 10px 0; }
+    .hl  { background: rgba(255,240,100,0.25); padding: 1px 2px; }
+    .hl2 { background: rgba(100,200,255,0.2); padding: 1px 2px; }
+
+    .diff-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+    @media(max-width:640px){.diff-row{grid-template-columns:1fr;}}
+    .diff-box { border-radius: 6px; padding: 12px 14px; font-size: 12px; line-height: 1.6; }
+    .diff-a { background: #f0f9f0; border: 1px solid #c3e6cb; }
+    .diff-b { background: #f0f4ff; border: 1px solid #b8cfff; }
+    .diff-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+    .diff-a .diff-label { color: #155724; }
+    .diff-b .diff-label { color: #003580; }
+
+    hr.dashed { border: none; border-top: 2px dashed #e4ebf3; margin: 28px 0; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 12px 0; }
+    th { background: #f0f4f8; text-align: left; padding: 9px 14px; font-weight: 800; border-bottom: 2px solid #d1dce8; color: #2c4a6e; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { padding: 9px 14px; border-bottom: 1px solid #eef2f7; vertical-align: top; line-height: 1.5; }
+    tr:last-child td { border-bottom: none; }
+    .mono { font-family: 'Courier New', monospace; background: #f0f4f8; padding: 2px 5px; border-radius: 3px; font-size: 11px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="page-title">Path A / Path B Testing Guide</div>
+  <div class="page-sub">6 test cases — 3 templates × 2 paths &nbsp;·&nbsp; Step-by-step instructions &nbsp;·&nbsp; What to look for in each output</div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="show('overview',this)">Overview</div>
+    <div class="tab" onclick="show('pathA',this)">Path A — 3 Cases</div>
+    <div class="tab" onclick="show('pathB',this)">Path B — 3 Cases</div>
+    <div class="tab" onclick="show('comparison',this)">A vs B Comparison</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       TAB 1 — OVERVIEW
+  ═══════════════════════════════════════════════════════ -->
+  <div class="panel active" id="tab-overview">
+
+    <h2>What you are testing</h2>
+    <p>The Prompt Flow now has two paths. Both paths run through the same Prompt Template and produce a complete email draft with one click. The difference is what the LLM reads before it writes.</p>
+
+    <div class="grid">
+      <div class="path-card path-a-card">
+        <div class="path-card-title">Path A — First Contact</div>
+        <p>The case has no existing email thread. The LLM reads the Case description, picks the right template, fills the placeholders, and uses historical closed cases to calibrate tone. Output is a first-contact email drafted from scratch.</p>
+      </div>
+      <div class="path-card path-b-card">
+        <div class="path-card-title">Path B — Follow-up Reply</div>
+        <p>The case already has an email thread. The LLM reads the full conversation first, then picks the template and drafts the next reply. Output acknowledges prior exchange, answers specific questions raised, and does not repeat what was already said.</p>
+      </div>
+    </div>
+
+    <h3>The 6 test cases</h3>
+    <table>
+      <tr><th>Case ID</th><th>Path</th><th>Template</th><th>Case subject</th><th>What the AI must handle</th></tr>
+      <tr>
+        <td><span class="mono">A-1</span></td>
+        <td><span class="badge path-a-id">Path A</span></td>
+        <td><span class="badge tmpl-a">Template A</span></td>
+        <td>Medical Director Change — Dr. Patel replacing Dr. Kim</td>
+        <td>First-contact email. AI selects "AM Medical Director Change". Request Form AM-CMD-001, license, W-9. 5–7 day SLA.</td>
+      </tr>
+      <tr>
+        <td><span class="mono">A-2</span></td>
+        <td><span class="badge path-a-id">Path A</span></td>
+        <td><span class="badge tmpl-b">Template B</span></td>
+        <td>New Practice Enrollment — Pacific Coast Aesthetics</td>
+        <td>First-contact email. AI selects "AM New Practice Enrollment". Request 5 documents. 10–14 day SLA. Personalise with Dr. Vasquez, CA+NV licenses, Malibu address.</td>
+      </tr>
+      <tr>
+        <td><span class="mono">A-3</span></td>
+        <td><span class="badge path-a-id">Path A</span></td>
+        <td><span class="badge tmpl-c">Template C</span></td>
+        <td>Product Access Review — Eligibility Determination</td>
+        <td>First-contact not-eligible determination. AI selects "AM Product Access Not Eligible". Reference Form AM-EL-010. State 30-day dispute window.</td>
+      </tr>
+      <tr>
+        <td><span class="mono">B-1</span></td>
+        <td><span class="badge path-b-id">Path B</span></td>
+        <td><span class="badge tmpl-a">Template A</span></td>
+        <td>Medical Director Change — Forms Sent, Awaiting Signatures</td>
+        <td>3-email thread. Must answer: (1) Is digital signature acceptable? (2) Is there a deadline? Must not repeat what was already sent.</td>
+      </tr>
+      <tr>
+        <td><span class="mono">B-2</span></td>
+        <td><span class="badge path-b-id">Path B</span></td>
+        <td><span class="badge tmpl-b">Template B</span></td>
+        <td>New Practice Enrollment — Missing Insurance Certificate</td>
+        <td>3-email thread. Must answer: (1) Can they proceed while insurance is being upgraded? (2) When does the 10–14 day clock start?</td>
+      </tr>
+      <tr>
+        <td><span class="mono">B-3</span></td>
+        <td><span class="badge path-b-id">Path B</span></td>
+        <td><span class="badge tmpl-c">Template C</span></td>
+        <td>Product Access Review — Customer Disputing Eligibility</td>
+        <td>4-email thread. Customer has submitted dispute evidence. Must provide a status update on the review timeline. Must not re-send the determination letter.</td>
+      </tr>
+    </table>
+
+    <h3>How to run each test — the 4 clicks</h3>
+    <ol class="steps">
+      <li>Go to <strong>Cases</strong> tab in the org → search the case subject (prefix <strong>TEST Path A</strong> or <strong>TEST Path B</strong>)</li>
+      <li>Open the case → click <strong>Activity</strong> in the right panel → click <strong>Email</strong></li>
+      <li>In the email compose toolbar, click <strong>Draft with AI</strong> → select <strong>Custom CSR Response</strong> → click <strong>Generate</strong></li>
+      <li>Read the output against the checklist in this guide for each case</li>
+    </ol>
+
+    <div class="note"><strong>Tip for the demo:</strong> The cases are prefixed with "TEST Path A" and "TEST Path B" so you can search them quickly. For the actual customer demo, use the four original cases (without the TEST prefix) as those have cleaner subject lines.</div>
+
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       TAB 2 — PATH A
+  ═══════════════════════════════════════════════════════ -->
+  <div class="panel" id="tab-pathA">
+
+    <h2>Path A — First Contact (no email thread)</h2>
+    <p>These three cases have no emails on them. The flow skips the thread-reading branch and goes straight to historical grounding. The LLM's full attention is on picking the right template and drafting from scratch.</p>
+
+    <!-- A-1 -->
+    <div class="test-card">
+      <div class="tc-header path-a-hdr">
+        <span class="tc-id path-a-id">A-1</span>
+        <span class="tc-title">Medical Director Change — Dr. Patel replacing Dr. Kim</span>
+        <span class="badge tmpl-a">Template A</span>
+        <span class="badge path-a-id">Path A</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "TEST Path A — Medical Director Change"</div>
+
+        <div class="section-lbl">What's in the case description</div>
+        <p>Dr. Kim is relocating to New York. Transitioning to Dr. Anita Patel who has an active California medical license (License #CA-891234). Asks for next steps.</p>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open case → Activity → Email → Draft with AI → Custom CSR Response → Generate</li>
+          <li>Read the output against the checklist below</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain — your checklist</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Line 1: "Selected template: AM Medical Director Change"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Greeting uses "Dear Sarah" (from Contact)</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Mentions "Sunset Aesthetics Medical Group" (from Account)</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References "Form AM-CMD-001" exactly — not paraphrased</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States "5–7 business days" processing time</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">Mentions Dr. Patel or Dr. Kim by name (personalisation from description)</span></li>
+          <li><span class="chk"></span><span class="chk-text">Does NOT start with "Thank you for following up" (this is first contact)</span></li>
+          <li><span class="chk"></span><span class="chk-text">Sign-off uses your logged-in name (from Sender)</span></li>
+        </ul>
+
+        <div class="section-lbl">Expected output shape</div>
+        <div class="output-box"><span class="hl">Selected template: AM Medical Director Change</span>
+
+Dear Sarah,
+
+Thank you for contacting the Allergan Moxie Provider Services team
+regarding your request for a Medical Director Change at Sunset
+Aesthetics Medical Group.
+
+We have received your request and are currently reviewing the required
+documentation for Case #[case number].
+
+To complete the Medical Director change, please ensure the following
+items are submitted:
+
+<span class="hl">1. Completed Change of Medical Director Form (Form AM-CMD-001)...</span>
+<span class="hl">2. A copy of Dr. Patel's current medical license...</span>
+3. An updated W-9 form if applicable.
+
+<span class="hl">...please allow 5–7 business days for processing.</span>
+
+Warm regards,
+[Your name]</div>
+
+        <div class="pass"><strong>Pass condition:</strong> All bold checklist items are present. "AM Medical Director Change" announced on line 1. Form reference and SLA intact.</div>
+        <div class="warn"><strong>If "AM New Practice Enrollment" or "AM Product Access Not Eligible" is selected:</strong> The LLM misread the description. Open the case → edit the Description field to make it more explicit: "changing Medical Director" or "transitioning Medical Director role." Re-generate.</div>
+      </div>
+    </div>
+
+    <!-- A-2 -->
+    <div class="test-card">
+      <div class="tc-header path-a-hdr">
+        <span class="tc-id path-a-id">A-2</span>
+        <span class="tc-title">New Practice Enrollment — Pacific Coast Aesthetics</span>
+        <span class="badge tmpl-b">Template B</span>
+        <span class="badge path-a-id">Path A</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "TEST Path A — New Practice Enrollment"</div>
+
+        <div class="section-lbl">What's in the case description</div>
+        <p>New practice in Malibu. Dr. Elena Vasquez as Medical Director. CA + NV licenses. $2M/$4M malpractice coverage. 150 patients/month. Wants to enroll for BOTOX Cosmetic and Juvederm.</p>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open case → Activity → Email → Draft with AI → Custom CSR Response → Generate</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Line 1: "Selected template: AM New Practice Enrollment"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References "Form AM-PE-002" exactly</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References "Form AM-PC-005" exactly</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States minimum insurance as "$1,000,000 per occurrence / $3,000,000 aggregate"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States "10–14 business days" processing</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">Personalisation mentions Dr. Elena Vasquez or $2M/$4M coverage or Malibu address</span></li>
+          <li><span class="chk"></span><span class="chk-text">Lists all 5 required documents (not just 2 or 3)</span></li>
+        </ul>
+
+        <div class="section-lbl">Expected output shape</div>
+        <div class="output-box"><span class="hl">Selected template: AM New Practice Enrollment</span>
+
+Dear Sarah,
+
+Thank you for your interest in enrolling [Account] as an authorized
+Allergan Moxie provider...
+
+To proceed with your new practice enrollment, the following
+documentation is required:
+
+<span class="hl">1. Completed Allergan Moxie Provider Enrollment Form (Form AM-PE-002)...</span>
+2. Current DEA Certificate...
+<span class="hl">3. Proof of malpractice/liability insurance — minimum $1,000,000 per
+   occurrence / $3,000,000 aggregate.</span>
+4. Business license or certificate of occupancy.
+<span class="hl">5. Completed and signed Patient Consent... (Form AM-PC-005).</span>
+
+Personalised section:
+<span class="hl2">- Medical Director: Dr. Elena Vasquez...</span>
+<span class="hl2">- Malpractice coverage: $2M/$4M...</span>
+
+<span class="hl">...allow 10–14 business days for review.</span></div>
+
+        <div class="pass"><strong>Pass condition:</strong> "AM New Practice Enrollment" announced. Both form references present. Insurance minimum verbatim. 10–14 day SLA present. Personalised lines referencing Dr. Vasquez or coverage amounts.</div>
+      </div>
+    </div>
+
+    <!-- A-3 -->
+    <div class="test-card">
+      <div class="tc-header path-a-hdr">
+        <span class="tc-id path-a-id">A-3</span>
+        <span class="tc-title">Product Access Review — Eligibility Determination Needed</span>
+        <span class="badge tmpl-c">Template C</span>
+        <span class="badge path-a-id">Path A</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "TEST Path A — Product Access Review"</div>
+
+        <div class="section-lbl">What's in the case description</div>
+        <p>Credentialing team determined account does not meet eligibility. Primary injector has no active CA license. Insurance is below required minimums. Need to communicate not-eligible determination and explain 30-day dispute process.</p>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open case → Activity → Email → Draft with AI → Custom CSR Response → Generate</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Line 1: "Selected template: AM Product Access Not Eligible"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References "Form AM-EL-010" exactly</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States "30 days" dispute window exactly</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Does NOT say the practice is now eligible or encourage ordering products</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">Tone is empathetic — includes "we regret to inform" or similar</span></li>
+          <li><span class="chk"></span><span class="chk-text">Reasons listed match what was in the description (CA license, insurance)</span></li>
+        </ul>
+
+        <div class="section-lbl">Expected output shape</div>
+        <div class="output-box"><span class="hl">Selected template: AM Product Access Not Eligible</span>
+
+Dear Sarah,
+
+Thank you for contacting Allergan Moxie Provider Services regarding
+Case #[case number].
+
+After reviewing your account... we regret to inform you that your
+practice does not meet the requirements for the requested product
+or program at this time.
+
+This determination was made based on:
+<span class="hl2">- The primary injector does not hold an active California medical license.
+- The practice does not carry the required malpractice insurance...</span>
+
+Next steps to address eligibility:
+<span class="hl">1. Please review... Form AM-EL-010...</span>
+<span class="hl">2. If you believe this determination was made in error, please reply
+   with supporting documentation within 30 days...</span>
+3. Our Provider Services team is available to schedule a consultation.</div>
+
+        <div class="pass"><strong>Pass condition:</strong> "AM Product Access Not Eligible" announced. Form AM-EL-010 present. 30-day window present. Reasons from case description reflected. No false positives encouraging product access.</div>
+      </div>
+    </div>
+
+  </div><!-- end Path A panel -->
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       TAB 3 — PATH B
+  ═══════════════════════════════════════════════════════ -->
+  <div class="panel" id="tab-pathB">
+
+    <h2>Path B — Follow-up Reply (existing email thread)</h2>
+    <p>These three cases each have a full email conversation already on them. The flow reads the thread first, then passes it to the LLM alongside the historical grounding. The LLM must answer the specific questions raised in the thread — not just draft a generic first response.</p>
+
+    <!-- B-1 -->
+    <div class="test-card">
+      <div class="tc-header path-b-hdr">
+        <span class="tc-id path-b-id">B-1</span>
+        <span class="tc-title">Medical Director Change — Forms Sent, Awaiting Signatures</span>
+        <span class="badge tmpl-a">Template A</span>
+        <span class="badge path-b-id">Path B</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "TEST Path B — Medical Director Change - Forms Sent"</div>
+
+        <div class="section-lbl">Email thread already on this case (3 emails)</div>
+        <div class="thread-box">
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">8 days ago</span></div>
+            <div class="thread-body">Hello, I need to update the Medical Director on our account. Dr. Kim is relocating. We want to appoint Dr. Anita Patel. Could you please send us the forms we need?</div>
+          </div>
+          <div class="thread-msg thread-from-csr">
+            <div class="thread-meta"><span class="from-csr-lbl">CSR → CUSTOMER</span><span class="thread-day">7 days ago</span></div>
+            <div class="thread-body">Dear Sarah, Thank you... please submit Form AM-CMD-001 signed by both Dr. Kim and Dr. Patel, a copy of Dr. Patel's CA license, and an updated W-9 if applicable. I have attached the form. Please allow 5-7 business days once documents are received.</div>
+          </div>
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Yesterday — UNANSWERED</span></div>
+            <div class="thread-body">Hi Derek, I received the form, thank you. Dr. Kim is currently travelling internationally.
+<strong>Question 1: Is digital or electronic signature acceptable for Form AM-CMD-001?</strong>
+<strong>Question 2: Is there a hard deadline given Dr. Kim's last day is in 5 weeks?</strong>
+We want to make sure we don't create a gap in our credentialing.</div>
+          </div>
+        </div>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open case → scroll Activity feed and point out the 3-email thread to your audience</li>
+          <li>Activity → Email → Draft with AI → Custom CSR Response → Generate</li>
+          <li>Compare output to checklist below</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain — Path B specific</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Line 1: "Selected template: AM Medical Director Change"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Opens as a follow-up ("Thank you for following up" or similar) — NOT a first-contact greeting</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses the digital signature question (accepts or clarifies digital sig policy)</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses the deadline/gap in credentialing concern</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Does NOT re-list all the documents again (they were already sent in email 2)</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Form AM-CMD-001 still referenced (it is the pending action item)</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">Mentions Dr. Kim or Dr. Patel by name</span></li>
+        </ul>
+
+        <div class="section-lbl">Expected output shape</div>
+        <div class="output-box"><span class="hl">Selected template: AM Medical Director Change</span>
+
+<span class="hl2">Dear Sarah,
+
+Thank you for your follow-up regarding the Medical Director change
+for Sunset Aesthetics Medical Group.</span>
+
+<span class="hl">To address your questions:
+
+1. Regarding digital signatures: Yes, electronic signatures are
+   acceptable for Form AM-CMD-001, provided the signature platform
+   produces a legally binding digital signature...</span>
+
+<span class="hl">2. Regarding the deadline: We recommend submitting the completed
+   Form AM-CMD-001 at least 2 weeks before Dr. Kim's departure date
+   to allow sufficient processing time within our 5–7 business day
+   window...</span>
+
+<span class="hl2">We understand this is a time-sensitive situation and are here to
+help ensure there is no gap in your credentialing.</span>
+
+Warm regards,
+[Your name]</div>
+
+        <div class="pass"><strong>Pass condition:</strong> Opens as follow-up. Both questions addressed. Documents not re-listed from scratch. Form AM-CMD-001 still referenced as the pending item. Deadline advice tied to the 5-7 day SLA.</div>
+        <div class="fail"><strong>Fail condition (what to watch for):</strong> If the output repeats the full 3-document checklist from email 2, the LLM did not properly read the thread. This is rare but can happen — click Revise and type "This is a follow-up, the forms were already sent. Address only the two questions about digital signatures and the deadline."</div>
+      </div>
+    </div>
+
+    <!-- B-2 -->
+    <div class="test-card">
+      <div class="tc-header path-b-hdr">
+        <span class="tc-id path-b-id">B-2</span>
+        <span class="tc-title">New Practice Enrollment — Missing Insurance Certificate</span>
+        <span class="badge tmpl-b">Template B</span>
+        <span class="badge path-b-id">Path B</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "TEST Path B — New Practice Enrollment - Missing Insurance"</div>
+
+        <div class="section-lbl">Email thread already on this case (3 emails)</div>
+        <div class="thread-box">
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">10 days ago</span></div>
+            <div class="thread-body">Hello, Please find attached our completed enrollment forms: AM-PE-002, AM-PC-005, DEA Certificate, Business License. Please let us know if anything else is needed.</div>
+          </div>
+          <div class="thread-msg thread-from-csr">
+            <div class="thread-meta"><span class="from-csr-lbl">CSR → CUSTOMER</span><span class="thread-day">8 days ago</span></div>
+            <div class="thread-body">Dear Sarah, We received: ✓ Form AM-PE-002 ✓ Form AM-PC-005 ✓ DEA Certificate ✓ Business License. Still missing: Proof of malpractice/liability insurance — minimum $1M/$3M aggregate (insurance declaration page required). Processing takes 10-14 days from receipt of a complete application.</div>
+          </div>
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Yesterday — UNANSWERED</span></div>
+            <div class="thread-body">Hi Amanda, Our current policy is $1M/$2M. We are upgrading to $1M/$3M — insurer says 2 weeks.
+<strong>Question 1: Can we proceed with the application while the upgraded policy is being issued?</strong>
+<strong>Question 2: Does the 10-14 day clock start from when you receive the insurance cert, or from our original submission date?</strong></div>
+          </div>
+        </div>
+
+        <div class="section-lbl">What the output MUST contain</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Line 1: "Selected template: AM New Practice Enrollment"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Opens as a follow-up — NOT a first-contact or re-listing all 5 forms</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q1: can they proceed with application while insurance is upgrading</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q2: when the 10-14 day processing clock starts</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States the minimum insurance requirement ($1M/$3M) — mandatory language from "AM New Practice Enrollment"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">Does NOT re-list the 5 required documents (those were confirmed as received)</span></li>
+        </ul>
+
+        <div class="pass"><strong>Pass condition:</strong> "AM New Practice Enrollment" announced. Both questions answered. Insurance minimum stated. No repeat of already-confirmed documents. Tone acknowledges they are close to completing enrollment.</div>
+      </div>
+    </div>
+
+    <!-- B-3 -->
+    <div class="test-card">
+      <div class="tc-header path-b-hdr">
+        <span class="tc-id path-b-id">B-3</span>
+        <span class="tc-title">Product Access Review — Customer Disputing Eligibility Decision</span>
+        <span class="badge tmpl-c">Template C</span>
+        <span class="badge path-b-id">Path B</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "TEST Path B — Product Access Review - Customer Disputing"</div>
+
+        <div class="section-lbl">Email thread already on this case (4 emails)</div>
+        <div class="thread-box">
+          <div class="thread-msg thread-from-csr">
+            <div class="thread-meta"><span class="from-csr-lbl">CSR → CUSTOMER</span><span class="thread-day">12 days ago</span></div>
+            <div class="thread-body">Dear Sarah, ...your practice does not meet the requirements... CA license issue, insurance below minimum... Please review Form AM-EL-010. If you believe this was made in error, reply within 30 days with supporting documentation.</div>
+          </div>
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">5 days ago</span></div>
+            <div class="thread-body">Dear Carla, We are formally disputing this determination. Attached: Dr. Patel's renewed CA license (issued 3 weeks ago) and updated malpractice insurance declaration page (now $2M/$4M). Please conduct a formal review.</div>
+          </div>
+          <div class="thread-msg thread-from-csr">
+            <div class="thread-meta"><span class="from-csr-lbl">CSR → CUSTOMER</span><span class="thread-day">4 days ago</span></div>
+            <div class="thread-body">Dear Sarah, Thank you for submitting your dispute. We received the renewed CA license and updated insurance declaration. Escalated to the credentialing review team. Expect a decision within 5-7 business days.</div>
+          </div>
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Today — UNANSWERED</span></div>
+            <div class="thread-body">Hi Carla, It has now been 5 business days and we have not received a decision. <strong>Could you please provide an update on where the review stands?</strong> We are eager to move forward and begin ordering products.</div>
+          </div>
+        </div>
+
+        <div class="section-lbl">What the output MUST contain</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Line 1: "Selected template: AM Product Access Not Eligible"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Opens as a follow-up status update — NOT a new determination letter</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Acknowledges the dispute was submitted and is under review</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Provides a status update or apology for the delay</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Does NOT re-state that the practice is not eligible (the decision is under dispute)</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">References the 5-7 business day review window from email 3</span></li>
+          <li><span class="chk"></span><span class="chk-text">Form AM-EL-010 may or may not appear — it was already sent. Its absence is acceptable here.</span></li>
+        </ul>
+
+        <div class="pass"><strong>Pass condition:</strong> "AM Product Access Not Eligible" announced. Reads as a status update, not a re-determination. Acknowledges dispute evidence received. Provides timeline. Does not repeat the original not-eligible determination.</div>
+        <div class="fail"><strong>Fail condition:</strong> If the output re-states "your practice does not meet the requirements" — the LLM sent the determination letter again instead of a status update. This is the hardest Path B case because the template is framed around not-eligible language. Click Revise and type: "The customer already received the determination and has filed a dispute. This reply should be a status update on the review, not a new determination."</div>
+      </div>
+    </div>
+
+  </div><!-- end Path B panel -->
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       TAB 4 — COMPARISON
+  ═══════════════════════════════════════════════════════ -->
+  <div class="panel" id="tab-comparison">
+
+    <h2>Path A vs Path B — What to Point Out to the Customer</h2>
+    <p>Run the same template scenario on its Path A and Path B case side by side. These pairs prove that the AI adapts to context — same template logic, completely different output based on whether a conversation already exists.</p>
+
+    <h3>Template A — Medical Director Change</h3>
+    <div class="diff-row">
+      <div class="diff-box diff-a">
+        <div class="diff-label">Path A — A-1 — First Contact</div>
+        <strong>Opening:</strong> "Thank you for contacting the Allergan Moxie Provider Services team..."<br><br>
+        <strong>Body:</strong> Full document checklist (Form AM-CMD-001, license copy, W-9), complete with submission instructions and portal link.<br><br>
+        <strong>Tone:</strong> Welcoming and thorough — setting expectations for the first time.<br><br>
+        <strong>What AI added:</strong> Dr. Patel named, CA license noted, case number filled.
+      </div>
+      <div class="diff-box diff-b">
+        <div class="diff-label">Path B — B-1 — Follow-up Reply</div>
+        <strong>Opening:</strong> "Thank you for your follow-up regarding the Medical Director change..."<br><br>
+        <strong>Body:</strong> Answers the two specific questions — digital signature policy, deadline relative to Dr. Kim's last day. Does not re-list the forms already sent.<br><br>
+        <strong>Tone:</strong> Focused and responsive — acknowledges prior exchange and addresses the gap-in-credentialing concern directly.<br><br>
+        <strong>What AI added:</strong> Advice on submitting forms at least 2 weeks before departure.
+      </div>
+    </div>
+    <div class="note">Point to the customer: same 1-click process. The AI detected there was an existing conversation and adapted automatically. The CSR does not have to scroll back through the thread and manually decide what to say.</div>
+
+    <hr class="dashed"/>
+
+    <h3>Template B — New Practice Enrollment</h3>
+    <div class="diff-row">
+      <div class="diff-box diff-a">
+        <div class="diff-label">Path A — A-2 — First Contact</div>
+        <strong>Opening:</strong> "Thank you for your interest in enrolling..."<br><br>
+        <strong>Body:</strong> All 5 required documents listed with form references. Personalised section for Dr. Vasquez, $2M/$4M coverage, Malibu address, CA + NV licenses.<br><br>
+        <strong>SLA:</strong> 10–14 business days from receipt of complete application.<br><br>
+        <strong>Closing:</strong> "We look forward to welcoming you to the provider network."
+      </div>
+      <div class="diff-box diff-b">
+        <div class="diff-label">Path B — B-2 — Follow-up Reply</div>
+        <strong>Opening:</strong> "Thank you for your follow-up..."<br><br>
+        <strong>Body:</strong> Directly answers the two questions — can they submit with the old policy while upgrading, and when does the 10-14 day clock start. Confirms what has already been received (4 of 5 docs). Flags only the outstanding item.<br><br>
+        <strong>Tone:</strong> Encouraging — practice is close to completing enrollment.<br><br>
+        <strong>What AI avoided:</strong> Did not re-list the 5 forms that were already confirmed as received.
+      </div>
+    </div>
+
+    <hr class="dashed"/>
+
+    <h3>Template C — Not Eligible</h3>
+    <div class="diff-row">
+      <div class="diff-box diff-a">
+        <div class="diff-label">Path A — A-3 — First Contact</div>
+        <strong>Opening:</strong> "We regret to inform you..."<br><br>
+        <strong>Body:</strong> States the two eligibility failure reasons from the case description. References Form AM-EL-010. States the 30-day dispute window.<br><br>
+        <strong>Tone:</strong> Empathetic but definitive. First communication of the decision.<br><br>
+        <strong>Closing:</strong> "We remain committed to supporting your practice."
+      </div>
+      <div class="diff-box diff-b">
+        <div class="diff-label">Path B — B-3 — Follow-up Status Update</div>
+        <strong>Opening:</strong> "Thank you for your follow-up..."<br><br>
+        <strong>Body:</strong> Acknowledges the dispute was received and documents reviewed. Provides a status update on review timeline. Apologises for the delay.<br><br>
+        <strong>Tone:</strong> Supportive and process-oriented — the eligibility decision is no longer final, it is under review.<br><br>
+        <strong>What AI avoided:</strong> Did not re-send the not-eligible determination to a customer who is in the middle of a formal dispute.
+      </div>
+    </div>
+    <div class="note">This pair is the most compelling for compliance stakeholders. The same template handles both the initial determination AND the dispute follow-up, but produces completely different language — because the AI read the thread and understood the context had changed.</div>
+
+    <hr class="dashed"/>
+
+    <h3>Overall talking point for the customer</h3>
+    <p>Use this framing when you show the comparison:</p>
+    <div style="background:#032d60;color:white;border-radius:10px;padding:22px 26px;font-size:14px;line-height:1.75;font-style:italic;color:#c0d8f0;">
+      "A first-year CSR and a five-year CSR both click the same button. The difference is that the five-year CSR reads the full email history before writing. They know what was already said, what questions need answering, and what not to repeat. That is exactly what we built into Path B — the AI reads the thread before drafting, the way an experienced rep would. The mandatory language from your templates is still preserved in both paths. What changes is the intelligence about where the conversation is at."
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  function show(tab, el) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>

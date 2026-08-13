@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>AM Medical Director Change</label>
+    <protected>false</protected>
+    <values>
+        <field>When_To_Use__c</field>
+        <value xsi:type="xsd:string">Use when a credentialed account is requesting to change or update the Medical Director on their account.</value>
+    </values>
+    <values>
+        <field>Case_Type__c</field>
+        <value xsi:type="xsd:string">Account Support</value>
+    </values>
+    <values>
+        <field>Case_Reason__c</field>
+        <value xsi:type="xsd:string">Credentialing</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Template_Body__c</field>
+        <value xsi:type="xsd:string">Dear [Contact.FirstName],
+
+Thank you for contacting the Allergan Moxie Provider Services team regarding your request for a Medical Director Change at [Account.Name].
+
+We have received your request and are currently reviewing the required documentation for Case #[Case.CaseNumber].
+
+To complete the Medical Director change, please ensure the following items are submitted:
+
+1. Completed Change of Medical Director Form (Form AM-CMD-001), signed by both the outgoing and incoming Medical Directors.
+2. A copy of the incoming Medical Director's current medical license (must be active and valid in the state of practice).
+3. An updated W-9 form if the new Medical Director is associated with a different tax entity.
+
+Please return all completed documents to your dedicated Allergan Moxie representative or upload them directly to your account portal.
+
+Once all required documentation is received and verified, please allow 5-7 business days for processing. You will receive a confirmation email when the change has been finalized.
+
+If you have any questions or require assistance completing the forms, please do not hesitate to contact us by replying to this email or by calling our Provider Services line.
+
+Thank you for your continued partnership with Allergan Moxie.
+
+Warm regards,
+[User.FirstName] [User.LastName]
+Provider Services Representative
+Allergan Moxie</value>
+    </values>
+</CustomMetadata>

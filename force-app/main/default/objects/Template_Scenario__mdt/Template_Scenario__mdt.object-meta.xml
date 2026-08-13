@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Maps a case scenario to an email template. The AI flow queries these records to build a candidate shortlist before the LLM selects and drafts.</description>
+    <label>Template Scenario</label>
+    <pluralLabel>Template Scenarios</pluralLabel>
+    <fields>
+        <fullName>When_To_Use__c</fullName>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>When To Use</label>
+        <length>500</length>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+        <description>One or two sentences describing when a CSR should use this template. Example: Use when a practice is requesting a Medical Director change on a credentialed account.</description>
+    </fields>
+    <fields>
+        <fullName>Template_Body__c</fullName>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Template Body</label>
+        <length>32000</length>
+        <type>LongTextArea</type>
+        <visibleLines>10</visibleLines>
+        <description>The full email template text including all mandatory language, form names, SLAs, and placeholders.</description>
+    </fields>
+    <fields>
+        <fullName>Case_Type__c</fullName>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Case Type</label>
+        <length>255</length>
+        <type>Text</type>
+        <description>Matches the Case.Type picklist value. Used by the flow to filter relevant templates.</description>
+    </fields>
+    <fields>
+        <fullName>Case_Reason__c</fullName>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Case Reason</label>
+        <length>255</length>
+        <type>Text</type>
+        <description>Matches the Case.Reason picklist value. Used by the flow to filter relevant templates.</description>
+    </fields>
+    <fields>
+        <fullName>Is_Active__c</fullName>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Is Active</label>
+        <type>Checkbox</type>
+        <defaultValue>true</defaultValue>
+        <description>Inactive records are excluded from the flow query.</description>
+    </fields>
+</CustomObject>

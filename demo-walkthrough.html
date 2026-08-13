@@ -403,70 +403,60 @@ Allergan Moxie</div>
       <div class="case-body">
 
         <div class="section-label">What to say</div>
-        <div class="say-box">"Same type as Case 1 — a Medical Director change. But this one is already in progress. There is an existing email thread — the first response was already sent, the forms were requested, and the practice came back with a follow-up. <strong>The AI needs to draft the next reply in a conversation, not a first-contact email. Watch how it adapts.</strong>"</div>
+        <div class="say-box">"Same type as Case 1 — a Medical Director change. But this one is already in progress. There is an existing email thread — the first response was already sent, the forms were requested, and the practice came back with follow-up questions about electronic signatures and deadlines. <strong>This time the CSR picks a different AI button — one that is purpose-built for replying. Watch how the output changes completely.</strong>"</div>
 
         <div class="section-label">Click path</div>
         <ol class="steps">
           <li>Go to <strong>Cases</strong> tab → search <strong>Medical Director Change - Awaiting</strong> → open <strong>Medical Director Change - Awaiting Form AM-CMD-001</strong></li>
-          <li><strong>Scroll down the Activity feed</strong> and point to the existing email thread — pause here and say: <em>"There are already three emails in this conversation. The CSR needs to respond to the latest follow-up."</em></li>
-          <li>Click <strong>Email</strong> → <strong>Draft with AI</strong> → select <strong>Custom CSR Response</strong> → click <strong>Generate</strong></li>
+          <li><strong>Scroll down the Activity feed</strong> and point to the existing email thread — pause here and say: <em>"Three emails already in this case. The customer is asking two specific questions. The CSR should not re-send the full checklist — the customer already has it."</em></li>
+          <li>Click <strong>Email</strong> → <strong>Draft with AI</strong> → this time select <strong>CSR Reply Email</strong> → click <strong>Generate</strong></li>
         </ol>
 
         <div class="section-label">Expected output</div>
-        <div class="output-box"><span class="output-hl">Selected template: Template A</span>
+        <div class="output-box">Dear Sarah,
 
-Dear Sarah,
+I acknowledge your prior message and the travel situation with Dr. Kim.
 
-Thank you for following up regarding the Medical Director change for
-Sunset Aesthetics Medical Group — Case #[case number].
+Electronic signatures are acceptable for Form AM-CMD-001. Please ensure
+the signature method captures the signer's intent and provides a
+verifiable record — a clear name, date, and audit trail is sufficient.
 
-We understand that Dr. Kim will be relocating and that you are in the
-process of transitioning the Medical Director role to Dr. Anita Patel.
-We are here to help ensure this process moves forward smoothly.
+There is no hard deadline beyond ensuring the documentation reaches us
+before Dr. Kim's final day to avoid a gap in credentialing. Given the
+5-week window, we recommend submitting as soon as Dr. Kim is able to
+sign so we can complete processing within the standard 5–7 business
+days after receipt. If you anticipate any delay, please let me know and
+I will note it on the case.
 
-As a reminder, to complete the Medical Director change, please ensure
-the following documentation is submitted:
-
-<span class="output-hl">1. Completed Change of Medical Director Form (Form AM-CMD-001), signed
-   by both the outgoing and incoming Medical Directors.
-2. A copy of Dr. Patel's current medical license (active and valid
-   in the state of practice).
-3. An updated W-9 form if Dr. Patel is associated with a different
-   tax entity.</span>
-
-<span class="output-hl">Once all required documentation is received and verified, please allow
-5–7 business days for processing.</span>
-
-If you have any questions about digital signature options for the form,
-please do not hesitate to contact us.
+Please reply if you need any further assistance.
 
 Warm regards,
-[Your name]
+<span class="output-hl">Nisar Khan</span>
 Provider Services Representative
 Allergan Moxie</div>
 
-        <div class="section-label">Key talking points</div>
+        <div class="section-label">Key talking points — point to these on screen</div>
         <div class="tp-box">
           <div class="tp-row">
-            <div class="tp-icon">🔀</div>
-            <div class="tp-text"><strong>Same template, different context</strong> — Template A selected again, correctly. It's still a Medical Director change. But the AI adapted the opening to a follow-up tone, not a first-contact tone. "Thank you for following up" vs "Thank you for contacting us."</div>
+            <div class="tp-icon">✂️</div>
+            <div class="tp-text"><strong>No document checklist</strong> — the AI did not re-list Form AM-CMD-001, the medical license, or the W-9. The customer already received the full list in the first email. Repeating it in a reply is noise. The Reply prompt is explicitly built to suppress it.</div>
           </div>
           <div class="tp-row">
-            <div class="tp-icon">🔒</div>
-            <div class="tp-text"><strong>Form AM-CMD-001 still preserved</strong> — even in a follow-up, the mandatory reference stays. This prevents the common mistake of a CSR forgetting to re-reference the form in a reply.</div>
+            <div class="tp-icon">🎯</div>
+            <div class="tp-text"><strong>Both questions answered directly</strong> — electronic signatures, yes or no. Deadline, specific and honest. No filler, no generic preamble. The prompt is instructed to answer what was asked, not pad the response.</div>
           </div>
           <div class="tp-row">
             <div class="tp-icon">📚</div>
-            <div class="tp-text"><strong>Historical grounding at work</strong> — behind the scenes, the Prompt Flow queried three previously closed Medical Director change cases and fed their outbound emails as context. That is what calibrates the follow-up tone to sound like an experienced rep, not a first-time response.</div>
+            <div class="tp-text"><strong>The AI read all three emails</strong> — the Prompt Flow queried all EmailMessages on this case, labelled each [Customer] or [CSR], and injected the full thread before generating. The AI knows Derek already sent the checklist and does not repeat it.</div>
           </div>
           <div class="tp-row">
-            <div class="tp-icon">🚧</div>
-            <div class="tp-text"><strong>What is still pending here</strong> — in the production version, the AI will also read the actual emails in the current thread before drafting. Today it reads the Case description and historical closed cases. That is the one Path B gap. I will cover this in the Requirements tab.</div>
+            <div class="tp-icon">👤</div>
+            <div class="tp-text"><strong>CSR sign-off is correct</strong> — the reply is signed with the logged-in CSR's name from the User record, not copied from the thread. Even though Derek signed the first email, the reply correctly shows the current CSR's name.</div>
           </div>
         </div>
 
         <div class="note" style="margin-top: 22px; font-style: italic;">
-          <strong>Closing statement after Case 4:</strong> "In four cases, the AI automatically selected three different templates, preserved all mandatory language, personalised each email with case-specific details, and adapted between a first contact and a follow-up reply. The CSR clicked one button each time. That is the core of what we are building."
+          <strong>Closing statement after Case 4:</strong> "In four cases, the AI selected three different templates, preserved all mandatory language, personalised each email with case-specific details, and for the follow-up — gave a focused reply that answered the customer's questions without repeating what they already know. Two purpose-built AI actions, one click each. That is the architecture."
         </div>
 
       </div>
@@ -513,24 +503,79 @@ Allergan Moxie</div>
     <h2>How It Works — Architecture Deep-Dive</h2>
     <p>Use this section to explain the technical architecture to Rohit and Shankar. It covers what you built, where the intelligence lives, and why it is designed the way it is.</p>
 
-    <h3>The two moving parts</h3>
+    <h3>What we are using — technology stack</h3>
+    <div class="note" style="font-size:13px;line-height:1.8;">
+      <strong>Everything running today uses standard Salesforce licenses only — no Data Cloud, no external APIs, no third-party AI services.</strong><br><br>
+      <strong>Custom Metadata Type (<span class="mono">Template_Scenario__mdt</span>)</strong> — standard Salesforce feature, no extra license. Stores the template library with "When to use" descriptions. Queryable from Flow. Editable by admins with no code.<br><br>
+      <strong>Prompt Flow (<span class="mono">Add_Historical_Case_Emails_to_Prompt2</span>)</strong> — standard Salesforce Flow, Process Type: PromptFlow. Assembles the full prompt at runtime: reads the current email thread, queries the template library, reads historical closed case emails.<br><br>
+      <strong>Prompt Template (<span class="mono">Custom_CSR_Response</span>)</strong> — Einstein Generative AI, included with Agentforce. Receives the assembled prompt and returns the draft to the CSR.<br><br>
+      <strong>LLM (<span class="mono">sfdc_ai__DefaultGPT5Mini</span>)</strong> — Einstein AI model, included with Agentforce. Does the template selection and email drafting.<br><br>
+      <strong>Data Cloud — NOT in use today.</strong> It is on the roadmap as a Phase 3 option if Type/Reason tagging alone is not precise enough to retrieve the right templates from a large library. The customer confirmed they are open to it if needed, but it is not required to make the current architecture work.
+    </div>
+
+    <h3>Why two prompt templates instead of one</h3>
+    <div class="note" style="margin-bottom:20px;">
+      <strong>The original design used a single prompt template for both first-contact and follow-up replies.</strong> During testing this created an irresolvable conflict: the first-contact template body contains the full document checklist as mandatory language (Form AM-CMD-001, medical license, W-9). Instruction 4 in the prompt said "do not remove mandatory language." A follow-up reply instruction said "do not repeat the checklist." These two rules fought each other on every reply — Instruction 4 won because it was unconditional, so the checklist always appeared even in replies where the customer already had it. No amount of prompt instruction tuning resolved it because the conflict was structural, not phrasing-related.
+      <br><br>
+      <strong>The fix is architectural: two purpose-built prompts with no conflicting responsibilities.</strong> The First Contact prompt is allowed to include the full checklist and is designed to do so. The Reply prompt never sees a template with a checklist in it — its job is to read the thread and answer questions. Each prompt does one thing with no internal contradictions.
+    </div>
+
     <div class="two-col">
       <div class="arch-block blue">
-        <div class="arch-block-title">1. GenAI Prompt Template</div>
-        <div class="arch-block-sub">The instruction set for the LLM. Contains the live Case merge fields, all three candidate email templates embedded as text, the selection rules, and the guardrails. This is what you (Nisar) own and maintain.<br><br>
-        File: <span class="mono">Custom_CSR_Response.genAiPromptTemplate-meta.xml</span><br>
-        Type: <span class="mono">einstein_gpt__caseEmailDraft</span> — this type activates the native "Draft with AI" button automatically. No LWC needed to trigger it.</div>
+        <div class="arch-block-title">Prompt 1 — CSR First Contact Email</div>
+        <div class="arch-block-sub"><strong>When to use:</strong> Opening a new case with no prior email thread. The CSR has not yet contacted the customer.<br><br>
+        <strong>What it does:</strong> Reads Case Type + Reason, selects the best matching template from <span class="mono">Template_Scenario__mdt</span>, outputs the full email including the complete document checklist and all submission requirements exactly as written in the template.<br><br>
+        <strong>File:</strong> <span class="mono">Custom_CSR_Response.genAiPromptTemplate-meta.xml</span><br>
+        <strong>Label:</strong> CSR First Contact Email<br>
+        <strong>Type:</strong> <span class="mono">einstein_gpt__caseEmailDraft</span></div>
       </div>
-      <div class="arch-block">
-        <div class="arch-block-title">2. Prompt Flow</div>
-        <div class="arch-block-sub">A standard Salesforce Flow that runs before the LLM generates. It queries closed historical cases with the same Case Type and Reason, reads the outbound email bodies from those cases, and injects them into the Prompt Template as grounding context.<br><br>
-        File: <span class="mono">Add_Historical_Case_Emails_to_Prompt2.flow-meta.xml</span><br>
-        This flow was not modified for this demo — it was already built.</div>
+      <div class="arch-block blue">
+        <div class="arch-block-title">Prompt 2 — CSR Reply Email</div>
+        <div class="arch-block-sub"><strong>When to use:</strong> The case already has an email thread. The customer replied with questions or follow-up. The CSR needs to respond — not restart.<br><br>
+        <strong>What it does:</strong> Reads all EmailMessages on the case (via the same Prompt Flow), identifies the customer's specific questions from the latest message, drafts a focused reply that answers those questions. Never repeats the document checklist. Never re-explains what the customer already knows.<br><br>
+        <strong>File:</strong> <span class="mono">Custom_CSR_Reply.genAiPromptTemplate-meta.xml</span><br>
+        <strong>Label:</strong> CSR Reply Email<br>
+        <strong>Type:</strong> <span class="mono">einstein_gpt__caseEmailDraft</span></div>
       </div>
     </div>
 
-    <h3>Inside the Prompt Template — 4 sections</h3>
-    <p>The template has four clearly separated sections. Each section has a specific job. When the CSR clicks Generate, these four sections are assembled in sequence and sent to the LLM as a single prompt.</p>
+    <div class="two-col" style="margin-top:0;">
+      <div class="arch-block">
+        <div class="arch-block-title">Advantages of two prompts</div>
+        <div class="arch-block-sub">
+          • No conflicting instructions — each prompt has one job<br><br>
+          • The checklist suppression is guaranteed by the prompt body, not by fragile LLM instruction tuning<br><br>
+          • First Contact can be made more aggressive about including mandatory language without risk of it bleeding into replies<br><br>
+          • Reply can be made more aggressive about brevity and focus without risk of it stripping mandatory language from first contacts<br><br>
+          • Each prompt can evolve independently as requirements change<br><br>
+          • The CSR's intent is explicit — they chose "Reply" or "First Contact," so there is no ambiguity about what the AI should produce
+        </div>
+      </div>
+      <div class="arch-block">
+        <div class="arch-block-title">Trade-off acknowledged</div>
+        <div class="arch-block-sub">
+          The CSR now picks between two buttons instead of one. This is a small UX cost. The alternative — a single prompt that detects context and switches behaviour — sounds simpler but is not: LLM instruction conflicts at the prompt level are hard to reason about, hard to test, and degrade unpredictably as the template library grows. Two explicit choices scale better than one clever one.<br><br>
+          In the Service Console these appear as two named options under "Draft with AI." For production, the labels can be renamed to anything that makes sense to the CSR team — "New Email" and "Reply to Customer" for example.
+        </div>
+      </div>
+    </div>
+
+    <h3>The three moving parts</h3>
+    <div class="two-col">
+      <div class="arch-block blue">
+        <div class="arch-block-title">1. Two GenAI Prompt Templates</div>
+        <div class="arch-block-sub">The instruction sets for the LLM. First Contact selects a template and outputs the full email including mandatory checklist. Reply reads the thread and answers questions without repeating what was already sent. Both pull from the same Prompt Flow data source.<br><br>
+        Both use type <span class="mono">einstein_gpt__caseEmailDraft</span> — this activates the native "Draft with AI" picker automatically. No LWC needed to surface them.</div>
+      </div>
+      <div class="arch-block">
+        <div class="arch-block-title">2. Prompt Flow</div>
+        <div class="arch-block-sub">A standard Salesforce Flow that runs before either prompt generates. It does three things: (1) reads existing EmailMessages on the current case and labels each [Customer] or [CSR], (2) queries <span class="mono">Template_Scenario__mdt</span> filtered by Case Type + Reason to fetch the top 5 matching templates, (3) queries closed historical cases with the same Type + Reason and reads their outbound emails for tone grounding. One shared flow feeds both prompts.<br><br>
+        File: <span class="mono">Add_Historical_Case_Emails_to_Prompt2.flow-meta.xml</span></div>
+      </div>
+    </div>
+
+    <h3>Inside the Prompt Templates — what each section does</h3>
+    <p>Both prompt templates share the same four-section structure. The sections are assembled in sequence by the Prompt Flow and sent to the LLM as a single prompt. The key difference between the two templates is in Section 4 (Instructions) — the First Contact prompt instructs the LLM to select a template and include the full checklist; the Reply prompt instructs it to read the thread and answer questions only.</p>
 
     <div class="section-block blue">
       <div class="section-block-title">Section 1 — CURRENT CASE &nbsp; <span style="font-size:11px;color:#5a7896;font-weight:400;">(the signal)</span></div>
@@ -548,7 +593,7 @@ Allergan Moxie</div>
 
     <div class="section-block purple">
       <div class="section-block-title">Section 2 — CANDIDATE EMAIL TEMPLATES &nbsp; <span style="font-size:11px;color:#5a7896;font-weight:400;">(the selection logic)</span></div>
-      <div class="section-block-desc">All three email templates are embedded directly in the prompt. Each has a <strong>Use when:</strong> condition that tells the LLM when to pick it. The LLM pattern-matches the Case Description against these three conditions and selects one. This is the entire template selection mechanism — no rules engine, no code, no Flow logic.</div>
+      <div class="section-block-desc">The Prompt Flow queries <strong>Template_Scenario__mdt</strong> (a Custom Metadata Type) filtered by the case's Type and Reason, fetches the top 5 matching records, and injects them here at runtime. Each record has a <strong>When to use:</strong> description that tells the LLM when to pick it. The LLM reads the case context, compares it against the candidate descriptions, selects the best match, and drafts using its body. Adding new templates requires no code change — just add a new Custom Metadata record with the right Type, Reason, and When to use text.</div>
       <div class="code-block"><span class="c-comment">### CANDIDATE EMAIL TEMPLATES</span>
 Choose the single most appropriate template based on Case Type,
 Reason, and Description. After selecting, use it as your structural
@@ -589,46 +634,88 @@ the selected template above as your structure:
     </div>
 
     <div class="section-block orange">
-      <div class="section-block-title">Section 4 — INSTRUCTIONS &nbsp; <span style="font-size:11px;color:#5a7896;font-weight:400;">(the guardrails)</span></div>
-      <div class="section-block-desc">Explicit rules the LLM must follow. These are the compliance guardrails that make the output auditable and prevent the most common failure modes.</div>
-      <div class="code-block"><span class="c-comment">### INSTRUCTIONS</span>
-<span class="c-rule">1.</span> State which template you selected on line 1:
-   "Selected template: [Template A / B / C]"
-<span class="c-rule">2.</span> Then output the complete email body — fill every [placeholder]
-   with real values from the Case Details above.
+      <div class="section-block-title">Section 4 — INSTRUCTIONS &nbsp; <span style="font-size:11px;color:#5a7896;font-weight:400;">(the guardrails — different per prompt)</span></div>
+      <div class="section-block-desc">This is where the two prompts diverge. The First Contact prompt instructs the LLM to select a template and preserve all mandatory language. The Reply prompt instructs it to suppress the checklist and focus only on the customer's questions.</div>
+
+      <p style="font-size:12px;font-weight:800;color:#032d60;margin:14px 0 6px;">First Contact prompt instructions</p>
+      <div class="code-block"><span class="c-comment">### INSTRUCTIONS (CSR First Contact Email)</span>
+<span class="c-rule">1.</span> Select the best matching template. State: "Selected template: [Name]"
+<span class="c-rule">2.</span> Output the complete email body — fill every [placeholder] with
+   real values. Include the full document checklist and all submission
+   requirements exactly as written in the template.
 <span class="c-rule">3.</span> Do NOT invent form names, case numbers, or contact details.
-   Use only what is provided.
-<span class="c-rule">4.</span> Do NOT remove any form names (e.g. AM-CMD-001), legal statements,
-   or processing time commitments from the template.
-<span class="c-rule">5.</span> Adjust the tone to be warm and professional.
-<span class="c-rule">6.</span> End with the CSR's real name from the Case Details above.</div>
-      <div class="note" style="margin-bottom:0;"><strong>Rule 1</strong> makes selection auditable — you can always see which template was chosen. <strong>Rule 3 and 4</strong> are the compliance guardrails — the AI is explicitly forbidden from inventing or removing form references and SLAs. <strong>Rule 6</strong> ensures the CSR's actual name appears in the sign-off, not a generic placeholder.</div>
+<span class="c-rule">4.</span> Do NOT remove any form names, legal statements, or processing
+   time commitments from the template.
+<span class="c-rule">5.</span> Adjust tone to be warm and professional.
+<span class="c-rule">6.</span> End with the CSR Name from the CURRENT CASE section above —
+   do not use any name from the email thread.</div>
+
+      <p style="font-size:12px;font-weight:800;color:#032d60;margin:14px 0 6px;">Reply prompt instructions</p>
+      <div class="code-block"><span class="c-comment">### INSTRUCTIONS (CSR Reply Email)</span>
+<span class="c-rule">1.</span> Read the CURRENT EMAIL THREAD. Identify the customer's specific
+   questions from their most recent message.
+<span class="c-rule">2.</span> Draft a reply that directly answers each question. Do not pad
+   or deflect — answer what was asked.
+<span class="c-rule">3.</span> Do NOT repeat the document checklist or submission requirements
+   already sent. No numbered list, no "please submit X, Y and Z",
+   no "the required items remain". Skip the checklist entirely.
+   Exception: if the customer asks about one specific named document,
+   address only that document.
+<span class="c-rule">4.</span> Do NOT invent form names, case numbers, policies, or contact details.
+<span class="c-rule">5.</span> Acknowledge the prior exchange briefly — do not open with a
+   generic "thank you for contacting us."
+<span class="c-rule">6.</span> Keep the response focused and concise. No filler sections.
+<span class="c-rule">7.</span> End with the CSR Name from the CURRENT CASE section above —
+   do not use any name from the email thread.</div>
+      <div class="note" style="margin-bottom:0;"><strong>Why the Reply prompt explicitly bans specific phrases:</strong> "no numbered list", "no 'the required items remain'" — these are the exact patterns the LLM used when we had a single prompt. The Reply instructions were written by looking at actual failure outputs and banning them by name. This is normal for production prompt engineering.</div>
     </div>
 
-    <h3>Why embed templates in the prompt instead of querying EmailTemplate records?</h3>
-    <p>Rohit may ask why the templates are baked into the prompt text rather than queried dynamically from Salesforce's EmailTemplate object. This is a deliberate Phase 1 decision.</p>
+    <h3>Why Template_Scenario__mdt — the reasoning behind the architecture</h3>
+
+    <p>This is the question Rohit or the customer team will almost certainly ask. Here is the full reasoning so you can answer it confidently.</p>
+
+    <p><strong>Why not hardcode the templates directly in the Prompt Template?</strong><br>
+    That was the original POC approach. It worked for 3 templates in a demo but it does not scale. The prompt has a size limit. With dozens of templates embedded as text, you hit that limit quickly and the LLM also struggles to reason across too many options at once. Every time a template needed editing, it required a metadata deployment — something the content team cannot do themselves. Hardcoding also mixes instructions and data in the same file, which is poor practice for anything that needs to be maintained over time.</p>
+
+    <p><strong>Why not use Salesforce's standard EmailTemplate object?</strong><br>
+    This was the obvious first choice. The problem: Salesforce does not allow custom fields on the <span class="mono">EmailTemplate</span> standard object. We needed one key field — <span class="mono">When_To_Use__c</span> — a plain-English description of when a CSR would reach for this template. Without that field, the LLM has no signal to distinguish between templates beyond their body text. That makes accurate selection unreliable, especially when two templates look superficially similar. We hit the custom field restriction during deployment and had to find a better path.</p>
+
+    <p><strong>Why Custom Metadata Type (<span class="mono">Template_Scenario__mdt</span>)?</strong><br>
+    Custom Metadata Types are a Salesforce-native pattern designed exactly for configuration data that needs to be: (1) deployable as code, (2) queryable from Flow and Apex, and (3) editable by admins without a developer. We created <span class="mono">Template_Scenario__mdt</span> with the fields we needed — including <span class="mono">When_To_Use__c</span> and <span class="mono">Template_Body__c</span>. The Prompt Flow now queries it at runtime, filters by <span class="mono">Case_Type__c</span> and <span class="mono">Case_Reason__c</span>, and passes a shortlist of up to 5 matching templates to the LLM. The LLM reads each template's "When to use" description alongside the case context, picks the best match, and drafts using that template's body.</p>
+
+    <p><strong>What this means for the customer's ~1,600 templates:</strong><br>
+    To scale to the full library, the customer creates one <span class="mono">Template_Scenario__mdt</span> record per template. Each record needs: the template body, a one-sentence "When to use" description, and the Case Type and Reason it applies to. No code, no deployments — this is a data entry task their content team can own via Setup → Custom Metadata Types → Template Scenario → Manage Records, or bulk-loaded via Data Loader.</p>
+
+    <p><strong>What comes after CMT — Phase 3 vector search (not in use today):</strong><br>
+    CMT with Type/Reason filtering works well when templates map cleanly to case categories. If it turns out that experienced CSRs pick templates based on subtle judgment that cannot be expressed as a simple Type/Reason tag — for example, two very different situations that both fall under "Account Support / Credentialing" — the next step would be semantic vector search via Data Cloud. Templates would be vectorised once. The case thread becomes the search query. Vector similarity surfaces the closest matches regardless of tagging. The LLM still does the final selection from the shortlist. This is a future decision — the customer does not need Data Cloud to start loading their template library into CMT and testing today.</p>
+
     <table>
-      <tr><th>Approach</th><th>How it works</th><th>When to use</th></tr>
+      <tr><th>Approach</th><th>How it works</th><th>Status</th></tr>
       <tr>
-        <td><strong>Embedded (current demo)</strong></td>
-        <td>All candidate templates are inside the prompt text. The LLM picks from what it can read directly.</td>
-        <td>Proof of concept and demos. Fast to build, easy to test and tune. Works until the candidate set grows beyond ~5–7 templates.</td>
+        <td><strong>Embedded in Prompt Template</strong></td>
+        <td>Templates hardcoded as text inside the Prompt Template XML. No query needed.</td>
+        <td>Replaced — POC only. Not scalable. Every template edit required a deployment.</td>
       </tr>
       <tr>
-        <td><strong>Query and inject (Phase 2)</strong></td>
-        <td>A Prompt Flow queries EmailTemplate records, filters to the top N candidates based on Case Type/Reason tags, then injects only those into the prompt.</td>
-        <td>Production with many templates. Requires EmailTemplate records to be tagged with metadata (Type, Reason, Category). This is Rohit's team's build.</td>
+        <td><strong>Standard EmailTemplate object</strong></td>
+        <td>Flow queries EmailTemplate records filtered by Case Type/Reason.</td>
+        <td>Blocked — Salesforce does not allow custom fields on EmailTemplate. Could not add <span class="mono">When_To_Use__c</span>.</td>
       </tr>
       <tr>
-        <td><strong>LLM picks by name (Phase 3)</strong></td>
-        <td>The LLM sees only template names and use-case descriptions (not full bodies), selects a name, then a second step fetches and fills the chosen template.</td>
-        <td>Scale to thousands of templates. Requires a two-step prompt chain. Future roadmap.</td>
+        <td><strong>Custom Metadata Type — Template_Scenario__mdt</strong></td>
+        <td>Flow queries CMT by Case Type + Reason, injects top 5 candidates. LLM picks best based on "When to use" description + case context.</td>
+        <td><strong>✅ Built and deployed.</strong> Current architecture. No code needed to add or edit templates.</td>
+      </tr>
+      <tr>
+        <td><strong>Semantic / vector search via Data Cloud</strong></td>
+        <td>Templates vectorised in Data Cloud. Case thread used as search query. Vector similarity returns closest matches. LLM selects from shortlist.</td>
+        <td>Phase 3 roadmap. Needed when Type/Reason tagging is insufficient to distinguish templates.</td>
       </tr>
     </table>
 
     <h3>How the type activates the native "Draft with AI" button</h3>
     <p>The Prompt Template is set to type <span class="mono">einstein_gpt__caseEmailDraft</span>. Salesforce treats this type as a signal: "this prompt template is intended for the Case email compose window." When a template of this type is Published, Salesforce automatically adds it to the picker that appears when a CSR clicks Draft with AI — no custom code, no LWC, no page layout change needed to trigger it.</p>
-    <div class="warn"><strong>What this means for the demo vs production:</strong> The demo uses the native Draft with AI button. Rohit's custom LWC adds tone controls (shorter / standard / longer) and a "stamp to compose" action that sit on top of the same AI output. The core logic — template selection, personalisation, guardrails — is identical whether triggered from the native button or the LWC. The LWC is a UX layer, not a different architecture.</div>
+    <div class="warn"><strong>What this means for the demo vs production:</strong> The demo uses the native Draft with AI button, which now shows two options: <strong>CSR First Contact Email</strong> and <strong>CSR Reply Email</strong>. Rohit's custom LWC adds tone controls (shorter / standard / longer) and a "stamp to compose" action on top of the same AI output. The core logic — template selection, personalisation, guardrails, two-prompt separation — is identical whether triggered from the native button or the LWC. The LWC is a UX layer, not a different architecture. In the LWC, the two prompts can be surfaced as a single toggle ("New email / Reply") rather than two separate picker options if preferred.</div>
 
   </div><!-- end arch panel -->
 
@@ -673,9 +760,9 @@ the selected template above as your structure:
         <td>All 3 template scenarios demonstrated via Cases 1, 2, 3.</td>
       </tr>
       <tr>
-        <td>Path B — existing case with a reply thread, AI reads thread and drafts next reply</td>
-        <td><span class="status s-partial">⚠️ Partial</span></td>
-        <td>AI reads Case description and historical closed cases for context, but does not yet read the current open case's existing email thread. A flow element to loop through current case EmailMessages needs to be added.</td>
+        <td>Path B — existing case with a reply thread, AI reads thread and drafts focused next reply without repeating the checklist</td>
+        <td><span class="status s-done">✅ Built</span></td>
+        <td>Dedicated <strong>CSR Reply Email</strong> prompt template. Reads all EmailMessages on the case via the same Prompt Flow, answers the customer's specific questions, and explicitly suppresses the document checklist. Two-prompt architecture replaced the single-prompt approach after testing confirmed that checklist suppression via instructions alone was not reliable when the template body contained the checklist as mandatory language.</td>
       </tr>
       <tr>
         <td>Tone controls — CSR selects shorter / standard / longer output</td>
@@ -688,9 +775,9 @@ the selected template above as your structure:
         <td>Rohit's custom LWC feature. The native Done button in the Draft with AI panel fulfils the same action in the interim.</td>
       </tr>
       <tr>
-        <td>Selection from the real ~1,600 Allergan Moxie email templates</td>
-        <td><span class="status s-pending">❌ Not in demo</span></td>
-        <td>Demo uses 3 representative templates embedded in the prompt. Production requires EmailTemplate records tagged with Type/Reason and a dynamic flow query.</td>
+        <td>Dynamic template selection from a managed template library</td>
+        <td><span class="status s-done">✅ Built</span></td>
+        <td>Templates now live in <span class="mono">Template_Scenario__mdt</span> (Custom Metadata Type). Flow queries by Case Type + Reason, injects top 5 candidates. Adding or editing templates requires no code — create or update a CMT record. The 3 demo templates are loaded. Customer needs to add their full template library as additional CMT records.</td>
       </tr>
       <tr>
         <td>Category and Sub-Category as matching criteria on the flow query</td>
@@ -725,7 +812,12 @@ the selected template above as your structure:
       <tr>
         <td>Path A — fresh case with no prior thread, first outbound draft</td>
         <td><span class="status s-done">✅ Done</span></td>
-        <td>Cases 1, 2, 3 in the demo all demonstrate Path A</td>
+        <td>Cases 1, 2, 3 in the demo all demonstrate Path A. Also: TEST Path A cases A-1, A-2, A-3 in the org (one per template).</td>
+      </tr>
+      <tr>
+        <td>Path B — existing case with reply thread, AI reads thread and drafts focused reply without repeating the checklist</td>
+        <td><span class="status s-done">✅ Done</span></td>
+        <td>Dedicated <strong>CSR Reply Email</strong> prompt. Reads EmailMessages (up to 5, labelled [Customer]/[CSR]), answers customer's specific questions, suppresses document checklist entirely. Sign-off uses logged-in CSR's name from User record — not copied from thread. Validated on Case 00001159 (Medical Director Change follow-up).</td>
       </tr>
       <tr>
         <td>AI selection is auditable — supervisor or QA can see which template was chosen</td>
@@ -743,10 +835,10 @@ the selected template above as your structure:
     <table>
       <tr><th>Requirement</th><th>Status</th><th>What is needed</th><th>Owner</th></tr>
       <tr>
-        <td>Path B — AI reads the current open case's existing email thread before drafting the next reply</td>
-        <td><span class="status s-partial">⚠️ Partial</span></td>
-        <td>AI currently reads closed historical cases for tone but does NOT read the current thread. A flow element to loop through the current case's EmailMessages (Incoming=false) needs to be added to the Prompt Flow.</td>
-        <td>Nisar — Prompt Flow update (~2 hours once EmailMessage read pattern is confirmed)</td>
+        <td>Path B — dedicated Reply prompt that reads the thread and answers questions without repeating the checklist</td>
+        <td><span class="status s-done">✅ Done</span></td>
+        <td><strong>CSR Reply Email</strong> prompt deployed (<span class="mono">Custom_CSR_Reply.genAiPromptTemplate-meta.xml</span>). Uses the same Prompt Flow to read EmailMessages (up to 5, oldest-first, labelled [Customer]/[CSR]). Instructions are purpose-built for follow-up: answer the customer's specific questions, suppress checklist entirely, no filler, sign with the logged-in CSR's name not the thread's prior signatory. Two-prompt design chosen over single-prompt after confirming that Instruction 4 ("preserve mandatory template language") and checklist-suppression instructions conflict irresolvably in a single prompt.</td>
+        <td>Nisar — deployed</td>
       </tr>
       <tr>
         <td>Tone controls — CSR adjusts output length to shorter / standard / longer</td>
@@ -761,10 +853,10 @@ the selected template above as your structure:
         <td>Rohit's team</td>
       </tr>
       <tr>
-        <td>Real template library — AI selects from your actual ~1,600 Allergan Moxie email templates</td>
-        <td><span class="status s-pending">❌ Not built</span></td>
-        <td>Demo uses 3 representative templates embedded in the prompt. Production requires: (1) EmailTemplate records tagged with Type/Reason metadata, (2) a Prompt Flow that queries and injects the top N matching templates dynamically.</td>
-        <td>Rohit's team (template tagging) + Nisar (flow query logic)</td>
+        <td>Dynamic template library — AI selects from a scalable, manageable set of templates</td>
+        <td><span class="status s-done">✅ Built</span></td>
+        <td>Custom Metadata Type <span class="mono">Template_Scenario__mdt</span> deployed with fields: MasterLabel, When_To_Use__c, Template_Body__c, Case_Type__c, Case_Reason__c, Is_Active__c. Flow queries by Type + Reason at runtime. 3 demo records loaded. To scale to the full ~1,600 templates: customer populates CMT records (or bulk-loads via Data Loader) with the template body and a When_To_Use__c sentence per template.</td>
+        <td>Customer (populate CMT records with full template library)</td>
       </tr>
       <tr>
         <td>Category and Sub-Category field filters on the historical case query</td>
@@ -787,7 +879,7 @@ the selected template above as your structure:
     </table>
 
     <div class="phase-hdr" style="margin-top:32px;">What to say about the gaps — use this word for word</div>
-    <div class="say-box" style="margin-bottom: 16px;">"Everything you see today is live in a Salesforce org. The core intelligence — pick the right template, preserve mandatory language, personalise with case context — is working. The gaps are integration work, not architecture work. Tone controls and the stamp action are already in your LWC; we connect the prompt output to those controls. The real template library requires us to tag your EmailTemplate records with Type and Reason metadata so the flow can query them — that is primarily your team's data work. Category and Sub-Category filters are a 30-minute change the moment you give us the API field names. None of these are rebuilds. They are configuration and wiring on top of an architecture that is already proven."</div>
+    <div class="say-box" style="margin-bottom: 16px;">"Everything you see today is live in a Salesforce org. The core intelligence — pick the right template, preserve mandatory language, personalise with case context — is working. The template library is no longer hardcoded. It is a Custom Metadata object called Template Scenario. Right now it has three records — your three demo templates. To get to your full library, your team creates one record per template with the template body and a one-sentence description of when to use it. No code, no deployments — it is a data entry task your content team can own. Tone controls and the stamp action are already in your LWC; we connect the prompt output to those controls. Category and Sub-Category filters are a 30-minute change the moment you give us the API field names. None of these are rebuilds."</div>
 
     <div class="warn"><strong>One structural gap to be fully transparent about:</strong> EmailMessage in Salesforce does not natively record which EmailTemplate was used to compose an outbound email. If you want to score templates by frequency of use by experienced reps in Phase 3, your team will need to add a custom lookup field to EmailMessage and populate it at send time. This does not affect anything in the current demo — it is a future data foundation decision, and it is better to surface it now than to discover it late in the project.</div>
 
