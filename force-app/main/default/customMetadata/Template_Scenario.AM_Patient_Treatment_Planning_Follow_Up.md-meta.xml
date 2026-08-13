@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>AM Patient Treatment Planning Follow Up</label>
+    <protected>false</protected>
+    <values>
+        <field>When_To_Use__c</field>
+        <value xsi:type="xsd:string">Use when following up on an existing patient treatment planning case where the initial requirements have already been communicated. Addresses provider questions without repeating the full pre-treatment checklist.</value>
+    </values>
+    <values>
+        <field>Case_Type__c</field>
+        <value xsi:type="xsd:string">Patient Support</value>
+    </values>
+    <values>
+        <field>Case_Reason__c</field>
+        <value xsi:type="xsd:string">Treatment</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Template_Body__c</field>
+        <value xsi:type="xsd:string">Dear [Contact.FirstName],
+
+Thank you for your follow-up regarding Case #[Case.CaseNumber] for [Account.Name].
+
+[Address the provider's specific questions here based on the email thread above.]
+
+If you have any additional questions before the treatment date, please reply to this email or call our Provider Services line directly.
+
+Warm regards,
+[User.FirstName] [User.LastName]
+Provider Services Representative
+Allergan Moxie</value>
+    </values>
+</CustomMetadata>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <title>Allergan Moxie — Path A/B Testing Guide</title>
+  <title>Allergan Moxie — Testing Guide</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f0f4f8; padding: 40px 24px; color: #1a1a2e; }
@@ -110,14 +110,14 @@
 <body>
 <div class="wrap">
 
-  <div class="page-title">Path A / Path B Testing Guide</div>
-  <div class="page-sub">6 test cases — 3 templates × 2 paths &nbsp;·&nbsp; Step-by-step instructions &nbsp;·&nbsp; What to look for in each output</div>
+  <div class="page-title">Allergan Moxie — Testing Guide</div>
+  <div class="page-sub">10 test cases &nbsp;·&nbsp; Two prompt templates: First Contact + Reply &nbsp;·&nbsp; Credentialing + Patient Journey</div>
 
   <div class="tabs">
     <div class="tab active" onclick="show('overview',this)">Overview</div>
-    <div class="tab" onclick="show('pathA',this)">Path A — 3 Cases</div>
-    <div class="tab" onclick="show('pathB',this)">Path B — 3 Cases</div>
-    <div class="tab" onclick="show('comparison',this)">A vs B Comparison</div>
+    <div class="tab" onclick="show('pathA',this)">Path A — First Contact</div>
+    <div class="tab" onclick="show('pathB',this)">Path B — Reply</div>
+    <div class="tab" onclick="show('comparison',this)">First Contact vs Reply</div>
   </div>
 
   <!-- ═══════════════════════════════════════════════════════
@@ -126,75 +126,105 @@
   <div class="panel active" id="tab-overview">
 
     <h2>What you are testing</h2>
-    <p>The Prompt Flow now has two paths. Both paths run through the same Prompt Template and produce a complete email draft with one click. The difference is what the LLM reads before it writes.</p>
+    <p>There are now <strong>two purpose-built prompt templates</strong> and <strong>10 test cases</strong> across three scenario groups. Each prompt has one job with no conflicting responsibilities.</p>
 
     <div class="grid">
       <div class="path-card path-a-card">
-        <div class="path-card-title">Path A — First Contact</div>
-        <p>The case has no existing email thread. The LLM reads the Case description, picks the right template, fills the placeholders, and uses historical closed cases to calibrate tone. Output is a first-contact email drafted from scratch.</p>
+        <div class="path-card-title">CSR First Contact Email</div>
+        <p>Use on a new case with no prior email thread. Selects the right template from the library, outputs the full email including the complete document checklist and all submission requirements. Personalises with case-specific details.</p>
       </div>
       <div class="path-card path-b-card">
-        <div class="path-card-title">Path B — Follow-up Reply</div>
-        <p>The case already has an email thread. The LLM reads the full conversation first, then picks the template and drafts the next reply. Output acknowledges prior exchange, answers specific questions raised, and does not repeat what was already said.</p>
+        <div class="path-card-title">CSR Reply Email</div>
+        <p>Use on an existing case with a reply thread. Reads all EmailMessages on the case, identifies the customer's specific questions, drafts a focused reply. Never repeats the checklist already sent. Answers what was asked — nothing more.</p>
       </div>
     </div>
 
-    <h3>The 6 test cases</h3>
+    <div class="note"><strong>Why two prompts?</strong> A single prompt tried to handle both scenarios using conditional instructions. Testing showed that Instruction 4 ("preserve all mandatory template language") and checklist-suppression instructions were irresolvably in conflict — Instruction 4 always won. Two prompts with no shared responsibilities is the correct fix. Each prompt is purpose-built and has no internal contradictions.</div>
+
+    <h3>All 10 test cases</h3>
     <table>
-      <tr><th>Case ID</th><th>Path</th><th>Template</th><th>Case subject</th><th>What the AI must handle</th></tr>
+      <tr><th>Case</th><th>Prompt to use</th><th>Template</th><th>Case subject</th><th>What to verify</th></tr>
       <tr>
         <td><span class="mono">A-1</span></td>
-        <td><span class="badge path-a-id">Path A</span></td>
+        <td><span class="badge path-a-id">First Contact</span></td>
         <td><span class="badge tmpl-a">Template A</span></td>
         <td>Medical Director Change — Dr. Patel replacing Dr. Kim</td>
-        <td>First-contact email. AI selects "AM Medical Director Change". Request Form AM-CMD-001, license, W-9. 5–7 day SLA.</td>
+        <td>Selects AM Medical Director Change. Form AM-CMD-001, license, W-9. 5–7 day SLA.</td>
       </tr>
       <tr>
         <td><span class="mono">A-2</span></td>
-        <td><span class="badge path-a-id">Path A</span></td>
+        <td><span class="badge path-a-id">First Contact</span></td>
         <td><span class="badge tmpl-b">Template B</span></td>
         <td>New Practice Enrollment — Pacific Coast Aesthetics</td>
-        <td>First-contact email. AI selects "AM New Practice Enrollment". Request 5 documents. 10–14 day SLA. Personalise with Dr. Vasquez, CA+NV licenses, Malibu address.</td>
+        <td>Selects AM New Practice Enrollment. 5 documents. 10–14 day SLA. Dr. Vasquez, Malibu personalisation.</td>
       </tr>
       <tr>
         <td><span class="mono">A-3</span></td>
-        <td><span class="badge path-a-id">Path A</span></td>
+        <td><span class="badge path-a-id">First Contact</span></td>
         <td><span class="badge tmpl-c">Template C</span></td>
         <td>Product Access Review — Eligibility Determination</td>
-        <td>First-contact not-eligible determination. AI selects "AM Product Access Not Eligible". Reference Form AM-EL-010. State 30-day dispute window.</td>
+        <td>Selects AM Product Access Not Eligible. Form AM-EL-010. 30-day dispute window.</td>
       </tr>
       <tr>
         <td><span class="mono">B-1</span></td>
-        <td><span class="badge path-b-id">Path B</span></td>
+        <td><span class="badge path-b-id">Reply</span></td>
         <td><span class="badge tmpl-a">Template A</span></td>
         <td>Medical Director Change — Forms Sent, Awaiting Signatures</td>
-        <td>3-email thread. Must answer: (1) Is digital signature acceptable? (2) Is there a deadline? Must not repeat what was already sent.</td>
+        <td>3-email thread. Answers digital sig + deadline questions. No checklist repeated.</td>
       </tr>
       <tr>
         <td><span class="mono">B-2</span></td>
-        <td><span class="badge path-b-id">Path B</span></td>
+        <td><span class="badge path-b-id">Reply</span></td>
         <td><span class="badge tmpl-b">Template B</span></td>
         <td>New Practice Enrollment — Missing Insurance Certificate</td>
-        <td>3-email thread. Must answer: (1) Can they proceed while insurance is being upgraded? (2) When does the 10–14 day clock start?</td>
+        <td>3-email thread. Answers insurance upgrade question + when 10–14 day clock starts. No re-listing confirmed docs.</td>
       </tr>
       <tr>
         <td><span class="mono">B-3</span></td>
-        <td><span class="badge path-b-id">Path B</span></td>
+        <td><span class="badge path-b-id">Reply</span></td>
         <td><span class="badge tmpl-c">Template C</span></td>
         <td>Product Access Review — Customer Disputing Eligibility</td>
-        <td>4-email thread. Customer has submitted dispute evidence. Must provide a status update on the review timeline. Must not re-send the determination letter.</td>
+        <td>4-email thread. Status update on dispute review. Does not re-send determination letter.</td>
+      </tr>
+      <tr style="background:#fafff8;">
+        <td><span class="mono">C-1</span></td>
+        <td><span class="badge path-a-id">First Contact</span></td>
+        <td><span class="badge" style="background:#d0f0e0;color:#0a4a2a;">Treatment Planning</span></td>
+        <td>Patient Treatment Planning — Sculptra session for 3 patients</td>
+        <td>Selects AM Patient Treatment Planning. Consent form AM-PC-005, lot number requirement AM-TR-001, AE reporting AM-AE-003. 48hr product request window.</td>
+      </tr>
+      <tr style="background:#fafff8;">
+        <td><span class="mono">C-2</span></td>
+        <td><span class="badge path-b-id">Reply</span></td>
+        <td><span class="badge" style="background:#d0f0e0;color:#0a4a2a;">Treatment Planning</span></td>
+        <td>Patient Treatment Planning — Pre-treatment checklist questions</td>
+        <td>3-email thread. Answers blood thinner documentation question + consent form retention period. No pre-treatment checklist repeated.</td>
+      </tr>
+      <tr style="background:#fff8f8;">
+        <td><span class="mono">C-3</span></td>
+        <td><span class="badge path-a-id">First Contact</span></td>
+        <td><span class="badge" style="background:#f7d0d0;color:#6a0a0a;">Adverse Event</span></td>
+        <td>Adverse Event Report — Post-treatment swelling and redness</td>
+        <td>Selects AM Patient Adverse Event. Form AM-AE-003 within 72hrs, lot number, Section 4.2 compliance warning. Clinical follow-up within 1 business day.</td>
+      </tr>
+      <tr style="background:#fff8f8;">
+        <td><span class="mono">C-4</span></td>
+        <td><span class="badge path-b-id">Reply</span></td>
+        <td><span class="badge" style="background:#f7d0d0;color:#6a0a0a;">Adverse Event</span></td>
+        <td>Adverse Event Follow-Up — Form AM-AE-003 submission questions</td>
+        <td>3-email thread. Answers 72hr window start question + future treatment question. No AE checklist repeated.</td>
       </tr>
     </table>
 
-    <h3>How to run each test — the 4 clicks</h3>
+    <h3>How to run each test</h3>
     <ol class="steps">
-      <li>Go to <strong>Cases</strong> tab in the org → search the case subject (prefix <strong>TEST Path A</strong> or <strong>TEST Path B</strong>)</li>
-      <li>Open the case → click <strong>Activity</strong> in the right panel → click <strong>Email</strong></li>
-      <li>In the email compose toolbar, click <strong>Draft with AI</strong> → select <strong>Custom CSR Response</strong> → click <strong>Generate</strong></li>
-      <li>Read the output against the checklist in this guide for each case</li>
+      <li>Go to the <strong>Cases</strong> tab in the org → search the case subject from the table above</li>
+      <li>Open the case → click <strong>Activity</strong> → click <strong>Email</strong> to open the compose window</li>
+      <li>Click <strong>Draft with AI</strong> → select either <strong>CSR First Contact Email</strong> or <strong>CSR Reply Email</strong> depending on the test case → click <strong>Generate</strong></li>
+      <li>Read the output against the checklist in the Path A or Path B tab of this guide</li>
     </ol>
 
-    <div class="note"><strong>Tip for the demo:</strong> The cases are prefixed with "TEST Path A" and "TEST Path B" so you can search them quickly. For the actual customer demo, use the four original cases (without the TEST prefix) as those have cleaner subject lines.</div>
+    <div class="note"><strong>Which prompt to pick:</strong> First Contact = new case, no thread. Reply = case already has emails from the customer. When in doubt, check the Activity feed — if there are EmailMessage records on the case, use Reply.</div>
 
   </div>
 
@@ -204,8 +234,8 @@
   ═══════════════════════════════════════════════════════ -->
   <div class="panel" id="tab-pathA">
 
-    <h2>Path A — First Contact (no email thread)</h2>
-    <p>These three cases have no emails on them. The flow skips the thread-reading branch and goes straight to historical grounding. The LLM's full attention is on picking the right template and drafting from scratch.</p>
+    <h2>Path A — First Contact Cases (no prior email thread)</h2>
+    <p>Use <strong>CSR First Contact Email</strong> for all five cases below. These cases have no email thread — the AI drafts the first outbound response including the full document checklist or reporting requirements. Covers three credentialing scenarios (A-1, A-2, A-3) and two patient journey scenarios (C-1, C-3).</p>
 
     <!-- A-1 -->
     <div class="test-card">
@@ -225,7 +255,7 @@
 
         <div class="section-lbl">Click path</div>
         <ol class="steps">
-          <li>Open case → Activity → Email → Draft with AI → Custom CSR Response → Generate</li>
+          <li>Open case → Activity → Email → Draft with AI → <strong>CSR First Contact Email</strong> → Generate</li>
           <li>Read the output against the checklist below</li>
         </ol>
 
@@ -288,7 +318,7 @@ Warm regards,
 
         <div class="section-lbl">Click path</div>
         <ol class="steps">
-          <li>Open case → Activity → Email → Draft with AI → Custom CSR Response → Generate</li>
+          <li>Open case → Activity → Email → Draft with AI → <strong>CSR First Contact Email</strong> → Generate</li>
         </ol>
 
         <div class="section-lbl">What the output MUST contain</div>
@@ -348,7 +378,7 @@ Personalised section:
 
         <div class="section-lbl">Click path</div>
         <ol class="steps">
-          <li>Open case → Activity → Email → Draft with AI → Custom CSR Response → Generate</li>
+          <li>Open case → Activity → Email → Draft with AI → <strong>CSR First Contact Email</strong> → Generate</li>
         </ol>
 
         <div class="section-lbl">What the output MUST contain</div>
@@ -387,6 +417,86 @@ Next steps to address eligibility:
       </div>
     </div>
 
+    <hr class="dashed"/>
+    <h3 style="color:#0a4a2a;margin-top:32px;">Patient Treatment Journey — First Contact Cases</h3>
+    <p>Two additional first-contact cases using the patient journey templates. Case type: <span class="mono">Patient Support</span> / Reason: <span class="mono">Treatment</span>. Use <strong>CSR First Contact Email</strong> for both.</p>
+
+    <!-- C-1 -->
+    <div class="test-card">
+      <div class="tc-header path-a-hdr">
+        <span class="tc-id path-a-id">C-1</span>
+        <span class="tc-title">Patient Treatment Planning — Sculptra session for 3 patients</span>
+        <span class="badge" style="background:#d0f0e0;color:#0a4a2a;">Treatment Planning</span>
+        <span class="badge path-a-id">First Contact</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "Patient Treatment Planning - Sculptra session"</div>
+
+        <div class="section-lbl">What's in the case description</div>
+        <p>Three patients scheduled for Sculptra Aesthetic next Thursday. First time using Sculptra at the practice. Dr. Patel is the treating provider. No known contraindications. Practice wants to confirm product availability, consent forms, and documentation requirements.</p>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open case → Activity → Email → Draft with AI → <strong>CSR First Contact Email</strong> → Generate</li>
+          <li>Read the output against the checklist below</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Selects "AM Patient Treatment Planning" template</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References "Form AM-PC-005" (Patient Consent Form) exactly</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References "Form AM-TR-001" (Treatment Record) exactly</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References "Form AM-AE-003" (Adverse Event Reporting Form) exactly</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States adverse events must be reported "within 24 hours"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States product requests require "at least 48 hours" notice before appointment</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">Mentions Dr. Patel or Sculptra from the case description (personalisation)</span></li>
+          <li><span class="chk"></span><span class="chk-text">Sign-off uses logged-in CSR name — not any name from the thread</span></li>
+        </ul>
+
+        <div class="pass"><strong>Pass condition:</strong> All three form references present (AM-PC-005, AM-TR-001, AM-AE-003). 24hr AE reporting window stated. 48hr product request window stated. Personalised to Sculptra / Dr. Patel from description.</div>
+        <div class="warn"><strong>If "AM Patient Adverse Event" is selected instead:</strong> Edit the description to emphasise "upcoming treatment planning" more explicitly and re-generate.</div>
+      </div>
+    </div>
+
+    <!-- C-3 -->
+    <div class="test-card">
+      <div class="tc-header path-a-hdr">
+        <span class="tc-id path-a-id">C-3</span>
+        <span class="tc-title">Adverse Event Report — Post-treatment swelling and redness</span>
+        <span class="badge" style="background:#f7d0d0;color:#6a0a0a;">Adverse Event</span>
+        <span class="badge path-a-id">First Contact</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "Adverse Event Report - Post-treatment swelling"</div>
+
+        <div class="section-lbl">What's in the case description</div>
+        <p>Significant swelling and redness 6 hours after Juvederm filler by Dr. Patel. 48-year-old female, first filler treatment. Product lot: JUV-2026-084512, expiry 2027-03. Patient monitoring at home, no emergency intervention required. Practice asking for next steps and reporting requirements.</p>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open case → Activity → Email → Draft with AI → <strong>CSR First Contact Email</strong> → Generate</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Selects "AM Patient Adverse Event" template</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References "Form AM-AE-003" exactly</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States the 72-hour submission deadline for Form AM-AE-003</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References "Section 4.2 — Safety Reporting Obligations" (mandatory compliance language)</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States clinical team will follow up "within one business day" of receiving the form</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">Includes the product lot number JUV-2026-084512 from the case description</span></li>
+          <li><span class="chk"></span><span class="chk-text">Tone is serious and supportive — not dismissive of the event</span></li>
+        </ul>
+
+        <div class="pass"><strong>Pass condition:</strong> AM Patient Adverse Event selected. Form AM-AE-003 present. 72hr deadline stated. Section 4.2 compliance language present. 1 business day follow-up committed. Lot number from case description included.</div>
+        <div class="warn"><strong>Compliance-sensitive template.</strong> Section 4.2 and the 72-hour window are mandatory language. If either is missing, click Revise and explicitly request them.</div>
+      </div>
+    </div>
+
   </div><!-- end Path A panel -->
 
 
@@ -395,8 +505,8 @@ Next steps to address eligibility:
   ═══════════════════════════════════════════════════════ -->
   <div class="panel" id="tab-pathB">
 
-    <h2>Path B — Follow-up Reply (existing email thread)</h2>
-    <p>These three cases each have a full email conversation already on them. The flow reads the thread first, then passes it to the LLM alongside the historical grounding. The LLM must answer the specific questions raised in the thread — not just draft a generic first response.</p>
+    <h2>Path B — Reply Cases (existing email thread on the case)</h2>
+    <p>Use <strong>CSR Reply Email</strong> for all five cases below. Each case has an existing email thread — the AI reads the full conversation, identifies the customer's specific questions, and drafts a focused reply without repeating what was already sent. Covers three credentialing scenarios (B-1, B-2, B-3) and two patient journey scenarios (C-2, C-4).</p>
 
     <!-- B-1 -->
     <div class="test-card">
@@ -433,7 +543,7 @@ We want to make sure we don't create a gap in our credentialing.</div>
         <div class="section-lbl">Click path</div>
         <ol class="steps">
           <li>Open case → scroll Activity feed and point out the 3-email thread to your audience</li>
-          <li>Activity → Email → Draft with AI → Custom CSR Response → Generate</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
           <li>Compare output to checklist below</li>
         </ol>
 
@@ -509,6 +619,13 @@ Warm regards,
           </div>
         </div>
 
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open case → scroll Activity feed and point to the 3-email thread</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
+          <li>Compare output to checklist below</li>
+        </ol>
+
         <div class="section-lbl">What the output MUST contain</div>
         <ul class="checklist">
           <li><span class="chk"></span><span class="chk-text"><span class="must">Line 1: "Selected template: AM New Practice Enrollment"</span></span></li>
@@ -556,6 +673,13 @@ Warm regards,
           </div>
         </div>
 
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open case → scroll Activity feed and point to the 4-email thread</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
+          <li>Compare output to checklist below</li>
+        </ol>
+
         <div class="section-lbl">What the output MUST contain</div>
         <ul class="checklist">
           <li><span class="chk"></span><span class="chk-text"><span class="must">Line 1: "Selected template: AM Product Access Not Eligible"</span></span></li>
@@ -572,7 +696,118 @@ Warm regards,
       </div>
     </div>
 
+    <hr class="dashed"/>
+    <h3 style="color:#6a0a0a;margin-top:32px;">Patient Treatment Journey — Reply Cases</h3>
+    <p>Two additional reply cases for the patient journey scenarios. Case type: <span class="mono">Patient Support</span> / Reason: <span class="mono">Treatment</span>. Both cases already have an email thread — use <strong>CSR Reply Email</strong> for both.</p>
+
+    <!-- C-2 -->
+    <div class="test-card">
+      <div class="tc-header path-b-hdr">
+        <span class="tc-id path-b-id">C-2</span>
+        <span class="tc-title">Patient Treatment Planning — Follow-up questions from provider</span>
+        <span class="badge" style="background:#d0f0e0;color:#0a4a2a;">Treatment Planning</span>
+        <span class="badge path-b-id">Reply</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "Patient Treatment Planning - Pre-treatment checklist questions"</div>
+
+        <div class="section-lbl">Email thread already on this case (3 emails)</div>
+        <div class="thread-box">
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">5 days ago</span></div>
+            <div class="thread-body">Hello, We have a Botox treatment session next week for two new patients. Can you please confirm what forms they need to sign and whether we need to submit anything to you before the appointment?</div>
+          </div>
+          <div class="thread-msg thread-from-csr">
+            <div class="thread-meta"><span class="from-csr-lbl">CSR → CUSTOMER</span><span class="thread-day">4 days ago</span></div>
+            <div class="thread-body">Dear Sarah, Your account is in good standing. Patients must sign Form AM-PC-005 before treatment. Record lot number and expiry per Form AM-TR-001. Any adverse events reported within 24hrs using Form AM-AE-003. You do not need to submit anything in advance.</div>
+          </div>
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Yesterday — UNANSWERED</span></div>
+            <div class="thread-body">Hi Derek, Thank you. Two follow-up questions:<br>
+<strong>1. One patient is on blood thinners — does that affect anything on our end from a documentation standpoint, or is that purely a clinical decision for Dr. Patel?</strong><br>
+<strong>2. How long do we need to retain the signed consent forms — is there a minimum retention period?</strong></div>
+          </div>
+        </div>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open case → scroll Activity feed and point to the 3-email thread</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
+          <li>Compare output to checklist below</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Opens as a follow-up — NOT a first-contact email re-listing pre-treatment requirements</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q1: blood thinner patient — documentation impact vs clinical decision boundary</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q2: consent form retention period</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Does NOT re-list AM-PC-005, AM-TR-001, AM-AE-003 (already sent in prior CSR email)</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">Tone is helpful and specific — not generic</span></li>
+          <li><span class="chk"></span><span class="chk-text">Sign-off uses logged-in CSR name</span></li>
+        </ul>
+
+        <div class="pass"><strong>Pass condition:</strong> Both questions answered. No pre-treatment checklist repeated. Focused 3–4 paragraph reply.</div>
+        <div class="fail"><strong>Fail condition:</strong> If the output re-lists AM-PC-005, AM-TR-001, AM-AE-003 — the Reply prompt's checklist suppression did not hold. Report it for prompt tuning.</div>
+      </div>
+    </div>
+
+    <!-- C-4 -->
+    <div class="test-card">
+      <div class="tc-header path-b-hdr">
+        <span class="tc-id path-b-id">C-4</span>
+        <span class="tc-title">Adverse Event Follow-Up — Questions about the reporting process</span>
+        <span class="badge" style="background:#f7d0d0;color:#6a0a0a;">Adverse Event</span>
+        <span class="badge path-b-id">Reply</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "Adverse Event Follow-Up - Form AM-AE-003 submission questions"</div>
+
+        <div class="section-lbl">Email thread already on this case (3 emails)</div>
+        <div class="thread-box">
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">3 days ago</span></div>
+            <div class="thread-body">Hello, I need to report an adverse event. Patient experienced mild eyelid drooping (ptosis) 3 days after Botox treatment. Patient is not in distress, symptom appears to be resolving. Dr. Patel treated her. Lot: BTX-2026-091233, expiry 2027-06. What do we need to do?</div>
+          </div>
+          <div class="thread-msg thread-from-csr">
+            <div class="thread-meta"><span class="from-csr-lbl">CSR → CUSTOMER</span><span class="thread-day">2 days ago</span></div>
+            <div class="thread-body">Dear Sarah, Please submit Form AM-AE-003 within 72 hours. Include lot BTX-2026-091233, expiry 2027-06. Clinical description: onset timing, severity, any intervention. Retain patient's signed AM-PC-005 in her file. Late reporting may affect account standing under Section 4.2. Clinical team will follow up within 1 business day of receiving the form.</div>
+          </div>
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Yesterday — UNANSWERED</span></div>
+            <div class="thread-body">Hi Derek, We submitted Form AM-AE-003 this morning. Two questions:<br>
+<strong>1. The 72-hour window — does it start from when the patient called us to report it, or from when the treatment was performed?</strong><br>
+<strong>2. The patient is asking if this will affect her ability to receive Botox in the future. Is that something you can advise on, or should she consult her physician?</strong></div>
+          </div>
+        </div>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open case → scroll Activity feed to show the 3-email thread</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
+          <li>Compare output to checklist below</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Acknowledges Form AM-AE-003 was submitted — does not ask them to submit it again</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Answers Q1: when the 72-hour window starts (from identification/notification, not treatment date)</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q2: future treatment eligibility — appropriately defers clinical decision to physician</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Does NOT re-list the full AE reporting checklist (Form AM-AE-003, lot number, Section 4.2)</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">Tone is supportive — acknowledges the practice reported promptly</span></li>
+          <li><span class="chk"></span><span class="chk-text">Sign-off uses logged-in CSR name</span></li>
+        </ul>
+
+        <div class="pass"><strong>Pass condition:</strong> Both questions answered. AE checklist not repeated. Tone acknowledges the form was already submitted. Future treatment question handled with appropriate clinical boundary.</div>
+        <div class="fail"><strong>Fail condition:</strong> If the output re-states "please submit Form AM-AE-003 within 72 hours" — the LLM did not read that the form was already submitted this morning. Report it for tuning.</div>
+      </div>
+    </div>
+
   </div><!-- end Path B panel -->
+
 
 
   <!-- ═══════════════════════════════════════════════════════
@@ -642,6 +877,47 @@ Warm regards,
       </div>
     </div>
     <div class="note">This pair is the most compelling for compliance stakeholders. The same template handles both the initial determination AND the dispute follow-up, but produces completely different language — because the AI read the thread and understood the context had changed.</div>
+
+    <hr class="dashed"/>
+
+    <h3>Patient Journey — Treatment Planning (C-1 vs C-2)</h3>
+    <div class="diff-row">
+      <div class="diff-box diff-a">
+        <div class="diff-label">Path A — C-1 — First Contact (Sculptra session)</div>
+        <strong>Prompt used:</strong> CSR First Contact Email<br><br>
+        <strong>Opening:</strong> "Thank you for contacting Allergan Moxie Provider Services..."<br><br>
+        <strong>Body:</strong> Full pre-treatment checklist — Form AM-PC-005 (consent), Form AM-TR-001 (treatment record with lot numbers), Form AM-AE-003 (adverse event reporting within 24hrs). 48hr product request window.<br><br>
+        <strong>What AI added:</strong> Personalised to Dr. Patel, Sculptra, 3 patients from description.
+      </div>
+      <div class="diff-box diff-b">
+        <div class="diff-label">Path B — C-2 — Follow-up Reply (blood thinner + retention)</div>
+        <strong>Prompt used:</strong> CSR Reply Email<br><br>
+        <strong>Opening:</strong> Acknowledges prior exchange — NOT a new first-contact<br><br>
+        <strong>Body:</strong> Answers the two specific questions only — blood thinner patient documentation scope, consent form retention period. Does not repeat AM-PC-005, AM-TR-001, AM-AE-003 already sent in prior email.<br><br>
+        <strong>What AI avoided:</strong> Re-listing the pre-treatment checklist that was already sent 4 days ago.
+      </div>
+    </div>
+
+    <hr class="dashed"/>
+
+    <h3>Patient Journey — Adverse Event (C-3 vs C-4)</h3>
+    <div class="diff-row">
+      <div class="diff-box diff-a">
+        <div class="diff-label">Path A — C-3 — First Contact (post-treatment swelling)</div>
+        <strong>Prompt used:</strong> CSR First Contact Email<br><br>
+        <strong>Opening:</strong> "We take all reports of adverse events seriously..."<br><br>
+        <strong>Body:</strong> Full AE reporting checklist — Form AM-AE-003 within 72hrs, lot number JUV-2026-084512, clinical description requirements, Section 4.2 compliance warning, 1 business day follow-up commitment.<br><br>
+        <strong>Tone:</strong> Serious and supportive — sets expectations and obligations clearly on first contact.
+      </div>
+      <div class="diff-box diff-b">
+        <div class="diff-label">Path B — C-4 — Follow-up Reply (form submitted, process questions)</div>
+        <strong>Prompt used:</strong> CSR Reply Email<br><br>
+        <strong>Opening:</strong> Acknowledges Form AM-AE-003 was submitted this morning<br><br>
+        <strong>Body:</strong> Answers the two questions — when the 72hr window starts, whether the event affects future treatment eligibility (deferred to physician). Does not repeat the AE checklist already sent 2 days ago.<br><br>
+        <strong>What AI avoided:</strong> Asking them to submit a form they already submitted. Re-sending compliance warnings to a practice that already complied.
+      </div>
+    </div>
+    <div class="note">Patient journey cases are the most powerful proof point for compliance-sensitive customers. The Adverse Event template contains the strictest mandatory language in the library (Section 4.2). Path A preserves every word. Path B — on the follow-up — does not repeat it, because the provider already received and acted on it. Same compliance, zero redundancy.</div>
 
     <hr class="dashed"/>
 

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>AM Patient Treatment Planning</label>
+    <protected>false</protected>
+    <values>
+        <field>When_To_Use__c</field>
+        <value xsi:type="xsd:string">Use when a provider contacts us after scheduling or planning a patient treatment to confirm product availability, treatment protocol, and documentation requirements before the appointment.</value>
+    </values>
+    <values>
+        <field>Case_Type__c</field>
+        <value xsi:type="xsd:string">Patient Support</value>
+    </values>
+    <values>
+        <field>Case_Reason__c</field>
+        <value xsi:type="xsd:string">Treatment</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Template_Body__c</field>
+        <value xsi:type="xsd:string">Dear [Contact.FirstName],
+
+Thank you for contacting Allergan Moxie Provider Services regarding the upcoming treatment for Case #[Case.CaseNumber] at [Account.Name].
+
+We are pleased to confirm that the requested products are available and your account is in good standing to proceed.
+
+To ensure a smooth treatment experience, please review the following before the appointment:
+
+1. Confirm the treating provider holds a current, active medical license and is listed on your Allergan Moxie credentialing record.
+2. Ensure the patient has completed and signed the Allergan Moxie Patient Consent Form (Form AM-PC-005) prior to treatment.
+3. Verify the product lot numbers and expiry dates are recorded in the patient file at time of administration (required per Form AM-TR-001, Treatment Record).
+4. Any adverse events or unexpected reactions must be reported within 24 hours using the Adverse Event Reporting Form (Form AM-AE-003).
+
+If you require additional product units or a dosage consultation prior to the appointment, please reply to this email at least 48 hours before the scheduled treatment date.
+
+We look forward to supporting your patient care at [Account.Name].
+
+Warm regards,
+[User.FirstName] [User.LastName]
+Provider Services Representative
+Allergan Moxie</value>
+    </values>
+</CustomMetadata>

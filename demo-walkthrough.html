@@ -463,6 +463,62 @@ Allergan Moxie</div>
     </div>
 
 
+    <!-- ── Part C — Patient Treatment Journey ── -->
+    <hr class="dashed"/>
+
+    <div class="case-block" style="border-left-color:#0a4a2a;">
+      <h3 style="color:#0a4a2a;">Part C — Patient Treatment Journey <span style="font-size:13px;font-weight:600;color:#5a7896;">(extended demo — add if time allows)</span></h3>
+      <p>Two new scenario types — Treatment Planning and Adverse Event reporting — using the same two-prompt architecture as Credentialing. Case type: <span class="mono">Patient Support</span> / Case reason: <span class="mono">Treatment</span>. The template library was extended with four new Custom Metadata records; no changes were needed to the prompt templates or the Flow.</p>
+
+      <div class="say-box" style="border-color:#0a4a2a;">"We can extend this to any scenario your team handles — not just credentialing. We added a patient treatment journey module to show the architecture scales. Same two buttons, same principles, completely different use case."</div>
+
+      <h4 style="margin-top:24px;">Case C-1 — Treatment Planning First Contact</h4>
+      <div class="step-block">
+        <ol class="steps">
+          <li>Go to <strong>Cases</strong> → search <strong>Patient Treatment Planning - Sculptra session</strong> → open it</li>
+          <li>Show case description: first Sculptra session, Dr. Patel treating, 3 patients, no thread</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR First Contact Email</strong> → Generate</li>
+        </ol>
+        <div class="note"><strong>What to point to:</strong> Template selected is "AM Patient Treatment Planning" — a completely different scenario. The same First Contact prompt picked it from the library based on Case Type = Patient Support / Reason = Treatment. Form references AM-PC-005, AM-TR-001, AM-AE-003 all present. 24-hour adverse event window and 48-hour product request window both stated — that is the compliance language from this template category.</div>
+      </div>
+
+      <h4 style="margin-top:24px;">Case C-2 — Treatment Planning Reply</h4>
+      <div class="step-block">
+        <ol class="steps">
+          <li>Go to <strong>Cases</strong> → search <strong>Patient Treatment Planning - Pre-treatment checklist questions</strong> → open it</li>
+          <li>Scroll Activity feed — show the 3-email thread. Prior CSR already sent the full checklist. Customer is now asking two specific follow-up questions: blood thinner documentation, and consent form retention period</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
+        </ol>
+        <div class="note"><strong>What to point to:</strong> Reply answers both questions. Does not repeat AM-PC-005, AM-TR-001, AM-AE-003 — that was already sent. This is the same checklist-suppression behaviour the audience saw in Case 4, now in a completely different scenario. The pattern holds across use cases.</div>
+      </div>
+
+      <h4 style="margin-top:24px;">Case C-3 — Adverse Event First Contact</h4>
+      <div class="step-block">
+        <ol class="steps">
+          <li>Go to <strong>Cases</strong> → search <strong>Adverse Event Report - Post-treatment swelling</strong> → open it</li>
+          <li>Show description: post-Juvederm swelling, Lot JUV-2026-084512, 6hrs post-treatment, practice asking for next steps</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR First Contact Email</strong> → Generate</li>
+        </ol>
+        <div class="note"><strong>What to point to:</strong> Template selected is "AM Patient Adverse Event" — the AI matched the case context to the compliance-heavy AE template. Point to Form AM-AE-003 (72-hour deadline), <strong>Section 4.2 — Safety Reporting Obligations</strong> (mandatory compliance language), and the 1 business day follow-up commitment. These are mandatory phrases from your template — none were dropped.</div>
+        <div class="note" style="border-color:#e53e3e;"><strong>Compliance talking point:</strong> "This is the template your compliance team would care most about. Section 4.2 and the 72-hour window cannot be omitted. The AI has an explicit instruction not to remove mandatory language from the template body — those words will always be in the output, regardless of what else the case contains."</div>
+      </div>
+
+      <h4 style="margin-top:24px;">Case C-4 — Adverse Event Reply</h4>
+      <div class="step-block">
+        <ol class="steps">
+          <li>Go to <strong>Cases</strong> → search <strong>Adverse Event Follow-Up - Form AM-AE-003 submission questions</strong> → open it</li>
+          <li>Show thread: prior CSR sent full AE reporting requirements. Customer has now submitted the form and is asking two follow-up questions — when the 72-hour window starts, and whether the patient can receive Botox in future</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
+        </ol>
+        <div class="note"><strong>What to point to:</strong> The reply does not ask the customer to submit Form AM-AE-003 again — it read the thread and saw it was already submitted. It answers the 72-hour window question and handles the future treatment question with the appropriate clinical boundary (deferred to physician). The compliance checklist is not repeated. This is the Reply prompt demonstrating the same intelligence on the hardest scenario in the library.</div>
+      </div>
+
+      <div class="note" style="margin-top: 22px; font-style: italic;">
+        <strong>Closing statement for Part C:</strong> "Same architecture. Same two buttons. The template library extended by four Custom Metadata records — no changes to the prompt or the Flow. That is how this scales: your team writes the template content, we wire it in, and the AI handles every scenario the same way."
+      </div>
+    </div>
+
+
     <!-- ── Recovery guide ── -->
     <hr class="dashed"/>
     <div class="recovery-table">
@@ -617,7 +673,19 @@ enroll as an Allergan Moxie provider.</span>
 <span class="c-val">Use when: Case involves a provider being informed they do not
 meet eligibility requirements.</span>
 ---
-[full email body — Form AM-EL-010, 30-day dispute window]</div>
+[full email body — Form AM-EL-010, 30-day dispute window]
+
+<span class="c-key">TEMPLATE D:</span> Patient Support - Treatment Planning
+<span class="c-val">Use when: Provider is contacting before a patient treatment
+session — confirming documentation, consent, and product availability.</span>
+---
+[full email body — Form AM-PC-005, AM-TR-001, AM-AE-003, 24hr AE window, 48hr product request notice]
+
+<span class="c-key">TEMPLATE E:</span> Patient Support - Adverse Event Report
+<span class="c-val">Use when: Provider reports a patient adverse event or unexpected
+reaction following Allergan Moxie product administration. Compliance-sensitive.</span>
+---
+[full email body — Form AM-AE-003 (72hr deadline), Section 4.2 compliance warning, 1 business day clinical follow-up]</div>
       <div class="note" style="margin-bottom:0;"><strong>This is the key design decision.</strong> Rather than asking the LLM to write an email from scratch — which risks hallucinating form numbers or SLAs — we give it the pre-approved templates as structure. The LLM's job is to pick the right one and fill the placeholders. It cannot rewrite the mandatory language. Think of it as: <em>the template is the rails, the LLM is the engine that personalises the journey.</em></div>
     </div>
 
@@ -757,12 +825,12 @@ the selected template above as your structure:
       <tr>
         <td>Path A — new case, no prior email thread, draft first outbound response</td>
         <td><span class="status s-done">✅ Built</span></td>
-        <td>All 3 template scenarios demonstrated via Cases 1, 2, 3.</td>
+        <td>All 3 credentialing template scenarios demonstrated via Cases 1–3. Two patient journey scenarios (Treatment Planning, Adverse Event) demonstrated via Part C cases C-1 and C-3.</td>
       </tr>
       <tr>
         <td>Path B — existing case with a reply thread, AI reads thread and drafts focused next reply without repeating the checklist</td>
         <td><span class="status s-done">✅ Built</span></td>
-        <td>Dedicated <strong>CSR Reply Email</strong> prompt template. Reads all EmailMessages on the case via the same Prompt Flow, answers the customer's specific questions, and explicitly suppresses the document checklist. Two-prompt architecture replaced the single-prompt approach after testing confirmed that checklist suppression via instructions alone was not reliable when the template body contained the checklist as mandatory language.</td>
+        <td>Dedicated <strong>CSR Reply Email</strong> prompt template. Reads all EmailMessages on the case via the same Prompt Flow, answers the customer's specific questions, and explicitly suppresses the document checklist. Two-prompt architecture replaced the single-prompt approach after testing confirmed that checklist suppression via instructions alone was not reliable when the template body contained the checklist as mandatory language. Demonstrated on credentialing (Case 4, B-1 through B-3) and patient journey (C-2, C-4).</td>
       </tr>
       <tr>
         <td>Tone controls — CSR selects shorter / standard / longer output</td>
@@ -777,7 +845,7 @@ the selected template above as your structure:
       <tr>
         <td>Dynamic template selection from a managed template library</td>
         <td><span class="status s-done">✅ Built</span></td>
-        <td>Templates now live in <span class="mono">Template_Scenario__mdt</span> (Custom Metadata Type). Flow queries by Case Type + Reason, injects top 5 candidates. Adding or editing templates requires no code — create or update a CMT record. The 3 demo templates are loaded. Customer needs to add their full template library as additional CMT records.</td>
+        <td>Templates now live in <span class="mono">Template_Scenario__mdt</span> (Custom Metadata Type). Flow queries by Case Type + Reason, injects top 5 candidates. Adding or editing templates requires no code — create or update a CMT record. 7 demo template records loaded (3 credentialing + 2 treatment planning variants + 2 adverse event variants). Customer needs to add their full template library as additional CMT records.</td>
       </tr>
       <tr>
         <td>Category and Sub-Category as matching criteria on the flow query</td>
@@ -855,7 +923,7 @@ the selected template above as your structure:
       <tr>
         <td>Dynamic template library — AI selects from a scalable, manageable set of templates</td>
         <td><span class="status s-done">✅ Built</span></td>
-        <td>Custom Metadata Type <span class="mono">Template_Scenario__mdt</span> deployed with fields: MasterLabel, When_To_Use__c, Template_Body__c, Case_Type__c, Case_Reason__c, Is_Active__c. Flow queries by Type + Reason at runtime. 3 demo records loaded. To scale to the full ~1,600 templates: customer populates CMT records (or bulk-loads via Data Loader) with the template body and a When_To_Use__c sentence per template.</td>
+        <td>Custom Metadata Type <span class="mono">Template_Scenario__mdt</span> deployed with fields: MasterLabel, When_To_Use__c, Template_Body__c, Case_Type__c, Case_Reason__c, Is_Active__c. Flow queries by Type + Reason at runtime. 7 demo records loaded (3 credentialing + 4 patient journey variants). To scale to the full ~1,600 templates: customer populates CMT records (or bulk-loads via Data Loader) with the template body and a When_To_Use__c sentence per template.</td>
         <td>Customer (populate CMT records with full template library)</td>
       </tr>
       <tr>
