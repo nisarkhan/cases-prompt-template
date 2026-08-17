@@ -1,0 +1,21 @@
+Dear {!Contact.FirstName},
+
+Thank you for contacting Allergan Moxie Provider Services regarding Case #{!Case.CaseNumber} at {!Account.Name}.
+
+We are pleased to confirm that the requested products are available and your account is in good standing to proceed.
+
+To ensure a smooth treatment experience, please review and complete the following before the scheduled appointment:
+
+1. Confirm the treating provider holds a current, active medical license and is listed on your credentialing record.
+2. Ensure each patient has completed and signed Form AM-PC-005 (Patient Consent Form) prior to treatment.
+3. At the time of administration, record the product lot number(s) and expiry date(s) in each patient file as required under Form AM-TR-001 (Treatment Record).
+4. Any adverse events must be reported within 24 hours of identification using Form AM-AE-003 (Adverse Event Reporting Form).
+
+If you require additional product units for this treatment session, please reply to this email at least 48 hours before the scheduled appointment date.
+
+Please do not hesitate to contact us if you have any questions before the session.
+
+Warm regards,
+{!User.FirstName} {!User.LastName}
+Provider Services Representative
+Allergan Moxie

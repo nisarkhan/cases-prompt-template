@@ -19,27 +19,11 @@
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
+        <field>Email_Template_API_Name__c</field>
+        <value xsi:type="xsd:string">Patient_Treatment_Planning</value>
+    </values>
+    <values>
         <field>Template_Body__c</field>
-        <value xsi:type="xsd:string">Dear [Contact.FirstName],
-
-Thank you for contacting Allergan Moxie Provider Services regarding the upcoming treatment for Case #[Case.CaseNumber] at [Account.Name].
-
-We are pleased to confirm that the requested products are available and your account is in good standing to proceed.
-
-To ensure a smooth treatment experience, please review the following before the appointment:
-
-1. Confirm the treating provider holds a current, active medical license and is listed on your Allergan Moxie credentialing record.
-2. Ensure the patient has completed and signed the Allergan Moxie Patient Consent Form (Form AM-PC-005) prior to treatment.
-3. Verify the product lot numbers and expiry dates are recorded in the patient file at time of administration (required per Form AM-TR-001, Treatment Record).
-4. Any adverse events or unexpected reactions must be reported within 24 hours using the Adverse Event Reporting Form (Form AM-AE-003).
-
-If you require additional product units or a dosage consultation prior to the appointment, please reply to this email at least 48 hours before the scheduled treatment date.
-
-We look forward to supporting your patient care at [Account.Name].
-
-Warm regards,
-[User.FirstName] [User.LastName]
-Provider Services Representative
-Allergan Moxie</value>
+        <value xsi:nil="true"/>
     </values>
 </CustomMetadata>

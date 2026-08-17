@@ -19,25 +19,11 @@
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
+        <field>Email_Template_API_Name__c</field>
+        <value xsi:type="xsd:string">Patient_Adverse_Event</value>
+    </values>
+    <values>
         <field>Template_Body__c</field>
-        <value xsi:type="xsd:string">Dear [Contact.FirstName],
-
-Thank you for contacting Allergan Moxie Provider Services regarding Case #[Case.CaseNumber]. We take all reports of adverse events seriously and appreciate your prompt communication.
-
-To process this report in compliance with Allergan Moxie safety reporting requirements, please provide the following as soon as possible:
-
-1. Completed Adverse Event Reporting Form (Form AM-AE-003) — this must be submitted within 72 hours of the event occurring or being identified.
-2. The product lot number(s) and expiry date(s) of all Allergan Moxie products administered during the treatment session.
-3. A brief clinical description of the event including onset timing, severity, and any treatment or intervention provided to the patient.
-4. Patient consent confirmation — please retain a copy of the signed Form AM-PC-005 in the patient file; you do not need to submit it, but it must be available for review if requested.
-
-Please note: failure to report a confirmed adverse event within 72 hours may affect your account standing under the Allergan Moxie Provider Agreement (Section 4.2 — Safety Reporting Obligations).
-
-Our clinical support team will follow up with you within one business day of receiving the completed Form AM-AE-003.
-
-Warm regards,
-[User.FirstName] [User.LastName]
-Provider Services Representative
-Allergan Moxie</value>
+        <value xsi:nil="true"/>
     </values>
 </CustomMetadata>

@@ -1,0 +1,12 @@
+Dear {!Contact.FirstName},
+
+Thank you for your follow-up regarding Case #{!Case.CaseNumber} for {!Account.Name}.
+
+[Address the customer's specific questions here based on the email thread above.]
+
+If you have any further questions about the eligibility review process or the steps needed to meet the requirements, please do not hesitate to reply to this email or contact our Provider Services team directly.
+
+Regards,
+{!User.FirstName} {!User.LastName}
+Provider Services Representative
+Allergan Moxie

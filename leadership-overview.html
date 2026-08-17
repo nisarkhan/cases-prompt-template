@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Allergan Moxie — Agentforce Email Draft</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #06111f;
+      color: #e0eaf4;
+      min-height: 100vh;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #032d60 0%, #0a4080 60%, #0d1f35 100%);
+      padding: 64px 72px 56px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(77,184,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-size: 11px; font-weight: 800; letter-spacing: 3px;
+      text-transform: uppercase; color: #4db8ff; margin-bottom: 14px;
+    }
+    .hero-title {
+      font-size: 38px; font-weight: 900; color: #ffffff;
+      line-height: 1.15; margin-bottom: 16px; max-width: 700px;
+    }
+    .hero-title span { color: #4db8ff; }
+    .hero-desc {
+      font-size: 16px; color: #90b8d8; line-height: 1.7;
+      max-width: 620px; margin-bottom: 32px;
+    }
+    .hero-pills { display: flex; flex-wrap: wrap; gap: 10px; }
+    .hero-pill {
+      background: rgba(77,184,255,0.12); border: 1px solid rgba(77,184,255,0.25);
+      color: #7ec8ff; font-size: 12px; font-weight: 700;
+      padding: 6px 16px; border-radius: 20px;
+    }
+
+    /* ── MAIN ── */
+    .main { padding: 64px 72px; max-width: 1200px; margin: 0 auto; }
+    @media(max-width:768px){ .hero{ padding: 40px 24px; } .main{ padding: 40px 24px; } }
+
+    .section-label {
+      font-size: 11px; font-weight: 800; letter-spacing: 3px;
+      text-transform: uppercase; color: #3a6888; margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: 26px; font-weight: 900; color: #e8f4ff;
+      margin-bottom: 8px; line-height: 1.2;
+    }
+    .section-sub {
+      font-size: 14px; color: #6090b0; margin-bottom: 48px;
+      line-height: 1.65; max-width: 640px;
+    }
+
+    /* ── HOW IT WORKS FLOW ── */
+    .flow-wrap {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      margin-bottom: 72px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .flow-step {
+      flex: 1;
+      min-width: 160px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    /* connector line between steps */
+    .flow-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 44px;
+      right: -24px;
+      width: 48px;
+      height: 2px;
+      background: linear-gradient(to right, #1a4060, #0d2030);
+      z-index: 1;
+    }
+    .flow-step:not(:last-child)::before {
+      content: '▶';
+      position: absolute;
+      top: 36px;
+      right: -12px;
+      font-size: 10px;
+      color: #1e4060;
+      z-index: 2;
+    }
+
+    .flow-icon {
+      width: 88px; height: 88px;
+      border-radius: 22px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 34px;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 3;
+      flex-shrink: 0;
+    }
+    .flow-step-num {
+      position: absolute;
+      top: -6px; right: -6px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: #0a1628;
+      border: 2px solid;
+      font-size: 10px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .flow-step-title {
+      font-size: 13px; font-weight: 800;
+      text-align: center; margin-bottom: 6px;
+    }
+    .flow-step-desc {
+      font-size: 11.5px; text-align: center;
+      line-height: 1.55; max-width: 140px;
+    }
+
+    .fs-1 .flow-icon { background: #0d1e38; border: 2px solid #1a3a6a; }
+    .fs-1 .flow-icon { color: #4db8ff; }
+    .fs-1 .flow-step-num { border-color: #1a3a6a; color: #4db8ff; }
+    .fs-1 .flow-step-title { color: #7ec8ff; }
+    .fs-1 .flow-step-desc { color: #4a6e90; }
+
+    .fs-2 .flow-icon { background: #160e30; border: 2px solid #3a1a70; }
+    .fs-2 .flow-icon { color: #c080ff; }
+    .fs-2 .flow-step-num { border-color: #3a1a70; color: #c080ff; }
+    .fs-2 .flow-step-title { color: #c080ff; }
+    .fs-2 .flow-step-desc { color: #5a3a80; }
+
+    .fs-3 .flow-icon { background: #0c2010; border: 2px solid #1a4020; }
+    .fs-3 .flow-icon { color: #50e080; }
+    .fs-3 .flow-step-num { border-color: #1a4020; color: #50e080; }
+    .fs-3 .flow-step-title { color: #70e890; }
+    .fs-3 .flow-step-desc { color: #305040; }
+
+    .fs-4 .flow-icon { background: #201400; border: 2px solid #503800; }
+    .fs-4 .flow-icon { color: #ffa040; }
+    .fs-4 .flow-step-num { border-color: #503800; color: #ffa040; }
+    .fs-4 .flow-step-title { color: #ffc060; }
+    .fs-4 .flow-step-desc { color: #604030; }
+
+    .fs-5 .flow-icon { background: #001c28; border: 2px solid #004060; }
+    .fs-5 .flow-icon { color: #40d8f0; }
+    .fs-5 .flow-step-num { border-color: #004060; color: #40d8f0; }
+    .fs-5 .flow-step-title { color: #70d8f0; }
+    .fs-5 .flow-step-desc { color: #305060; }
+
+    .fs-6 .flow-icon { background: #1a0010; border: 2px solid #500030; }
+    .fs-6 .flow-icon { color: #ff6090; }
+    .fs-6 .flow-step-num { border-color: #500030; color: #ff6090; }
+    .fs-6 .flow-step-title { color: #ff80a8; }
+    .fs-6 .flow-step-desc { color: #703050; }
+
+    /* ── TWO-LAYER INTELLIGENCE ── */
+    .two-layer {
+      display: grid;
+      grid-template-columns: 1fr 60px 1fr;
+      gap: 0;
+      margin-bottom: 72px;
+      align-items: center;
+    }
+    @media(max-width:700px){ .two-layer{ grid-template-columns:1fr; } .layer-divider{ display:none; } }
+
+    .layer-card {
+      border-radius: 16px; padding: 32px 36px;
+      border: 1px solid;
+    }
+    .layer-label {
+      font-size: 10px; font-weight: 800; letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 10px;
+    }
+    .layer-title {
+      font-size: 20px; font-weight: 900; margin-bottom: 12px;
+    }
+    .layer-desc {
+      font-size: 13px; line-height: 1.7; margin-bottom: 16px;
+    }
+    .layer-example {
+      border-radius: 10px; padding: 14px 18px;
+      font-size: 12px; line-height: 1.65;
+    }
+    .layer-ex-label {
+      font-size: 10px; font-weight: 800; letter-spacing: 1px;
+      text-transform: uppercase; margin-bottom: 6px;
+    }
+
+    .lc-template {
+      background: #001828; border-color: #004060;
+    }
+    .lc-template .layer-label { color: #40d8f0; }
+    .lc-template .layer-title { color: #80e8f8; }
+    .lc-template .layer-desc  { color: #406878; }
+    .lc-template .layer-example { background: #002030; }
+    .lc-template .layer-ex-label { color: #305060; }
+    .lc-template .layer-example p { color: #508090; font-size: 12px; line-height: 1.65; }
+    .lc-template .layer-example strong { color: #60d0e8; }
+
+    .lc-case {
+      background: #0d1020; border-color: #1a2040;
+    }
+    .lc-case .layer-label { color: #8090ff; }
+    .lc-case .layer-title { color: #a0b0ff; }
+    .lc-case .layer-desc  { color: #3a4868; }
+    .lc-case .layer-example { background: #080c18; }
+    .lc-case .layer-ex-label { color: #283050; }
+    .lc-case .layer-example p { color: #4858a0; font-size: 12px; line-height: 1.65; }
+    .lc-case .layer-example strong { color: #7080e8; }
+
+    .layer-divider {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 8px;
+    }
+    .layer-plus {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #1a2a3a; border: 2px solid #2a3a4a;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 900; color: #4a6a8a;
+    }
+    .layer-eq {
+      font-size: 11px; font-weight: 800; color: #2a3a4a;
+      letter-spacing: 1px; text-transform: uppercase; text-align: center;
+    }
+
+    /* ── OUTPUT PREVIEW ── */
+    .output-section { margin-bottom: 72px; }
+    .output-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    @media(max-width:700px){ .output-grid{ grid-template-columns:1fr; } }
+
+    .output-card {
+      border-radius: 14px; overflow: hidden; border: 1px solid #1a2a3a;
+    }
+    .output-card-header {
+      padding: 14px 20px; display: flex; align-items: center; gap: 10px;
+    }
+    .output-card-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .output-card-title { font-size: 12px; font-weight: 800; }
+    .output-card-body {
+      padding: 20px 22px;
+      background: #08111e;
+      font-size: 12px; line-height: 1.75; color: #6a8aa8;
+      font-family: 'Courier New', monospace;
+      white-space: pre-wrap;
+    }
+    .hl  { color: #70d8f0; }
+    .hl2 { color: #a0d870; }
+    .hl3 { color: #ffd070; }
+
+    .oc-fc .output-card-header { background: #0c1e38; }
+    .oc-fc .output-card-dot    { background: #4db8ff; }
+    .oc-fc .output-card-title  { color: #7ec8ff; }
+
+    .oc-re .output-card-header { background: #100c28; }
+    .oc-re .output-card-dot    { background: #c080ff; }
+    .oc-re .output-card-title  { color: #c080ff; }
+
+    /* ── VALUE PROPS ── */
+    .value-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;
+      margin-bottom: 72px;
+    }
+    @media(max-width:700px){ .value-grid{ grid-template-columns:1fr; } }
+
+    .value-card {
+      border-radius: 14px; padding: 28px 26px; border: 1px solid;
+    }
+    .value-icon { font-size: 28px; margin-bottom: 14px; }
+    .value-title { font-size: 15px; font-weight: 800; margin-bottom: 8px; }
+    .value-desc  { font-size: 12.5px; line-height: 1.65; }
+
+    .vc-1 { background: #0c1e38; border-color: #1a3a6a; }
+    .vc-1 .value-title { color: #7ec8ff; }
+    .vc-1 .value-desc  { color: #4a6880; }
+
+    .vc-2 { background: #0c2010; border-color: #1a4020; }
+    .vc-2 .value-title { color: #70e890; }
+    .vc-2 .value-desc  { color: #305040; }
+
+    .vc-3 { background: #160e30; border-color: #3a1a70; }
+    .vc-3 .value-title { color: #c080ff; }
+    .vc-3 .value-desc  { color: #4a3060; }
+
+    .vc-4 { background: #201400; border-color: #503800; }
+    .vc-4 .value-title { color: #ffc060; }
+    .vc-4 .value-desc  { color: #604030; }
+
+    .vc-5 { background: #001c28; border-color: #004060; }
+    .vc-5 .value-title { color: #50d8f0; }
+    .vc-5 .value-desc  { color: #305060; }
+
+    .vc-6 { background: #1a0010; border-color: #480030; }
+    .vc-6 .value-title { color: #ff80b0; }
+    .vc-6 .value-desc  { color: #602040; }
+
+    /* ── ARCHITECTURE SUMMARY ── */
+    .arch-summary {
+      border-radius: 16px; border: 1px solid #1a3050;
+      overflow: hidden; margin-bottom: 72px;
+    }
+    .arch-header {
+      background: #0d1e38; padding: 20px 32px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    }
+    .arch-header-title { font-size: 15px; font-weight: 800; color: #7ec8ff; }
+    .arch-header-sub   { font-size: 12px; color: #4a6888; }
+    .arch-row {
+      display: grid; grid-template-columns: 200px 1fr 1fr;
+      border-bottom: 1px solid #0d1e2e;
+      align-items: center;
+    }
+    .arch-row:last-child { border-bottom: none; }
+    .arch-row-header { background: #080f1a; }
+    @media(max-width:640px){ .arch-row{ grid-template-columns:1fr; } }
+    .arch-cell {
+      padding: 16px 22px; font-size: 12.5px; line-height: 1.6;
+      border-right: 1px solid #0d1e2e;
+    }
+    .arch-cell:last-child { border-right: none; }
+    .arch-row-header .arch-cell {
+      font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
+      text-transform: uppercase; color: #3a5878;
+    }
+    .arch-comp { font-weight: 800; color: #7ec8ff; display: block; margin-bottom: 2px; }
+    .arch-old  { color: #806050; }
+    .arch-new  { color: #507060; }
+    .arch-new strong { color: #70d890; }
+    .arch-old strong { color: #e08060; }
+    .mono { font-family: 'Courier New', monospace; font-size: 11px; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; }
+
+    /* ── CUSTOMER SECTION ── */
+    .cust-intro {
+      background: #0a1e10; border: 1px solid #1a4020; border-radius: 16px;
+      padding: 28px 32px; margin-bottom: 28px;
+    }
+    .cust-intro-title { font-size: 15px; font-weight: 800; color: #70e890; margin-bottom: 8px; }
+    .cust-intro p { font-size: 13px; color: #406858; line-height: 1.7; }
+    .cust-intro p + p { margin-top: 10px; }
+
+    .cust-owns-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px;
+    }
+    @media(max-width:680px){ .cust-owns-grid{ grid-template-columns:1fr; } }
+
+    .owns-card {
+      border-radius: 12px; padding: 24px 26px; border: 1px solid;
+    }
+    .owns-card-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+    .owns-card-title   { font-size: 15px; font-weight: 800; margin-bottom: 12px; }
+    .owns-list { list-style: none; padding: 0; }
+    .owns-list li {
+      display: flex; gap: 10px; font-size: 12.5px; line-height: 1.6;
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .owns-list li:last-child { border-bottom: none; }
+    .owns-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+    .owns-text strong { display: block; margin-bottom: 2px; }
+
+    .oc-content { background: #001828; border-color: #004060; }
+    .oc-content .owns-card-eyebrow { color: #306070; }
+    .oc-content .owns-card-title   { color: #70d8f0; }
+    .oc-content .owns-text         { color: #406878; }
+    .oc-content .owns-text strong  { color: #60b8d0; }
+
+    .oc-platform { background: #160e30; border-color: #3a1a70; }
+    .oc-platform .owns-card-eyebrow { color: #40285a; }
+    .oc-platform .owns-card-title   { color: #c080ff; }
+    .oc-platform .owns-text         { color: #5a3878; }
+    .oc-platform .owns-text strong  { color: #a060e0; }
+
+    .cmt-explain {
+      background: #201400; border: 1px solid #503800; border-radius: 14px;
+      padding: 24px 28px; margin-bottom: 28px;
+    }
+    .cmt-explain-title { font-size: 14px; font-weight: 800; color: #ffc060; margin-bottom: 10px; }
+    .cmt-explain p { font-size: 13px; color: #705030; line-height: 1.7; margin-bottom: 10px; }
+    .cmt-explain p:last-child { margin-bottom: 0; }
+    .cmt-explain strong { color: #e0a050; }
+
+    .cmt-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 14px; }
+    .cmt-table th { background: #180f00; text-align: left; padding: 8px 14px; font-weight: 800; color: #705030; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #3a2000; }
+    .cmt-table td { padding: 9px 14px; border-bottom: 1px solid #2a1800; color: #907050; vertical-align: top; font-family: 'Courier New', monospace; font-size: 11px; }
+    .cmt-table tr:last-child td { border-bottom: none; }
+    .cmt-table td.label { color: #ffc060; font-family: inherit; font-size: 12px; }
+    .cmt-table td.note  { color: #705030; font-family: inherit; font-size: 11px; font-style: italic; }
+
+    .steps-card {
+      background: #0c1e38; border: 1px solid #1a3a6a; border-radius: 14px;
+      padding: 24px 28px; margin-bottom: 28px;
+    }
+    .steps-card-title { font-size: 14px; font-weight: 800; color: #7ec8ff; margin-bottom: 16px; }
+    .step-row {
+      display: flex; gap: 16px; margin-bottom: 16px; align-items: flex-start;
+    }
+    .step-row:last-child { margin-bottom: 0; }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%; background: #1a3a6a;
+      border: 2px solid #2a5a9a; display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 900; color: #4db8ff; flex-shrink: 0; margin-top: 1px;
+    }
+    .step-body { flex: 1; }
+    .step-title { font-size: 13px; font-weight: 800; color: #7ec8ff; margin-bottom: 4px; }
+    .step-desc  { font-size: 12px; color: #4a6888; line-height: 1.65; }
+    .step-tag   {
+      display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px;
+      border-radius: 20px; margin-top: 5px; margin-right: 4px;
+    }
+    .tag-no-code { background: #1a4020; color: #70e890; }
+    .tag-deploy  { background: #3a1a70; color: #c080ff; }
+    .tag-content { background: #004060; color: #50d8f0; }
+    .tag-optional{ background: #2a2a00; color: #d0d050; }
+
+    .callout-box {
+      border-radius: 10px; padding: 16px 20px; margin-top: 16px; font-size: 12.5px; line-height: 1.65;
+    }
+    .callout-box strong { display: block; margin-bottom: 4px; font-size: 13px; }
+    .cb-note   { background: #001020; border: 1px solid #002040; color: #406070; }
+    .cb-note strong { color: #40d8f0; }
+    .cb-warn   { background: #1e1000; border: 1px solid #402000; color: #806040; }
+    .cb-warn strong { color: #ffa040; }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: #040c16; border-top: 1px solid #0d1e2e;
+      padding: 28px 72px; display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    }
+    .footer-left { font-size: 12px; color: #3a5878; }
+    .footer-right { display: flex; gap: 16px; flex-wrap: wrap; }
+    .footer-tag {
+      font-size: 11px; font-weight: 700; padding: 4px 12px;
+      border-radius: 20px; background: #0d1e2e; color: #3a5878;
+      border: 1px solid #152030;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Allergan Moxie · Salesforce Agentforce</div>
+  <div class="hero-title">AI-Powered Email Drafting<br/>for <span>Provider Services</span></div>
+  <div class="hero-desc">
+    CSRs handle complex provider enquiries faster and more consistently — Agentforce drafts the right email, with the right policy language, personalised to the specific case, in seconds.
+  </div>
+  <div class="hero-pills">
+    <div class="hero-pill">Salesforce Service Cloud</div>
+    <div class="hero-pill">Agentforce / Einstein AI</div>
+    <div class="hero-pill">10 Email Templates</div>
+    <div class="hero-pill">8 Routing Rules</div>
+    <div class="hero-pill">Credentialing + Patient Support</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- HOW IT WORKS -->
+  <div class="section-label">How It Works</div>
+  <div class="section-title">Six steps from case to draft</div>
+  <div class="section-sub">Everything happens automatically when the CSR clicks "Draft with AI" — the AI reads the case, finds the right template, and generates a personalised draft in seconds.</div>
+
+  <div class="flow-wrap">
+
+    <div class="flow-step fs-1">
+      <div class="flow-icon">
+        🗂️
+        <div class="flow-step-num">1</div>
+      </div>
+      <div class="flow-step-title">Case Opens</div>
+      <div class="flow-step-desc">CSR opens a case. Case Type and Reason are set — these are the routing keys.</div>
+    </div>
+
+    <div class="flow-step fs-2">
+      <div class="flow-icon">
+        ✨
+        <div class="flow-step-num">2</div>
+      </div>
+      <div class="flow-step-title">Draft with AI</div>
+      <div class="flow-step-desc">CSR clicks "Draft with AI" and selects First Contact or Reply.</div>
+    </div>
+
+    <div class="flow-step fs-3">
+      <div class="flow-icon">
+        ⚡
+        <div class="flow-step-num">3</div>
+      </div>
+      <div class="flow-step-title">Prompt Flow Runs</div>
+      <div class="flow-step-desc">Reads the case fields, email thread history, and queries the routing index.</div>
+    </div>
+
+    <div class="flow-step fs-4">
+      <div class="flow-icon">
+        🗺️
+        <div class="flow-step-num">4</div>
+      </div>
+      <div class="flow-step-title">Template Matched</div>
+      <div class="flow-step-desc">Routing index finds the right template based on Case Type + Reason.</div>
+    </div>
+
+    <div class="flow-step fs-5">
+      <div class="flow-icon">
+        📄
+        <div class="flow-step-num">5</div>
+      </div>
+      <div class="flow-step-title">Body Fetched</div>
+      <div class="flow-step-desc">Full template body — forms, SLAs, compliance language — loaded live from Email Templates.</div>
+    </div>
+
+    <div class="flow-step fs-6">
+      <div class="flow-icon">
+        🤖
+        <div class="flow-step-num">6</div>
+      </div>
+      <div class="flow-step-title">Draft Generated</div>
+      <div class="flow-step-desc">AI blends the template structure with case-specific details. CSR reviews and sends.</div>
+    </div>
+
+  </div>
+
+
+  <!-- TWO-LAYER INTELLIGENCE -->
+  <div class="section-label">The Intelligence Model</div>
+  <div class="section-title">Two layers working together</div>
+  <div class="section-sub">Every draft is a blend of policy-accurate template structure and case-specific personalisation. Neither layer alone produces the right output — together they do.</div>
+
+  <div class="two-layer">
+
+    <div class="layer-card lc-template">
+      <div class="layer-label">Layer 1 — EmailTemplate</div>
+      <div class="layer-title">Policy-accurate structure</div>
+      <div class="layer-desc">The EmailTemplate body provides the mandatory language — the exact form references, processing timelines, insurance minimums, and compliance statements that must appear in every response of this type. <strong>This language never changes based on the case.</strong></div>
+      <div class="layer-example">
+        <div class="layer-ex-label">From the template — always present</div>
+        <p><strong>Form AM-CMD-001</strong> signed by both Medical Directors<br/>
+        <strong>5–7 business days</strong> processing once documents received<br/>
+        <strong>Active state license</strong> required for the state of practice</p>
+      </div>
+    </div>
+
+    <div class="layer-divider">
+      <div class="layer-plus">+</div>
+      <div class="layer-eq">Blended<br/>by AI</div>
+    </div>
+
+    <div class="layer-card lc-case">
+      <div class="layer-label">Layer 2 — Case Record</div>
+      <div class="layer-title">Case-specific personalisation</div>
+      <div class="layer-desc">The case description, contact name, and email thread provide the personalisation — who the provider is, what specifically they asked, what's already been sent. <strong>This makes every draft feel written for that specific provider.</strong></div>
+      <div class="layer-example">
+        <div class="layer-ex-label">From the case — unique to this provider</div>
+        <p><strong>Dr. Anita Patel</strong> — incoming Medical Director, License #CA-891234<br/>
+        <strong>Dr. Kim</strong> — outgoing, relocating internationally in 5 weeks<br/>
+        <strong>Sunset Aesthetics Medical Group</strong> — practice name</p>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- SAMPLE OUTPUT -->
+  <div class="output-section">
+    <div class="section-label">Sample Output</div>
+    <div class="section-title">What the CSR sees</div>
+    <div class="section-sub">Real drafts generated during testing. Highlighted text comes from the EmailTemplate body — everything else is personalised from the case.</div>
+
+    <div class="output-grid">
+
+      <div class="output-card oc-fc">
+        <div class="output-card-header">
+          <div class="output-card-dot"></div>
+          <div class="output-card-title">First Contact — Medical Director Change (Case 00001156)</div>
+        </div>
+        <div class="output-card-body">Selected template: AM Medical Director Change
+
+Dear <span class="hl2">Sarah Chen</span>,
+
+Thank you for contacting Allergan Moxie Provider Services
+regarding the Medical Director change at
+<span class="hl2">Sunset Aesthetics Medical Group</span>.
+
+To complete the change, please submit:
+
+1. <span class="hl">Completed Form AM-CMD-001</span>, signed by both
+   the outgoing and incoming Medical Directors.
+2. Copy of <span class="hl2">Dr. Anita Patel's</span> current medical
+   license — <span class="hl2">License #CA-891234</span>.
+3. Updated W-9 if applicable.
+
+<span class="hl">Please allow 5–7 business days</span> for processing
+once all documentation is received.
+
+Warm regards,
+Nisar Khan · Provider Services</div>
+      </div>
+
+      <div class="output-card oc-re">
+        <div class="output-card-header">
+          <div class="output-card-dot"></div>
+          <div class="output-card-title">First Contact — New Practice Enrollment (Case 00001157)</div>
+        </div>
+        <div class="output-card-body">Selected template: AM New Practice Enrollment
+
+Dear <span class="hl2">Sarah Chen</span>,
+
+Thank you for your interest in enrolling
+<span class="hl2">Sunset Aesthetics Medical Group</span> as an
+authorized Allergan Moxie provider.
+
+Documentation required:
+
+1. <span class="hl">Form AM-PE-002</span> — signed by Medical Director
+2. DEA Certificate and State license
+3. <span class="hl">Malpractice insurance — min $1M/$3M</span>
+   <span class="hl2">(on file: $2M/$4M ✓ exceeds minimum)</span>
+4. Facility business license
+5. <span class="hl">Form AM-PC-005</span> — Patient Consent
+
+<span class="hl">Allow 10–14 business days</span> for review once
+complete package is received.
+
+Warm regards,
+Nisar Khan · Provider Enrollment</div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:14px;display:flex;gap:20px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#4a6878;">
+        <span style="display:inline-block;width:12px;height:12px;background:#70d8f0;border-radius:2px;opacity:0.5;"></span>
+        Highlighted — from EmailTemplate body (policy language, form numbers, SLAs)
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#4a6878;">
+        <span style="display:inline-block;width:12px;height:12px;background:#a0d870;border-radius:2px;opacity:0.5;"></span>
+        Green — personalised from case record (names, details, specific values)
+      </div>
+    </div>
+  </div>
+
+
+  <!-- VALUE PROPS -->
+  <div class="section-label">Business Value</div>
+  <div class="section-title">What this delivers for the team</div>
+  <div class="section-sub">Six capabilities that directly improve CSR productivity and response quality.</div>
+
+  <div class="value-grid">
+
+    <div class="value-card vc-1">
+      <div class="value-icon">⚡</div>
+      <div class="value-title">Drafts in seconds</div>
+      <div class="value-desc">CSRs no longer write from scratch or search for the right template language. A complete, professional draft is ready in under 10 seconds from clicking "Draft with AI."</div>
+    </div>
+
+    <div class="value-card vc-2">
+      <div class="value-icon">✅</div>
+      <div class="value-title">Policy-accurate every time</div>
+      <div class="value-desc">Mandatory language — form references, SLAs, insurance minimums, compliance statements — comes directly from the EmailTemplate. It cannot be omitted or misquoted by the AI.</div>
+    </div>
+
+    <div class="value-card vc-3">
+      <div class="value-icon">🎯</div>
+      <div class="value-title">Automatic template selection</div>
+      <div class="value-desc">The system selects the right template based on Case Type and Reason. CSRs don't need to know which of the 10 templates applies — the AI picks the best fit and explains why.</div>
+    </div>
+
+    <div class="value-card vc-4">
+      <div class="value-icon">✏️</div>
+      <div class="value-title">Content team owns templates</div>
+      <div class="value-desc">Template language is edited in Setup → Email Templates — a familiar, no-code UI. Content and compliance teams update template wording without IT, deployment, or code changes.</div>
+    </div>
+
+    <div class="value-card vc-5">
+      <div class="value-icon">📖</div>
+      <div class="value-title">Thread-aware replies</div>
+      <div class="value-desc">The AI reads the full email thread before generating a reply. It answers the provider's specific questions and doesn't repeat information already sent in prior emails.</div>
+    </div>
+
+    <div class="value-card vc-6">
+      <div class="value-icon">🔧</div>
+      <div class="value-title">Easy to extend</div>
+      <div class="value-desc">New scenarios require only two steps: create an EmailTemplate with the body, and add a CMT routing record pointing to it. No Flow changes, no code deployment needed.</div>
+    </div>
+
+  </div>
+
+
+  <!-- ARCHITECTURE SUMMARY -->
+  <div class="section-label">Architecture at a Glance</div>
+  <div class="section-title">What changed and what each component does</div>
+  <div class="section-sub">The system was redesigned to separate routing logic from template content — making the content layer editable by the business without touching the platform layer.</div>
+
+  <div class="arch-summary">
+    <div class="arch-header">
+      <div>
+        <div class="arch-header-title">Component Overview</div>
+        <div class="arch-header-sub">Platform layer (IT-managed) vs Content layer (business-managed)</div>
+      </div>
+    </div>
+    <div class="arch-row arch-row-header">
+      <div class="arch-cell">Component</div>
+      <div class="arch-cell">What it does</div>
+      <div class="arch-cell">Who manages it</div>
+    </div>
+    <div class="arch-row">
+      <div class="arch-cell"><span class="arch-comp">GenAI Prompt Templates</span><span class="mono">Custom_CSR_Response / Reply</span></div>
+      <div class="arch-cell arch-new">Entry point for the CSR. Two templates — First Contact and Reply. Each invokes the Prompt Flow to assemble context before the AI generates the draft.</div>
+      <div class="arch-cell arch-new">Salesforce Admin / SA</div>
+    </div>
+    <div class="arch-row">
+      <div class="arch-cell"><span class="arch-comp">Prompt Flow</span><span class="mono">Add_Historical_Case_Emails_to_Prompt2</span></div>
+      <div class="arch-cell arch-new">Assembles the full AI prompt: reads case fields + email thread, queries the routing index, fetches template body. Passes everything to the AI.</div>
+      <div class="arch-cell arch-new">Salesforce Admin / SA — do not edit without testing</div>
+    </div>
+    <div class="arch-row">
+      <div class="arch-cell"><span class="arch-comp">Routing Index (CMT)</span><span class="mono">Template_Scenario__mdt</span></div>
+      <div class="arch-cell arch-new">Maps Case Type + Case Reason → EmailTemplate pointer. 8 records covering credentialing and patient support. Adding a new scenario = adding a new CMT record.</div>
+      <div class="arch-cell arch-new">Salesforce Admin — no code change needed to add scenarios</div>
+    </div>
+    <div class="arch-row">
+      <div class="arch-cell"><span class="arch-comp">Email Templates</span>Allergan Demo Templates folder</div>
+      <div class="arch-cell arch-new"><strong style="color:#70d890;">New in this architecture.</strong> 10 templates hold the policy-accurate body text — form references, SLAs, compliance language. Flow fetches the body at runtime by DeveloperName.</div>
+      <div class="arch-cell arch-new"><strong style="color:#70d890;">Content / Compliance team</strong> — editable in Setup with no deployment required</div>
+    </div>
+  </div>
+
+
+
+  <!-- CUSTOMER OWNERSHIP SECTION -->
+  <div class="section-label">What the Customer Does</div>
+  <div class="section-title">Your team's responsibilities after go-live</div>
+  <div class="section-sub">The Salesforce platform layer — the Flow, CMT object, and Prompt Templates — is built and delivered by Allergan Moxie and the SA team. Once deployed, there are two things your team owns on an ongoing basis.</div>
+
+  <!-- Intro callout -->
+  <div class="cust-intro">
+    <div class="cust-intro-title">Short answer: your team manages content, not code</div>
+    <p>The engineering work — building the Flow, CMT schema, and Prompt Templates — is a one-time delivery. Once it's in your org, your team never touches those. What your team owns is the <strong style="color:#90e8a8;">content</strong> that drives the AI: the template bodies and the routing rules that point to them.</p>
+    <p>Both are edited through standard Salesforce Setup UIs. No deployment, no code, no Salesforce developer needed.</p>
+  </div>
+
+  <!-- Two ownership columns -->
+  <div class="cust-owns-grid">
+
+    <div class="owns-card oc-content">
+      <div class="owns-card-eyebrow">Content Team / Compliance</div>
+      <div class="owns-card-title">Email Template Bodies</div>
+      <ul class="owns-list">
+        <li>
+          <span class="owns-icon">✏️</span>
+          <span class="owns-text">
+            <strong>Edit template language</strong>
+            Go to Setup → Email Templates → Allergan Demo Templates folder. Open any template and edit the body. Changes are live immediately — the next draft generation picks them up with no deployment.
+          </span>
+        </li>
+        <li>
+          <span class="owns-icon">📋</span>
+          <span class="owns-text">
+            <strong>What lives here</strong>
+            Form references, SLA numbers, insurance minimums, compliance statements (e.g. Section 4.2, 72-hour AE window). This is the policy-accurate language the AI cannot change or omit.
+          </span>
+        </li>
+        <li>
+          <span class="owns-icon">🔒</span>
+          <span class="owns-text">
+            <strong>Compliance-sensitive templates</strong>
+            Patient Adverse Event and Product Access Not Eligible contain mandatory regulatory language. Changes to these templates should go through a compliance review before saving.
+          </span>
+        </li>
+        <li>
+          <span class="owns-icon">👤</span>
+          <span class="owns-text">
+            <strong>Permission required</strong>
+            Salesforce user with <em>Manage Public Classic Email Templates</em> permission. No admin or developer access needed.
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="owns-card oc-platform">
+      <div class="owns-card-eyebrow">Salesforce Admin</div>
+      <div class="owns-card-title">Routing Rules (CMT Records)</div>
+      <ul class="owns-list">
+        <li>
+          <span class="owns-icon">🗺️</span>
+          <span class="owns-text">
+            <strong>Add new scenarios</strong>
+            When a new case type requires its own email template: create the EmailTemplate first, then create a CMT record pointing to it. The Flow picks it up automatically — no Flow changes needed.
+          </span>
+        </li>
+        <li>
+          <span class="owns-icon">⚙️</span>
+          <span class="owns-text">
+            <strong>Update routing rules</strong>
+            If a Case Type or Reason changes in your org, update the <em>Case Type</em> and <em>Case Reason</em> fields on the CMT record to match. The routing will re-align immediately.
+          </span>
+        </li>
+        <li>
+          <span class="owns-icon">💡</span>
+          <span class="owns-text">
+            <strong>Tune "When to Use" guidance</strong>
+            The <em>When To Use</em> field on each CMT record is what the AI reads to choose between two templates with the same Case Type + Reason. If the AI is picking the wrong variant, sharpen this text.
+          </span>
+        </li>
+        <li>
+          <span class="owns-icon">👤</span>
+          <span class="owns-text">
+            <strong>Permission required</strong>
+            Salesforce admin access — Setup → Custom Metadata Types → Template Scenario → Manage Records.
+          </span>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- CMT routing explained -->
+  <div class="cmt-explain">
+    <div class="cmt-explain-title">How the routing works — multiple templates with the same Case Type + Reason</div>
+    <p>This is intentional. When a Case Type + Reason combination has both a first-contact and a follow-up template, <strong>both CMT records share the same Type and Reason values</strong>. The Flow returns all matching records as a candidate pool. The AI then reads the <em>When To Use</em> field on each candidate and selects the best fit based on context — whether there's an existing thread, what the provider asked, which Prompt Template the CSR clicked.</p>
+    <p>The <em>When To Use</em> field is your control lever. If the AI picks the wrong template, that field is where you tune it — no code change required.</p>
+
+    <table class="cmt-table">
+      <tr>
+        <th>CMT Label</th>
+        <th>Case Type</th>
+        <th>Case Reason</th>
+        <th>Points to EmailTemplate</th>
+        <th>When To Use (summary)</th>
+      </tr>
+      <tr>
+        <td class="label">AM Medical Director Change</td>
+        <td>Credentialing</td>
+        <td>Medical Director</td>
+        <td>Credentialing_Medical_Director_Change</td>
+        <td class="note">First contact — no prior thread</td>
+      </tr>
+      <tr>
+        <td class="label">AM Medical Director Change Follow Up</td>
+        <td>Credentialing</td>
+        <td>Medical Director</td>
+        <td>Credentialing_Medical_Director_Change_Follow_Up</td>
+        <td class="note">Follow-up — documents already sent, provider has questions</td>
+      </tr>
+      <tr>
+        <td class="label">AM New Practice Enrollment</td>
+        <td>Credentialing</td>
+        <td>New Practice</td>
+        <td>Credentialing_New_Practice_Enrollment</td>
+        <td class="note">First contact — enrollment just started</td>
+      </tr>
+      <tr>
+        <td class="label">AM New Practice Enrollment Follow Up</td>
+        <td>Credentialing</td>
+        <td>New Practice</td>
+        <td>Credentialing_New_Practice_Enrollment_Follow_Up</td>
+        <td class="note">Follow-up — some docs received, one still missing</td>
+      </tr>
+      <tr>
+        <td class="label">AM Patient Adverse Event</td>
+        <td>Patient Support</td>
+        <td>Treatment</td>
+        <td>Patient_Adverse_Event</td>
+        <td class="note">First contact — provider reporting a new adverse event</td>
+      </tr>
+      <tr>
+        <td class="label">AM Patient Adverse Event Follow Up</td>
+        <td>Patient Support</td>
+        <td>Treatment</td>
+        <td>Patient_Adverse_Event_Follow_Up</td>
+        <td class="note">Follow-up — AE form already submitted, provider has process questions</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Step by step: how to add a new template -->
+  <div class="steps-card">
+    <div class="steps-card-title">How to add a brand-new scenario (step by step)</div>
+
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Write the email template body</div>
+        <div class="step-desc">Setup → Email Templates → Allergan Demo Templates folder → New Template. Give it a clear DeveloperName (e.g. <span class="mono" style="font-family:monospace;font-size:11px;background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px;">New_Scenario_Name</span>). Write the policy-accurate body — form references, SLAs, compliance language. Save.</div>
+        <span class="step-tag tag-no-code">No code</span>
+        <span class="step-tag tag-content">Content team</span>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Create the CMT routing record</div>
+        <div class="step-desc">Setup → Custom Metadata Types → Template Scenario → Manage Records → New. Set the Case Type, Case Reason, and Email Template API Name (must match the DeveloperName from step 1 exactly). Write a clear "When To Use" description — this is what the AI reads to choose between candidates.</div>
+        <span class="step-tag tag-no-code">No code</span>
+        <span class="step-tag tag-deploy">Admin access</span>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Test it with a real case</div>
+        <div class="step-desc">Open or create a case with the matching Case Type and Reason. Click Draft with AI → select the appropriate Prompt Template → Generate. Confirm the draft uses the new template body and the correct "When To Use" guidance routes to it correctly.</div>
+        <span class="step-tag tag-optional">No deployment needed</span>
+      </div>
+    </div>
+
+    <div class="callout-box cb-note">
+      <strong>No Flow changes, ever</strong>
+      The Prompt Flow does not need to be modified when you add new templates or routing rules. It dynamically queries all active CMT records at runtime. New scenarios are live as soon as the CMT record is saved.
+    </div>
+
+    <div class="callout-box cb-warn">
+      <strong>One thing to get right: DeveloperName spelling</strong>
+      The CMT field <em>Email Template API Name</em> must match the EmailTemplate DeveloperName exactly — case-sensitive, no spaces. If they don't match, the Flow's lookup returns nothing and the draft will contain "[Body not found — check Email_Template_API_Name__c]". Double-check the spelling when creating new records.
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-left">Allergan Moxie · Agentforce Email Draft · Architecture Overview</div>
+  <div class="footer-right">
+    <div class="footer-tag">Salesforce Service Cloud</div>
+    <div class="footer-tag">Einstein AI</div>
+    <div class="footer-tag">Agentforce</div>
+    <div class="footer-tag">Summer '25</div>
+  </div>
+</div>
+
+</body>
+</html>

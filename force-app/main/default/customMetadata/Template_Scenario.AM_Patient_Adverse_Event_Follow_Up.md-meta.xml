@@ -19,18 +19,11 @@
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
+        <field>Email_Template_API_Name__c</field>
+        <value xsi:type="xsd:string">Patient_Adverse_Event_Follow_Up</value>
+    </values>
+    <values>
         <field>Template_Body__c</field>
-        <value xsi:type="xsd:string">Dear [Contact.FirstName],
-
-Thank you for your follow-up regarding the adverse event report for Case #[Case.CaseNumber] at [Account.Name].
-
-[Address the provider's specific questions here based on the email thread above.]
-
-Please do not hesitate to reply to this email if you need further guidance. Our clinical support team remains available throughout this process.
-
-Warm regards,
-[User.FirstName] [User.LastName]
-Provider Services Representative
-Allergan Moxie</value>
+        <value xsi:nil="true"/>
     </values>
 </CustomMetadata>

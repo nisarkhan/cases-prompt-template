@@ -1,0 +1,12 @@
+Dear {!Contact.FirstName},
+
+Thank you for your follow-up regarding Case #{!Case.CaseNumber} for {!Account.Name}.
+
+[Address the provider's specific questions here based on the email thread above.]
+
+If you have any additional questions before the treatment date, please reply to this email or call our Provider Services line directly.
+
+Warm regards,
+{!User.FirstName} {!User.LastName}
+Provider Services Representative
+Allergan Moxie

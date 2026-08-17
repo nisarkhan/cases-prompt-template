@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Template Architecture — Allergan Moxie Agentforce Demo</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Salesforce Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+      background: #f3f3f3;
+      color: #1c1c1c;
+      line-height: 1.6;
+    }
+
+    /* ── Top Banner ── */
+    .site-banner {
+      background: #0b0c27;
+      padding: 0 40px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .site-banner .logo-mark {
+      width: 28px; height: 28px;
+      background: #0176d3;
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+    .site-banner .logo-text {
+      color: #e0e0e0;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Header ── */
+    .doc-header {
+      background: linear-gradient(135deg, #032d60 0%, #0b4a9e 100%);
+      color: #fff;
+      padding: 40px 40px 36px;
+    }
+    .breadcrumb {
+      font-size: 12px;
+      color: #a8c4e8;
+      margin-bottom: 12px;
+      letter-spacing: 0.03em;
+    }
+    .breadcrumb a { color: #a8c4e8; text-decoration: none; }
+    .breadcrumb a:hover { color: #fff; text-decoration: underline; }
+    .breadcrumb .sep { margin: 0 6px; opacity: 0.6; }
+    .doc-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+    .doc-header .subtitle {
+      font-size: 15px;
+      color: #c5d8ef;
+      max-width: 680px;
+      line-height: 1.5;
+    }
+    .meta-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px;
+      padding: 3px 10px;
+      font-size: 11.5px;
+      color: #d0e4f7;
+      font-weight: 500;
+    }
+
+    /* ── Layout ── */
+    .page-body {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 36px 24px 80px;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* ── Sidebar TOC ── */
+    .toc {
+      position: sticky;
+      top: 24px;
+      background: #fff;
+      border: 1px solid #dddbda;
+      border-radius: 8px;
+      padding: 20px;
+      font-size: 13px;
+    }
+    .toc h3 {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #5a6776;
+      margin-bottom: 12px;
+    }
+    .toc ol {
+      list-style: none;
+      counter-reset: toc;
+    }
+    .toc li {
+      counter-increment: toc;
+      margin-bottom: 6px;
+    }
+    .toc li::before {
+      content: counter(toc) ". ";
+      color: #0176d3;
+      font-weight: 600;
+      font-size: 12px;
+    }
+    .toc a {
+      color: #1c1c1c;
+      text-decoration: none;
+      line-height: 1.4;
+    }
+    .toc a:hover { color: #0176d3; text-decoration: underline; }
+
+    /* ── Main Content ── */
+    .main-content { min-width: 0; }
+
+    /* ── Sections ── */
+    .doc-section {
+      background: #fff;
+      border: 1px solid #dddbda;
+      border-radius: 8px;
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+    .section-header {
+      background: #f8f8f8;
+      border-bottom: 1px solid #dddbda;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-number {
+      width: 24px; height: 24px;
+      background: #0176d3;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+    .section-header h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #032d60;
+      letter-spacing: -0.01em;
+    }
+    .section-body { padding: 24px; }
+
+    /* ── Prose ── */
+    p { margin-bottom: 14px; font-size: 14.5px; color: #3e3e3c; }
+    p:last-child { margin-bottom: 0; }
+    strong { color: #1c1c1c; font-weight: 600; }
+
+    /* ── Callout / Note ── */
+    .callout {
+      border-left: 4px solid #0176d3;
+      background: #f0f7ff;
+      border-radius: 0 6px 6px 0;
+      padding: 12px 16px;
+      margin: 16px 0;
+      font-size: 13.5px;
+      color: #032d60;
+    }
+    .callout.success {
+      border-left-color: #2e844a;
+      background: #f2fbf5;
+      color: #194e31;
+    }
+    .callout.warning {
+      border-left-color: #dd7a01;
+      background: #fef5e4;
+      color: #5a3600;
+    }
+    .callout-title {
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+      opacity: 0.8;
+    }
+
+    /* ── ASCII Diagram ── */
+    .diagram-box {
+      background: #0b0c27;
+      border-radius: 6px;
+      padding: 28px 24px;
+      overflow-x: auto;
+    }
+    .diagram-box pre {
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", Consolas, "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #c9d1d9;
+      white-space: pre;
+    }
+    .diagram-box pre .hl-blue  { color: #79c0ff; font-weight: 600; }
+    .diagram-box pre .hl-green { color: #56d364; font-weight: 600; }
+    .diagram-box pre .hl-gold  { color: #e3b341; font-weight: 600; }
+    .diagram-box pre .hl-pink  { color: #ff7b72; font-weight: 600; }
+    .diagram-box pre .hl-dim   { color: #5a6776; }
+    .diagram-caption {
+      font-size: 12px;
+      color: #747474;
+      text-align: center;
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    /* ── Tables ── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+    .data-table thead tr {
+      background: #032d60;
+      color: #fff;
+    }
+    .data-table thead th {
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .data-table tbody tr { border-bottom: 1px solid #e5e5e5; }
+    .data-table tbody tr:last-child { border-bottom: none; }
+    .data-table tbody tr:hover { background: #f8fbff; }
+    .data-table td { padding: 10px 14px; vertical-align: top; color: #3e3e3c; }
+    .data-table td:first-child { font-weight: 500; color: #1c1c1c; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge-blue    { background: #e0f0ff; color: #0176d3; }
+    .badge-green   { background: #e6f9ed; color: #2e844a; }
+    .badge-orange  { background: #fff3e0; color: #b85d00; }
+    .badge-purple  { background: #f4eeff; color: #6b3fa0; }
+    .badge-gray    { background: #f3f3f3; color: #5a6776; }
+    .badge-navy    { background: #dce9f8; color: #032d60; }
+
+    /* ── Code inline ── */
+    code {
+      font-family: "SF Mono", "Fira Code", Consolas, monospace;
+      font-size: 12.5px;
+      background: #f3f3f3;
+      border: 1px solid #dddbda;
+      border-radius: 3px;
+      padding: 1px 5px;
+      color: #c23934;
+    }
+
+    /* ── Numbered Steps ── */
+    .steps { list-style: none; counter-reset: step; margin: 0; padding: 0; }
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 14px;
+      margin-bottom: 18px;
+      align-items: flex-start;
+    }
+    .steps li:last-child { margin-bottom: 0; }
+    .step-num {
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      background: #0176d3;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #fff;
+    }
+    .step-content h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #032d60;
+      margin-bottom: 4px;
+    }
+    .step-content p { font-size: 13.5px; margin-bottom: 0; }
+    .step-content code { font-size: 12px; }
+
+    /* ── Bullet list ── */
+    .styled-list { list-style: none; padding: 0; margin: 0; }
+    .styled-list li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #3e3e3c;
+    }
+    .styled-list li::before {
+      content: "→";
+      color: #0176d3;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── Two-column comparison ── */
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 4px;
+    }
+    .cmp-panel {
+      border-radius: 6px;
+      border: 1px solid;
+      padding: 16px;
+    }
+    .cmp-panel.bad  { border-color: #c23934; background: #fff5f4; }
+    .cmp-panel.good { border-color: #2e844a; background: #f2fbf5; }
+    .cmp-panel h4 {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 10px;
+    }
+    .cmp-panel.bad  h4 { color: #c23934; }
+    .cmp-panel.good h4 { color: #2e844a; }
+    .cmp-panel ul { list-style: none; padding: 0; }
+    .cmp-panel ul li { font-size: 13px; margin-bottom: 6px; display: flex; gap: 7px; }
+    .cmp-panel.bad  ul li::before { content: "✗"; color: #c23934; font-weight: 700; }
+    .cmp-panel.good ul li::before { content: "✓"; color: #2e844a; font-weight: 700; }
+
+    /* ── Extension steps ── */
+    .ext-step {
+      display: flex;
+      gap: 16px;
+      background: #f8fbff;
+      border: 1px solid #d0e3f5;
+      border-radius: 8px;
+      padding: 18px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+    }
+    .ext-step:last-child { margin-bottom: 0; }
+    .ext-icon {
+      flex-shrink: 0;
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: #0176d3;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .ext-step-body h4 { font-size: 14px; font-weight: 700; color: #032d60; margin-bottom: 4px; }
+    .ext-step-body p  { font-size: 13.5px; margin-bottom: 0; color: #3e3e3c; }
+
+    /* ── Footer ── */
+    .doc-footer {
+      background: #0b0c27;
+      color: #747474;
+      text-align: center;
+      font-size: 12px;
+      padding: 20px 40px;
+      margin-top: 0;
+    }
+    .doc-footer a { color: #5a9fd4; text-decoration: none; }
+
+    /* ── Responsive ── */
+    @media (max-width: 780px) {
+      .page-body { grid-template-columns: 1fr; }
+      .toc { position: static; }
+      .comparison { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top Banner -->
+<div class="site-banner">
+  <div class="logo-mark">S</div>
+  <span class="logo-text">Salesforce Agentforce &mdash; Demo Architecture Reference</span>
+</div>
+
+<!-- Document Header -->
+<div class="doc-header">
+  <div class="breadcrumb">
+    <a href="#">Allergan Moxie Demo</a>
+    <span class="sep">›</span>
+    <a href="#">Architecture</a>
+    <span class="sep">›</span>
+    <span>Email Template Design</span>
+  </div>
+  <h1>Agentforce Email Draft — Architecture Design Document</h1>
+  <p class="subtitle">
+    Defines the component architecture for AI-drafted CSR emails in the Allergan Moxie Agentforce demo,
+    including the revised data model that eliminates duplication between Custom Metadata Types and native
+    Salesforce Email Templates.
+  </p>
+  <div class="meta-pills">
+    <span class="pill">Allergan Moxie Demo</span>
+    <span class="pill">Agentforce</span>
+    <span class="pill">GenAI Prompt Templates</span>
+    <span class="pill">Prompt Flow</span>
+    <span class="pill">Email Templates</span>
+    <span class="pill">Custom Metadata Types</span>
+  </div>
+</div>
+
+<!-- Page Body -->
+<div class="page-body">
+
+  <!-- Sidebar TOC -->
+  <nav class="toc" aria-label="Table of contents">
+    <h3>On This Page</h3>
+    <ol>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#architecture-diagram">Architecture Diagram</a></li>
+      <li><a href="#component-inventory">Component Inventory</a></li>
+      <li><a href="#data-model">Data Model</a></li>
+      <li><a href="#flow-logic">Flow Logic</a></li>
+      <li><a href="#template-inventory">Template Inventory</a></li>
+      <li><a href="#why-this-architecture">Why This Architecture</a></li>
+      <li><a href="#extension-guide">Extension Guide</a></li>
+    </ol>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- ══════════════════════════════════════════
+         SECTION 1 — OVERVIEW
+    ══════════════════════════════════════════ -->
+    <section class="doc-section" id="overview">
+      <div class="section-header">
+        <div class="section-number">1</div>
+        <h2>Overview</h2>
+      </div>
+      <div class="section-body">
+        <p>
+          The Allergan Moxie Agentforce demo surfaces AI-drafted outbound emails directly in a CSR's
+          Service Console. When a case is opened or a reply is needed, an Agentforce Agent Action invokes
+          a Prompt Flow (<code>Add_Historical_Case_Emails_to_Prompt2</code>) that assembles a rich context
+          block — candidate template text, prior thread messages, and historical closed-case examples — and
+          feeds it into one of two GenAI Prompt Templates (<code>CSR First Contact Email</code> or
+          <code>CSR Reply Email</code>). The AI returns a fully drafted message the CSR can review and send
+          without starting from a blank page.
+        </p>
+        <p>
+          The original implementation stored the full email body in a <strong>Custom Metadata Type (CMT)</strong>
+          record, duplicating content that already existed in Salesforce's native <strong>Email Template</strong>
+          object. This meant the content team had to keep two records in sync for every template. The revised
+          architecture treats the CMT purely as a <strong>selection index</strong> — it maps case attributes
+          to a template API name — while the authoritative body lives exactly once, in the Email Template object.
+          The Prompt Flow resolves the body at runtime via a single query join.
+        </p>
+        <div class="callout success">
+          <div class="callout-title">Design Principle</div>
+          Each template body is written and maintained in exactly one place: the native Salesforce Email Template
+          record. The Custom Metadata Type only says <em>which</em> template to use — it never stores the content itself.
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 2 — ARCHITECTURE DIAGRAM
+    ══════════════════════════════════════════ -->
+    <section class="doc-section" id="architecture-diagram">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <h2>Architecture Diagram</h2>
+      </div>
+      <div class="section-body">
+        <div class="diagram-box">
+          <pre>
+<span class="hl-dim">┌──────────────── Setup / Content Team ─────────────────────┐</span>
+<span class="hl-dim">│                                                           │</span>
+<span class="hl-dim">│  </span><span class="hl-green">EmailTemplate</span><span class="hl-dim">            </span><span class="hl-green">Template_Scenario__mdt</span><span class="hl-dim">           │</span>
+<span class="hl-dim">│  ─────────────           ──────────────────────           │</span>
+<span class="hl-dim">│  DeveloperName ◄────────── Email_Template_API_Name__c     │</span>
+<span class="hl-dim">│  Body (full text)         Case_Type__c                    │</span>
+<span class="hl-dim">│  Subject                  Case_Reason__c                  │</span>
+<span class="hl-dim">│                           Is_Active__c                    │</span>
+<span class="hl-dim">│                           When_To_Use__c                  │</span>
+<span class="hl-dim">│                                                           │</span>
+<span class="hl-dim">└──────────────────────────┬────────────────────────────────┘</span>
+                           │  Runtime: Prompt Flow reads both
+                           ▼
+<span class="hl-blue">┌──────────────────────────────────────────────────────────────┐</span>
+<span class="hl-blue">│          Prompt Flow: Add_Historical_Case_Emails_to_Prompt2  │</span>
+<span class="hl-blue">│                                                              │</span>
+<span class="hl-blue">│  1. Collect email thread (Path B only)                       │</span>
+<span class="hl-blue">│  2. Query CMT  WHERE Case_Type + Case_Reason + Active        │</span>
+<span class="hl-blue">│  3. Loop → Query EmailTemplate WHERE DeveloperName = key     │</span>
+<span class="hl-blue">│  4. Append resolved body to context block                    │</span>
+<span class="hl-blue">│  5. Query 3 historical closed cases → append examples        │</span>
+<span class="hl-blue">│                                                              │</span>
+<span class="hl-blue">│  Output: assembled {promptContext} string                    │</span>
+<span class="hl-blue">└──────────────────────────┬───────────────────────────────────┘</span>
+                           │
+               ┌───────────┴────────────┐
+               │                        │
+               ▼                        ▼
+<span class="hl-gold">  GenAI Prompt Template       GenAI Prompt Template</span>
+<span class="hl-gold">  "CSR First Contact Email"   "CSR Reply Email"</span>
+<span class="hl-gold">  ─────────────────────────   ─────────────────</span>
+<span class="hl-gold">  Path A: no prior thread     Path B: existing thread</span>
+<span class="hl-gold">  Full checklist included     Checklist suppressed</span>
+<span class="hl-gold">  Introduces the CSR          Continues conversation</span>
+               │                        │
+               └───────────┬────────────┘
+                           │  AI-generated draft
+                           ▼
+<span class="hl-pink">          Agent Action → Service Console</span>
+<span class="hl-pink">          ─────────────────────────────</span>
+<span class="hl-pink">          Draft surfaced in CSR's email panel</span>
+<span class="hl-pink">          CSR reviews, edits, and sends</span>
+</pre>
+        </div>
+        <p class="diagram-caption">
+          Figure 1 — End-to-end flow from Email Template authoring through AI draft delivery to the CSR.
+          The join key <code>Email_Template_API_Name__c</code> → <code>DeveloperName</code> is resolved at runtime by the Prompt Flow.
+        </p>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 3 — COMPONENT INVENTORY
+    ══════════════════════════════════════════ -->
+    <section class="doc-section" id="component-inventory">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <h2>Component Inventory</h2>
+      </div>
+      <div class="section-body">
+        <p>The following components work together to deliver the AI email draft experience.</p>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Salesforce Type</th>
+              <th>Role in Architecture</th>
+              <th>Managed By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Template_Scenario__mdt</code></td>
+              <td><span class="badge badge-purple">Custom Metadata Type</span></td>
+              <td>Selection index — maps case attributes to a template API name. Does not store body text.</td>
+              <td><span class="badge badge-navy">Admin</span></td>
+            </tr>
+            <tr>
+              <td>Email Templates (Classic)</td>
+              <td><span class="badge badge-blue">EmailTemplate Object</span></td>
+              <td>Authoritative source of each email body. Lives in <em>Allergan Demo Templates</em> folder in Setup.</td>
+              <td><span class="badge badge-green">Content Team</span></td>
+            </tr>
+            <tr>
+              <td><code>Add_Historical_Case_Emails_to_Prompt2</code></td>
+              <td><span class="badge badge-purple">Prompt Flow</span></td>
+              <td>Assembles the prompt context at runtime: resolves template bodies, collects thread, fetches historical examples.</td>
+              <td><span class="badge badge-navy">Admin / Developer</span></td>
+            </tr>
+            <tr>
+              <td><code>CSR First Contact Email</code></td>
+              <td><span class="badge badge-orange">GenAI Prompt Template</span></td>
+              <td>Path A prompt. Used when there is no prior email thread. Includes full checklist and introductory instructions.</td>
+              <td><span class="badge badge-navy">Admin / Prompt Author</span></td>
+            </tr>
+            <tr>
+              <td><code>CSR Reply Email</code></td>
+              <td><span class="badge badge-orange">GenAI Prompt Template</span></td>
+              <td>Path B prompt. Used when replying to an existing thread. Suppresses checklist; instructs AI to answer open questions.</td>
+              <td><span class="badge badge-navy">Admin / Prompt Author</span></td>
+            </tr>
+            <tr>
+              <td>Agentforce Agent Action</td>
+              <td><span class="badge badge-blue">Agent Action</span></td>
+              <td>Entry point invoked from the Service Console. Determines Path A vs Path B, calls the Prompt Flow, returns draft to CSR.</td>
+              <td><span class="badge badge-navy">Admin / Developer</span></td>
+            </tr>
+            <tr>
+              <td>Case Object</td>
+              <td><span class="badge badge-gray">Standard Object</span></td>
+              <td>Source of routing inputs (<code>Type</code>, <code>Reason</code>) and the owning record for the email thread.</td>
+              <td><span class="badge badge-gray">CSR / System</span></td>
+            </tr>
+            <tr>
+              <td>EmailMessage Object</td>
+              <td><span class="badge badge-gray">Standard Object</span></td>
+              <td>Stores prior email thread messages queried by the Prompt Flow for Path B context injection.</td>
+              <td><span class="badge badge-gray">System</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 4 — DATA MODEL
+    ══════════════════════════════════════════ -->
+    <section class="doc-section" id="data-model">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <h2>Data Model</h2>
+      </div>
+      <div class="section-body">
+        <p>
+          The architecture uses two objects in a read-only join at runtime. The join key is
+          <code>Template_Scenario__mdt.Email_Template_API_Name__c</code> matched against
+          <code>EmailTemplate.DeveloperName</code>.
+        </p>
+
+        <div class="comparison">
+          <div class="cmp-panel bad">
+            <h4>Old Design (Removed)</h4>
+            <ul>
+              <li><code>Template_Scenario__mdt</code> stored <code>Template_Body__c</code> (Long Text)</li>
+              <li>Body text duplicated from Email Template</li>
+              <li>Content team updated two records per change</li>
+              <li>Drift risk: CMT and EmailTemplate could diverge silently</li>
+            </ul>
+          </div>
+          <div class="cmp-panel good">
+            <h4>New Design (Current)</h4>
+            <ul>
+              <li><code>Template_Scenario__mdt</code> is a selection index only</li>
+              <li>Body lives once in <code>EmailTemplate.Body</code></li>
+              <li>Content team updates one record per change</li>
+              <li>No sync drift possible — single source of truth</li>
+            </ul>
+          </div>
+        </div>
+
+        <br />
+        <h3 style="font-size:14px;font-weight:700;color:#032d60;margin-bottom:12px;">
+          <code>Template_Scenario__mdt</code> — Selection Index Fields
+        </h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Field API Name</th>
+              <th>Type</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>MasterLabel</code></td>
+              <td>Text</td>
+              <td>Human-readable name for the CMT record (e.g., <em>Credentialing Medical Director Change</em>).</td>
+            </tr>
+            <tr>
+              <td><code>Case_Type__c</code></td>
+              <td>Text</td>
+              <td>Matches <code>Case.Type</code>. Used as the first routing filter (e.g., <em>Account Support</em>).</td>
+            </tr>
+            <tr>
+              <td><code>Case_Reason__c</code></td>
+              <td>Text</td>
+              <td>Matches <code>Case.Reason</code>. Used as the second routing filter (e.g., <em>Credentialing</em>).</td>
+            </tr>
+            <tr>
+              <td><code>Email_Template_API_Name__c</code></td>
+              <td>Text (255)</td>
+              <td><strong>Join key.</strong> Stores the <code>DeveloperName</code> of the matching Classic Email Template record.</td>
+            </tr>
+            <tr>
+              <td><code>When_To_Use__c</code></td>
+              <td>Long Text Area</td>
+              <td>Human-readable guidance for when to apply this template. Injected into the AI prompt context as a hint.</td>
+            </tr>
+            <tr>
+              <td><code>Is_Active__c</code></td>
+              <td>Checkbox</td>
+              <td>Routing toggle. Only records with <code>Is_Active__c = true</code> are returned at runtime.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <br />
+        <h3 style="font-size:14px;font-weight:700;color:#032d60;margin-bottom:12px;">
+          <code>EmailTemplate</code> — Relevant Fields
+        </h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Field Name</th>
+              <th>Type</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>DeveloperName</code></td>
+              <td>Text</td>
+              <td><strong>Join target.</strong> Must match the value stored in <code>Email_Template_API_Name__c</code> exactly.</td>
+            </tr>
+            <tr>
+              <td><code>Name</code></td>
+              <td>Text</td>
+              <td>Display label shown in Setup and email template lists.</td>
+            </tr>
+            <tr>
+              <td><code>Body</code></td>
+              <td>Long Text Area</td>
+              <td><strong>The authoritative email body.</strong> Resolved at runtime and appended to the AI prompt context.</td>
+            </tr>
+            <tr>
+              <td><code>Subject</code></td>
+              <td>Text</td>
+              <td>Suggested subject line. May be included in context depending on prompt configuration.</td>
+            </tr>
+            <tr>
+              <td><code>FolderId</code></td>
+              <td>Reference</td>
+              <td>All demo templates reside in the <em>Allergan Demo Templates</em> folder for organizational clarity.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout" style="margin-top:18px;">
+          <div class="callout-title">Join Query Pattern</div>
+          The Prompt Flow queries <code>Template_Scenario__mdt</code> filtered by Case Type, Case Reason, and
+          <code>Is_Active__c = true</code>, then for each matching record it runs a second query:
+          <code>SELECT Body FROM EmailTemplate WHERE DeveloperName = :Email_Template_API_Name__c LIMIT 1</code>.
+          This two-step resolution keeps the CMT metadata-only and the body in native tooling.
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 5 — FLOW LOGIC
+    ══════════════════════════════════════════ -->
+    <section class="doc-section" id="flow-logic">
+      <div class="section-header">
+        <div class="section-number">5</div>
+        <h2>Flow Logic</h2>
+      </div>
+      <div class="section-body">
+        <p>
+          The Prompt Flow <code>Add_Historical_Case_Emails_to_Prompt2</code> executes the following steps
+          each time an Agent Action requests an email draft. The Flow receives the current Case record as input
+          and returns a formatted context string that is injected into the active GenAI Prompt Template.
+        </p>
+        <ol class="steps">
+          <li>
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>Collect Email Thread (Path B Only)</h4>
+              <p>
+                If the case has an existing email thread (Path B), query <code>EmailMessage</code> records
+                related to the case, ordered by <code>MessageDate ASC</code>. Format each message as a
+                labelled block (From, Date, Body) and append to the context. Path A (no prior thread)
+                skips this step entirely.
+              </p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h4>Query CMT Selection Index</h4>
+              <p>
+                Query <code>Template_Scenario__mdt</code> WHERE <code>Case_Type__c = {case.Type}</code>
+                AND <code>Case_Reason__c = {case.Reason}</code> AND <code>Is_Active__c = true</code>.
+                Returns zero or more matching CMT records, each carrying an <code>Email_Template_API_Name__c</code>
+                value and a <code>When_To_Use__c</code> hint.
+              </p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h4>Loop: Resolve Email Template Bodies</h4>
+              <p>
+                For each CMT record returned in Step 2, execute a sub-query:
+                <code>SELECT Body, Subject FROM EmailTemplate WHERE DeveloperName = :Email_Template_API_Name__c LIMIT 1</code>.
+                Append the resolved body, subject, and the CMT's <code>When_To_Use__c</code> hint to the
+                candidate templates section of the context block. If the EmailTemplate record is not found,
+                the loop iteration is skipped gracefully.
+              </p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <h4>Assemble Candidate Templates Context Block</h4>
+              <p>
+                Concatenate all resolved template entries into a single formatted block labeled
+                <em>"Candidate Email Templates"</em>. This block tells the AI what response patterns are
+                available and when each should be used, without prescribing which to pick — that judgment
+                is left to the LLM based on the full case context.
+              </p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">5</div>
+            <div class="step-content">
+              <h4>Query Historical Closed Cases</h4>
+              <p>
+                Query up to 3 recently closed <code>Case</code> records with the same <code>Type</code>
+                and <code>Reason</code>, along with their associated outbound <code>EmailMessage</code> bodies.
+                These are formatted as labeled few-shot examples and appended to the context block under
+                <em>"Historical Examples"</em>.
+              </p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">6</div>
+            <div class="step-content">
+              <h4>Return <code>{promptContext}</code></h4>
+              <p>
+                The Flow outputs the fully assembled context string. This is bound to the
+                <code>{promptContext}</code> input variable of the active GenAI Prompt Template
+                (<code>CSR First Contact Email</code> or <code>CSR Reply Email</code>), which then
+                generates the AI draft returned to the CSR.
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="callout warning" style="margin-top:20px;">
+          <div class="callout-title">Path Routing</div>
+          The Agent Action determines Path A vs Path B before calling the Prompt Template. Path A invokes
+          <code>CSR First Contact Email</code>; Path B invokes <code>CSR Reply Email</code>. Both receive
+          the same <code>{promptContext}</code> from the Flow. The distinction controls prompt tone and
+          whether the thread history is included in the context.
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 6 — TEMPLATE INVENTORY
+    ══════════════════════════════════════════ -->
+    <section class="doc-section" id="template-inventory">
+      <div class="section-header">
+        <div class="section-number">6</div>
+        <h2>Template Inventory</h2>
+      </div>
+      <div class="section-body">
+        <p>
+          There are 8 active <code>Template_Scenario__mdt</code> records in the demo org, each pointing to
+          a corresponding Classic Email Template in the <em>Allergan Demo Templates</em> folder. The
+          <code>Email_Template_API_Name__c</code> value must exactly match the <code>DeveloperName</code>
+          of the Email Template.
+        </p>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>CMT MasterLabel</th>
+              <th>Case_Type__c</th>
+              <th>Case_Reason__c</th>
+              <th>Email_Template_API_Name__c</th>
+              <th>Is_Active__c</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Credentialing Medical Director Change</td>
+              <td><span class="badge badge-blue">Account Support</span></td>
+              <td>Credentialing</td>
+              <td><code>Credentialing_Medical_Director_Change</code></td>
+              <td><span class="badge badge-green">true</span></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Credentialing Medical Director Change Follow Up</td>
+              <td><span class="badge badge-blue">Account Support</span></td>
+              <td>Credentialing</td>
+              <td><code>Credentialing_Medical_Director_Change_Follow_Up</code></td>
+              <td><span class="badge badge-green">true</span></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Credentialing New Practice Enrollment</td>
+              <td><span class="badge badge-blue">Account Support</span></td>
+              <td>Credentialing</td>
+              <td><code>Credentialing_New_Practice_Enrollment</code></td>
+              <td><span class="badge badge-green">true</span></td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>Credentialing New Practice Enrollment Follow Up</td>
+              <td><span class="badge badge-blue">Account Support</span></td>
+              <td>Credentialing</td>
+              <td><code>Credentialing_New_Practice_Enrollment_Follow_Up</code></td>
+              <td><span class="badge badge-green">true</span></td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>Product Support Not Eligible</td>
+              <td><span class="badge badge-blue">Account Support</span></td>
+              <td>Credentialing</td>
+              <td><code>Product_Support_Not_Eligible</code></td>
+              <td><span class="badge badge-green">true</span></td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>Product Support Not Eligible Follow Up</td>
+              <td><span class="badge badge-blue">Account Support</span></td>
+              <td>Credentialing</td>
+              <td><code>Product_Support_Not_Eligible_Follow_Up</code></td>
+              <td><span class="badge badge-green">true</span></td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>Patient Treatment Planning</td>
+              <td><span class="badge badge-orange">Patient Support</span></td>
+              <td>Treatment</td>
+              <td><code>Patient_Treatment_Planning</code></td>
+              <td><span class="badge badge-green">true</span></td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td>Patient Adverse Event</td>
+              <td><span class="badge badge-orange">Patient Support</span></td>
+              <td>Treatment</td>
+              <td><code>Patient_Adverse_Event</code></td>
+              <td><span class="badge badge-green">true</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout" style="margin-top:18px;">
+          <div class="callout-title">Follow-Up Variants</div>
+          Follow-up variants (e.g., <code>Credentialing_Medical_Director_Change_Follow_Up</code>) share the same
+          <code>Case_Type__c</code> and <code>Case_Reason__c</code> as their first-contact counterpart. When both
+          are active, the Prompt Flow resolves both templates into the context block, allowing the AI to choose
+          the appropriate tone based on thread history and the <code>When_To_Use__c</code> guidance.
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 7 — WHY THIS ARCHITECTURE
+    ══════════════════════════════════════════ -->
+    <section class="doc-section" id="why-this-architecture">
+      <div class="section-header">
+        <div class="section-number">7</div>
+        <h2>Why This Architecture</h2>
+      </div>
+      <div class="section-body">
+        <p>
+          The revised design was chosen for the following reasons, each addressing a concrete problem
+          with the original approach.
+        </p>
+        <ul class="styled-list">
+          <li>
+            <div>
+              <strong>Single source of truth.</strong> Email body text lives in exactly one object
+              (<code>EmailTemplate.Body</code>). Content editors use the native Setup UI or the Email Templates
+              folder to make changes. There is no second record to update.
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>No sync drift.</strong> With the old design, a body updated in one location but not
+              the other would cause the AI to receive stale or inconsistent content silently. The new design
+              makes this physically impossible — the body is retrieved at runtime from the only place it exists.
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>Native Salesforce tooling.</strong> Classic Email Templates are a first-class Salesforce
+              feature with version history, folder organization, rich text editing, and standard permission controls.
+              Using them gives content teams familiar tooling rather than raw CMT field editing.
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>CMT is right-sized.</strong> Custom Metadata Types are designed for configuration and
+              routing logic, not long-form content storage. Removing <code>Template_Body__c</code> returns the
+              CMT to its intended purpose: a lightweight lookup table.
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>No Flow changes to add a template.</strong> Adding a new scenario requires only two
+              record creations: an Email Template and a CMT record pointing to it. The Prompt Flow does not
+              need to be modified, versioned, or redeployed.
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>Audience-appropriate access control.</strong> Admins manage routing logic (CMT).
+              Content authors manage email bodies (Email Templates). Developers own the Flow and Prompt Templates.
+              These responsibilities map cleanly to separate Salesforce permission boundaries.
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>Demo fidelity.</strong> The architecture reflects how a production Agentforce email
+              assist deployment would be built in a real Salesforce org, making the demo credible as a
+              blueprint — not just a proof of concept.
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         SECTION 8 — EXTENSION GUIDE
+    ══════════════════════════════════════════ -->
+    <section class="doc-section" id="extension-guide">
+      <div class="section-header">
+        <div class="section-number">8</div>
+        <h2>Extension Guide</h2>
+      </div>
+      <div class="section-body">
+        <p>
+          Adding a new template scenario requires exactly two steps. No changes to the Prompt Flow,
+          Agent Actions, or GenAI Prompt Templates are needed.
+        </p>
+
+        <div class="ext-step">
+          <div class="ext-icon">📄</div>
+          <div class="ext-step-body">
+            <h4>Step 1 — Create the Email Template</h4>
+            <p>
+              Navigate to <strong>Setup → Email Templates → Allergan Demo Templates</strong> (Classic Email Templates).
+              Create a new text template. Set a descriptive <code>DeveloperName</code> using underscores
+              (e.g., <code>Billing_Dispute_Initial_Response</code>). Write the full email body in the
+              <strong>Body</strong> field. Set a Subject. Save the record. Note the exact
+              <code>DeveloperName</code> — you will need it in Step 2.
+            </p>
+          </div>
+        </div>
+
+        <div class="ext-step">
+          <div class="ext-icon">⚙️</div>
+          <div class="ext-step-body">
+            <h4>Step 2 — Create the CMT Selection Record</h4>
+            <p>
+              Navigate to <strong>Setup → Custom Metadata Types → Template Scenario → Manage Records →
+              New</strong>. Fill in the following fields:
+              <br /><br />
+              &bull; <code>MasterLabel</code> — human-readable name (e.g., <em>Billing Dispute Initial Response</em>)<br />
+              &bull; <code>Case_Type__c</code> — must match the <code>Case.Type</code> picklist value exactly<br />
+              &bull; <code>Case_Reason__c</code> — must match the <code>Case.Reason</code> picklist value exactly<br />
+              &bull; <code>Email_Template_API_Name__c</code> — the <code>DeveloperName</code> from Step 1<br />
+              &bull; <code>When_To_Use__c</code> — 1–3 sentences describing when the AI should choose this template<br />
+              &bull; <code>Is_Active__c</code> — check to enable routing to this template immediately<br />
+              <br />
+              Save the record. The Prompt Flow will automatically include this template in its context block
+              on the next agent invocation for a matching case — no deployment required.
+            </p>
+          </div>
+        </div>
+
+        <div class="callout success" style="margin-top:4px;">
+          <div class="callout-title">Zero Downtime</div>
+          CMT record saves deploy instantly in Salesforce (unlike Apex or Flow changes). New template scenarios
+          are live the moment the CMT record is saved — no sandbox-to-production deployment cycle required for
+          content additions.
+        </div>
+
+        <br />
+        <h3 style="font-size:14px;font-weight:700;color:#032d60;margin-bottom:12px;">To Deactivate a Template</h3>
+        <p>
+          Set <code>Is_Active__c = false</code> on the CMT record. The Prompt Flow will immediately stop
+          resolving that template. The Email Template record is preserved for future reactivation or audit.
+        </p>
+
+        <h3 style="font-size:14px;font-weight:700;color:#032d60;margin:16px 0 12px;">To Update Template Content</h3>
+        <p>
+          Edit the <code>Body</code> field of the Email Template record in Setup. No CMT changes needed.
+          The updated body is resolved on the next Flow execution.
+        </p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Footer -->
+<div class="doc-footer">
+  Allergan Moxie &mdash; Agentforce Demo &nbsp;|&nbsp; Architecture Reference Document
+  &nbsp;|&nbsp; Salesforce Success Architect Review
+  &nbsp;|&nbsp; For internal demo and pre-sales use only
+</div>
+
+</body>
+</html>

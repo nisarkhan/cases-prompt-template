@@ -1,0 +1,12 @@
+Dear {!Contact.FirstName},
+
+Thank you for your follow-up regarding the adverse event report for Case #{!Case.CaseNumber} at {!Account.Name}.
+
+[Address the provider's specific questions here based on the email thread above.]
+
+Please do not hesitate to reply to this email if you need further guidance. Our clinical support team remains available throughout this process.
+
+Warm regards,
+{!User.FirstName} {!User.LastName}
+Provider Services Representative
+Allergan Moxie

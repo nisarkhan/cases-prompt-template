@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Allergan Moxie — Testing Guide (New Architecture)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f0f4f8; padding: 40px 24px; color: #1a1a2e; }
+    .wrap { max-width: 1000px; margin: 0 auto; }
+
+    .page-title { font-size: 24px; font-weight: 800; color: #032d60; margin-bottom: 4px; }
+    .page-sub   { font-size: 13px; color: #5a7896; margin-bottom: 28px; }
+
+    /* tabs */
+    .tabs { display: flex; gap: 0; flex-wrap: wrap; }
+    .tab  { padding: 11px 22px; font-size: 13px; font-weight: 700; cursor: pointer; border-radius: 8px 8px 0 0; border: 1px solid #d1dce8; border-bottom: none; background: #e9ecef; color: #5a7896; }
+    .tab.active { background: white; color: #032d60; }
+    .tab:hover:not(.active) { background: #dde3ea; }
+
+    .panel { background: white; border: 1px solid #d1dce8; border-radius: 0 8px 8px 8px; padding: 32px; display: none; }
+    .panel.active { display: block; }
+
+    h2 { font-size: 18px; font-weight: 800; color: #032d60; margin-bottom: 6px; }
+    h3 { font-size: 14px; font-weight: 800; color: #032d60; margin: 24px 0 10px; }
+    p  { font-size: 13px; color: #3a4a5c; line-height: 1.65; margin-bottom: 12px; }
+
+    .note { background: #e8f4fd; border-left: 4px solid #0dcaf0; padding: 12px 16px; border-radius: 0 6px 6px 0; font-size: 13px; color: #0a4a6e; margin: 12px 0; line-height: 1.6; }
+    .warn { background: #fff8e1; border-left: 4px solid #ffc107; padding: 12px 16px; border-radius: 0 6px 6px 0; font-size: 13px; color: #664d03; margin: 12px 0; line-height: 1.6; }
+    .pass { background: #d4edda; border-left: 4px solid #28a745; padding: 12px 16px; border-radius: 0 6px 6px 0; font-size: 13px; color: #155724; margin: 12px 0; line-height: 1.6; }
+    .fail { background: #f8d7da; border-left: 4px solid #dc3545; padding: 12px 16px; border-radius: 0 6px 6px 0; font-size: 13px; color: #721c24; margin: 12px 0; line-height: 1.6; }
+
+    /* overview grid */
+    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+    @media(max-width:640px){.grid{grid-template-columns:1fr;}}
+    .path-card { border-radius: 10px; padding: 20px 22px; }
+    .path-a-card { background: #f0f9f0; border: 2px solid #28a745; }
+    .path-b-card { background: #f0f4ff; border: 2px solid #0070d2; }
+    .path-c-card { background: #fff8f0; border: 2px solid #e07800; }
+    .path-card-title { font-size: 14px; font-weight: 800; margin-bottom: 8px; }
+    .path-a-card .path-card-title { color: #155724; }
+    .path-b-card .path-card-title { color: #003580; }
+    .path-c-card .path-card-title { color: #7a3000; }
+    .path-card p { margin-bottom: 0; }
+
+    /* test case cards */
+    .test-card { border: 1px solid #d1dce8; border-radius: 10px; margin-bottom: 24px; overflow: hidden; }
+    .tc-header  { padding: 14px 20px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .tc-id   { font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+    .tc-title{ font-size: 14px; font-weight: 800; color: #032d60; flex: 1; min-width: 180px; }
+    .badge   { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+
+    .path-a-hdr { background: #f4faf4; }
+    .path-b-hdr { background: #f2f6ff; }
+    .path-c-hdr { background: #fff9f0; }
+    .path-a-id  { background: #d4edda; color: #155724; }
+    .path-b-id  { background: #cce5ff; color: #004085; }
+    .path-c-id  { background: #ffe5cc; color: #7a3000; }
+    .tmpl-a { background: #e3d9f7; color: #4a0080; }
+    .tmpl-b { background: #fde8d0; color: #7a3800; }
+    .tmpl-c { background: #fcd7d7; color: #7a0000; }
+    .tmpl-d { background: #d0f0e0; color: #0a4a2a; }
+    .tmpl-e { background: #f7d0d0; color: #6a0a0a; }
+
+    .tc-body { padding: 20px 22px; border-top: 1px solid #eef2f7; }
+
+    .section-lbl { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #8fa8c0; margin: 18px 0 8px; }
+    .section-lbl:first-child { margin-top: 0; }
+
+    .case-id-box { background: #f0f4f8; border: 1px solid #d1dce8; border-radius: 6px; padding: 8px 14px; font-family: 'Courier New', monospace; font-size: 12px; color: #032d60; display: inline-block; margin-bottom: 4px; }
+
+    .steps { list-style: none; counter-reset: step; padding: 0; }
+    .steps li { counter-increment: step; display: flex; gap: 12px; margin-bottom: 9px; font-size: 13px; line-height: 1.55; color: #2a3a4c; }
+    .steps li::before { content: counter(step); min-width: 24px; height: 24px; background: #032d60; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+
+    .thread-box { background: #f8f9fa; border: 1px solid #d1dce8; border-radius: 8px; overflow: hidden; margin: 10px 0; }
+    .thread-msg { padding: 12px 16px; border-bottom: 1px solid #eef2f7; font-size: 12px; line-height: 1.6; }
+    .thread-msg:last-child { border-bottom: none; }
+    .thread-from-cust { background: #fff; }
+    .thread-from-csr  { background: #f0f7ff; }
+    .thread-meta { font-size: 10px; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 5px; display: flex; justify-content: space-between; }
+    .from-cust-lbl { color: #7a3800; }
+    .from-csr-lbl  { color: #004085; }
+    .thread-day    { color: #8fa8c0; }
+    .thread-body   { color: #2a3a4c; white-space: pre-wrap; }
+
+    .checklist { list-style: none; padding: 0; }
+    .checklist li { display: flex; gap: 10px; font-size: 13px; padding: 5px 0; border-bottom: 1px solid #f0f4f8; line-height: 1.5; }
+    .checklist li:last-child { border-bottom: none; }
+    .chk { width: 18px; height: 18px; border: 2px solid #d1dce8; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+    .chk-text { flex: 1; }
+    .must { font-weight: 700; color: #032d60; }
+
+    .output-box { background: #1e2a3a; border-radius: 6px; padding: 14px 16px; font-size: 11.5px; font-family: 'Courier New', monospace; line-height: 1.75; color: #c8d8e8; white-space: pre-wrap; margin: 10px 0; }
+    .hl  { background: rgba(255,240,100,0.25); padding: 1px 2px; }
+    .hl2 { background: rgba(100,200,255,0.2); padding: 1px 2px; }
+
+    .arch-box { background: #f0f4f8; border: 1px solid #d1dce8; border-radius: 8px; padding: 14px 18px; font-size: 12px; font-family: 'Courier New', monospace; line-height: 1.9; color: #032d60; margin: 10px 0; }
+
+    hr.dashed { border: none; border-top: 2px dashed #e4ebf3; margin: 28px 0; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 12px 0; }
+    th { background: #f0f4f8; text-align: left; padding: 9px 14px; font-weight: 800; border-bottom: 2px solid #d1dce8; color: #2c4a6e; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { padding: 9px 14px; border-bottom: 1px solid #eef2f7; vertical-align: top; line-height: 1.5; }
+    tr:last-child td { border-bottom: none; }
+    .mono { font-family: 'Courier New', monospace; background: #f0f4f8; padding: 2px 5px; border-radius: 3px; font-size: 11px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="page-title">Allergan Moxie — Testing Guide (New Architecture)</div>
+  <div class="page-sub">Validates the EmailTemplate body resolution — CMT now points to EmailTemplate; the Flow fetches the body at runtime</div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="show('overview',this)">Overview</div>
+    <div class="tab" onclick="show('preflight',this)">Pre-flight</div>
+    <div class="tab" onclick="show('pathA',this)">Part A — First Contact</div>
+    <div class="tab" onclick="show('pathB',this)">Part B — Reply</div>
+    <div class="tab" onclick="show('pathC',this)">Part C — Patient Journey</div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       TAB 1 — OVERVIEW
+  ═══════════════════════════════════════════════════════ -->
+  <div class="panel active" id="tab-overview">
+
+    <h2>What changed and what you are testing</h2>
+    <p>The template body used to live inside the Custom Metadata Type record (<span class="mono">Template_Body__c</span>). It now lives in a native Salesforce Email Template. The CMT record holds only a pointer — the <span class="mono">Email_Template_API_Name__c</span> field — and the Prompt Flow fetches the body at runtime by querying <span class="mono">EmailTemplate WHERE DeveloperName = {pointer}</span>.</p>
+
+    <div class="arch-box">OLD: CMT record → Template_Body__c (body stored directly on CMT)
+NEW: CMT record → Email_Template_API_Name__c → EmailTemplate.Body (fetched at runtime)</div>
+
+    <p>The end result for the CSR is identical — same draft, same quality. What changes is where the content team edits template language: Setup → Email Templates → Allergan Demo Templates folder, not Custom Metadata records.</p>
+
+    <div class="grid">
+      <div class="path-card path-a-card">
+        <div class="path-card-title">Part A — Credentialing First Contact</div>
+        <p>Cases A-1, A-2, A-3. No prior thread. Verifies the Flow resolves the correct EmailTemplate body and passes it to the AI prompt.</p>
+      </div>
+      <div class="path-card path-b-card">
+        <div class="path-card-title">Part B — Credentialing Reply</div>
+        <p>Cases B-1, B-2, B-3. Existing thread. Verifies body resolution still works on reply-path cases and the follow-up template variants are selected.</p>
+      </div>
+      <div class="path-card path-c-card">
+        <div class="path-card-title">Part C — Patient Journey</div>
+        <p>Cases C-1 through C-4. New patient support templates — treatment planning and adverse event. Verifies the new EmailTemplate records deployed correctly.</p>
+      </div>
+    </div>
+
+    <h3>All test cases at a glance</h3>
+    <table>
+      <tr><th>Case</th><th>Tab</th><th>Template pointed to</th><th>What to verify</th></tr>
+      <tr>
+        <td><span class="mono">A-1</span></td>
+        <td><span class="badge path-a-id">Part A</span></td>
+        <td><span class="mono">Credentialing_Medical_Director_Change</span></td>
+        <td>Form AM-CMD-001, 5–7 day SLA, Dr. Patel personalisation</td>
+      </tr>
+      <tr>
+        <td><span class="mono">A-2</span></td>
+        <td><span class="badge path-a-id">Part A</span></td>
+        <td><span class="mono">Credentialing_New_Practice_Enrollment</span></td>
+        <td>Form AM-PE-002 + AM-PC-005, insurance minimum, 10–14 day SLA</td>
+      </tr>
+      <tr>
+        <td><span class="mono">A-3</span></td>
+        <td><span class="badge path-a-id">Part A</span></td>
+        <td><span class="mono">Product_Support_Not_Eligible</span></td>
+        <td>Form AM-EL-010, 30-day dispute window, not-eligible tone</td>
+      </tr>
+      <tr>
+        <td><span class="mono">B-1</span></td>
+        <td><span class="badge path-b-id">Part B</span></td>
+        <td><span class="mono">Credentialing_Medical_Director_Change_Follow_Up</span></td>
+        <td>Follow-up template selected, no checklist repeated, Q&amp;A addressed</td>
+      </tr>
+      <tr>
+        <td><span class="mono">B-2</span></td>
+        <td><span class="badge path-b-id">Part B</span></td>
+        <td><span class="mono">Credentialing_New_Practice_Enrollment_Follow_Up</span></td>
+        <td>Follow-up template selected, insurance clock question answered</td>
+      </tr>
+      <tr>
+        <td><span class="mono">B-3</span></td>
+        <td><span class="badge path-b-id">Part B</span></td>
+        <td><span class="mono">Product_Support_Not_Eligible_Follow_Up</span></td>
+        <td>Status update tone, no re-determination, dispute acknowledged</td>
+      </tr>
+      <tr style="background:#fafff8;">
+        <td><span class="mono">C-1</span></td>
+        <td><span class="badge path-c-id">Part C</span></td>
+        <td><span class="mono">Patient_Treatment_Planning</span></td>
+        <td>New EmailTemplate deployed — AM-PC-005, AM-TR-001, AM-AE-003, 24hr + 48hr windows</td>
+      </tr>
+      <tr style="background:#fafff8;">
+        <td><span class="mono">C-2</span></td>
+        <td><span class="badge path-c-id">Part C</span></td>
+        <td><span class="mono">Patient_Treatment_Planning_Follow_Up</span></td>
+        <td>New EmailTemplate deployed — questions answered, no pre-treatment checklist repeated</td>
+      </tr>
+      <tr style="background:#fff8f8;">
+        <td><span class="mono">C-3</span></td>
+        <td><span class="badge path-c-id">Part C</span></td>
+        <td><span class="mono">Patient_Adverse_Event</span></td>
+        <td>New EmailTemplate deployed — AM-AE-003, 72hr window, Section 4.2</td>
+      </tr>
+      <tr style="background:#fff8f8;">
+        <td><span class="mono">C-4</span></td>
+        <td><span class="badge path-c-id">Part C</span></td>
+        <td><span class="mono">Patient_Adverse_Event_Follow_Up</span></td>
+        <td>New EmailTemplate deployed — AE questions answered, checklist not repeated</td>
+      </tr>
+    </table>
+
+    <div class="note"><strong>What a pass looks like:</strong> The AI draft contains language from the EmailTemplate body — specific form references, SLA numbers, compliance statements. If you see <strong>[Body not found — check Email_Template_API_Name__c]</strong> in the draft, the CMT pointer is broken. Go to Pre-flight to diagnose.</div>
+
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       TAB 2 — PRE-FLIGHT
+  ═══════════════════════════════════════════════════════ -->
+  <div class="panel" id="tab-preflight">
+
+    <h2>Pre-flight — Verify before running any test cases</h2>
+    <p>Run through these four checks first. Each one is a 30-second confirmation that the deployment landed correctly. If any check fails, the fix is in the steps below.</p>
+
+    <h3>Check 1 — CMT field</h3>
+    <ol class="steps">
+      <li>Go to <strong>Setup → Custom Metadata Types → Template Scenario → Fields</strong></li>
+      <li>Confirm <strong>Email Template API Name</strong> field exists (Text, 255)</li>
+      <li>Confirm <strong>Template Body</strong> field still shows but has no values — open any record and verify the Template Body field is blank</li>
+    </ol>
+    <div class="pass"><strong>Pass:</strong> Email Template API Name field present. Template Body field blank on all records.</div>
+    <div class="fail"><strong>Fail — Email Template API Name missing:</strong> Run <span class="mono">sf project deploy start --source-dir force-app/main/default/objects/Template_Scenario__mdt -o allergan-moxie</span> and re-check.</div>
+
+    <hr class="dashed"/>
+
+    <h3>Check 2 — CMT records have the pointer set</h3>
+    <ol class="steps">
+      <li>Go to <strong>Setup → Custom Metadata Types → Template Scenario → Manage Records</strong></li>
+      <li>Open any record — for example <strong>AM Medical Director Change</strong></li>
+      <li>Confirm <strong>Email Template API Name</strong> shows <span class="mono">Credentialing_Medical_Director_Change</span></li>
+      <li>Confirm <strong>Template Body</strong> is blank</li>
+    </ol>
+    <div class="pass"><strong>Pass:</strong> Email Template API Name populated. Template Body blank.</div>
+
+    <hr class="dashed"/>
+
+    <h3>Check 3 — EmailTemplate records exist in the org</h3>
+    <ol class="steps">
+      <li>Go to <strong>Setup → Email Templates</strong></li>
+      <li>Open the <strong>Allergan Demo Templates</strong> folder</li>
+      <li>Confirm all 10 template DeveloperNames are listed — the 6 credentialing templates and 4 patient journey templates</li>
+      <li>Click into one — for example <strong>Patient Adverse Event</strong> — and confirm the body text is visible (not blank)</li>
+    </ol>
+    <div class="pass"><strong>Pass:</strong> All 10 templates present in the folder with body text.</div>
+    <div class="fail"><strong>Fail — templates missing:</strong> Run <span class="mono">sf project deploy start --source-dir force-app/main/default/email -o allergan-moxie</span></div>
+
+    <hr class="dashed"/>
+
+    <h3>Check 4 — Flow is Active and has the new lookup node</h3>
+    <ol class="steps">
+      <li>Go to <strong>Setup → Flows → Add Historical Case Emails to Prompt2</strong></li>
+      <li>Confirm status is <strong>Active</strong></li>
+      <li>Click into the flow — inside the template loop, look for a node called <strong>Get Email Template Body</strong></li>
+      <li>Confirm <strong>Append Template Entry</strong> assignment uses <span class="mono">{!Get_Email_Template_Body.Body}</span> — not <span class="mono">{!CurrentTemplate.Template_Body__c}</span></li>
+    </ol>
+    <div class="pass"><strong>Pass:</strong> Flow Active. Get Email Template Body node present. Append Template Entry uses the new reference.</div>
+    <div class="fail"><strong>Fail — old flow still active:</strong> Run <span class="mono">sf project deploy start --source-dir force-app/main/default/flows -o allergan-moxie</span></div>
+
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       TAB 3 — PART A
+  ═══════════════════════════════════════════════════════ -->
+  <div class="panel" id="tab-pathA">
+
+    <h2>Part A — Credentialing First Contact</h2>
+    <p>Use <strong>CSR First Contact Email</strong> for all three cases below. These are the same cases from the main testing guide — here you are specifically confirming that the template body comes from <strong>EmailTemplate</strong> (not from Template_Body__c). The form references, SLA numbers, and policy language in the draft prove the EmailTemplate body was fetched correctly.</p>
+
+    <!-- A-1 -->
+    <div class="test-card">
+      <div class="tc-header path-a-hdr">
+        <span class="tc-id path-a-id">A-1</span>
+        <span class="tc-title">Medical Director Change — Dr. Patel replacing Dr. Kim</span>
+        <span class="badge tmpl-a">Credentialing_Medical_Director_Change</span>
+        <span class="badge path-a-id">First Contact</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "TEST Path A — Medical Director Change"</div>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open the case</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR First Contact Email</strong> → Generate</li>
+          <li>Read the output against the checklist below</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain — confirms EmailTemplate body was fetched</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Form AM-CMD-001</strong> exactly — this text lives in the EmailTemplate body</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States <strong>5–7 business days</strong> processing time — from the EmailTemplate body</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found — check Email_Template_API_Name__c]"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">Greeting uses "Dear Sarah" and mentions Sunset Aesthetics Medical Group</span></li>
+          <li><span class="chk"></span><span class="chk-text">Mentions Dr. Patel or Dr. Kim (personalisation from case description)</span></li>
+        </ul>
+
+        <div class="section-lbl">Expected output shape</div>
+        <div class="output-box">Selected template: AM Medical Director Change
+
+Dear Sarah,
+
+Thank you for contacting the Allergan Moxie Provider Services team
+regarding the Medical Director change at Sunset Aesthetics Medical Group.
+
+To complete the Medical Director change, please submit the following:
+
+<span class="hl">1. Completed Change of Medical Director Form (Form AM-CMD-001)...</span>
+2. A copy of Dr. Patel's current medical license.
+3. An updated W-9 form if applicable.
+
+<span class="hl">Please allow 5–7 business days for processing</span> once all documents
+are received.
+
+Warm regards,
+[Your name]</div>
+
+        <div class="pass"><strong>Pass:</strong> Form AM-CMD-001 present. 5–7 day SLA present. No "[Body not found]" placeholder. Both come from the <span class="mono">Credentialing_Medical_Director_Change</span> EmailTemplate — this confirms the new architecture is working.</div>
+        <div class="fail"><strong>Fail — "[Body not found]" in draft:</strong> The CMT pointer is broken. Go to Setup → Custom Metadata Types → Template Scenario → Manage Records → AM Medical Director Change → check that Email Template API Name = <span class="mono">Credentialing_Medical_Director_Change</span> (exact spelling, no spaces).</div>
+      </div>
+    </div>
+
+    <!-- A-2 -->
+    <div class="test-card">
+      <div class="tc-header path-a-hdr">
+        <span class="tc-id path-a-id">A-2</span>
+        <span class="tc-title">New Practice Enrollment — Pacific Coast Aesthetics</span>
+        <span class="badge tmpl-b">Credentialing_New_Practice_Enrollment</span>
+        <span class="badge path-a-id">First Contact</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "TEST Path A — New Practice Enrollment"</div>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open the case</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR First Contact Email</strong> → Generate</li>
+          <li>Read the output against the checklist below</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain — confirms EmailTemplate body was fetched</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Form AM-PE-002</strong> exactly</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Form AM-PC-005</strong> exactly</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States insurance minimum: <strong>$1,000,000 per occurrence / $3,000,000 aggregate</strong></span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States <strong>10–14 business days</strong> processing</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found]"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">All 5 required documents listed (not just 2 or 3)</span></li>
+          <li><span class="chk"></span><span class="chk-text">Personalisation mentions Dr. Vasquez or Malibu from case description</span></li>
+        </ul>
+
+        <div class="pass"><strong>Pass:</strong> Both form references present. Insurance minimum verbatim. 10–14 day SLA present. All come from the <span class="mono">Credentialing_New_Practice_Enrollment</span> EmailTemplate.</div>
+      </div>
+    </div>
+
+    <!-- A-3 -->
+    <div class="test-card">
+      <div class="tc-header path-a-hdr">
+        <span class="tc-id path-a-id">A-3</span>
+        <span class="tc-title">Product Access Review — Eligibility Determination Needed</span>
+        <span class="badge tmpl-c">Product_Support_Not_Eligible</span>
+        <span class="badge path-a-id">First Contact</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "TEST Path A — Product Access Review"</div>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open the case</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR First Contact Email</strong> → Generate</li>
+          <li>Read the output against the checklist below</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain — confirms EmailTemplate body was fetched</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Form AM-EL-010</strong> exactly</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States <strong>30 days</strong> dispute window</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Does NOT say the practice is eligible or encourage product orders</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found]"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">Tone includes "we regret to inform" or similar empathetic phrasing</span></li>
+        </ul>
+
+        <div class="pass"><strong>Pass:</strong> Form AM-EL-010 present. 30-day window present. Both come from the <span class="mono">Product_Support_Not_Eligible</span> EmailTemplate.</div>
+      </div>
+    </div>
+
+  </div><!-- end Part A -->
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       TAB 4 — PART B
+  ═══════════════════════════════════════════════════════ -->
+  <div class="panel" id="tab-pathB">
+
+    <h2>Part B — Credentialing Reply (Follow-up)</h2>
+    <p>Use <strong>CSR Reply Email</strong> for all three cases below. Each case has an existing thread. These tests specifically verify that the <strong>follow-up variant</strong> EmailTemplates were deployed correctly — the CMT records for follow-up scenarios now point to separate <span class="mono">_Follow_Up</span> EmailTemplates. The AI will see both the first-contact and follow-up template in the candidate list and should select the follow-up based on <span class="mono">When_To_Use__c</span>.</p>
+
+    <!-- B-1 -->
+    <div class="test-card">
+      <div class="tc-header path-b-hdr">
+        <span class="tc-id path-b-id">B-1</span>
+        <span class="tc-title">Medical Director Change — Forms Sent, Awaiting Signatures</span>
+        <span class="badge tmpl-a">Credentialing_Medical_Director_Change_Follow_Up</span>
+        <span class="badge path-b-id">Reply</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "TEST Path B — Medical Director Change - Forms Sent"</div>
+
+        <div class="section-lbl">Email thread already on this case (3 emails)</div>
+        <div class="thread-box">
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">8 days ago</span></div>
+            <div class="thread-body">Hello, I need to update the Medical Director on our account. Dr. Kim is relocating. We want to appoint Dr. Anita Patel.</div>
+          </div>
+          <div class="thread-msg thread-from-csr">
+            <div class="thread-meta"><span class="from-csr-lbl">CSR → CUSTOMER</span><span class="thread-day">7 days ago</span></div>
+            <div class="thread-body">Dear Sarah, please submit Form AM-CMD-001 signed by both doctors, Dr. Patel's CA license, and an updated W-9 if applicable. Please allow 5–7 business days once documents are received.</div>
+          </div>
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Yesterday — UNANSWERED</span></div>
+            <div class="thread-body">Hi, I received the form. Dr. Kim is currently travelling internationally.
+<strong>Q1: Is digital/electronic signature acceptable for Form AM-CMD-001?</strong>
+<strong>Q2: Is there a hard deadline given Dr. Kim's last day is in 5 weeks?</strong></div>
+          </div>
+        </div>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open the case — scroll the Activity feed to confirm the 3-email thread is visible</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
+          <li>Read the output against the checklist below</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain — confirms follow-up EmailTemplate was fetched</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Opens as a follow-up — NOT a first-contact greeting or full document list</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q1: digital signature acceptability</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q2: deadline relative to Dr. Kim's last day</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Does NOT re-list the AM-CMD-001, license, and W-9 again (already sent)</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found]"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">AM-CMD-001 still referenced as the pending item (it is still needed)</span></li>
+        </ul>
+
+        <div class="pass"><strong>Pass:</strong> Opens as a follow-up. Both questions answered. Document list not repeated. The <span class="mono">Credentialing_Medical_Director_Change_Follow_Up</span> EmailTemplate body was fetched and used.</div>
+        <div class="fail"><strong>Fail — full document checklist repeated:</strong> The AI selected the first-contact template instead of the follow-up. The <span class="mono">When_To_Use__c</span> field on the follow-up CMT record may need clarifying. Check Setup → Custom Metadata Types → Template Scenario → AM Medical Director Change Follow Up → When To Use field.</div>
+      </div>
+    </div>
+
+    <!-- B-2 -->
+    <div class="test-card">
+      <div class="tc-header path-b-hdr">
+        <span class="tc-id path-b-id">B-2</span>
+        <span class="tc-title">New Practice Enrollment — Missing Insurance Certificate</span>
+        <span class="badge tmpl-b">Credentialing_New_Practice_Enrollment_Follow_Up</span>
+        <span class="badge path-b-id">Reply</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "TEST Path B — New Practice Enrollment - Missing Insurance"</div>
+
+        <div class="section-lbl">Email thread already on this case (3 emails)</div>
+        <div class="thread-box">
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">10 days ago</span></div>
+            <div class="thread-body">Hello, Please find attached our completed enrollment forms: AM-PE-002, AM-PC-005, DEA Certificate, Business License.</div>
+          </div>
+          <div class="thread-msg thread-from-csr">
+            <div class="thread-meta"><span class="from-csr-lbl">CSR → CUSTOMER</span><span class="thread-day">8 days ago</span></div>
+            <div class="thread-body">Dear Sarah, Received ✓ AM-PE-002 ✓ AM-PC-005 ✓ DEA Certificate ✓ Business License. Still missing: Proof of malpractice insurance — minimum $1M/$3M. Processing takes 10–14 days from receipt of a complete application.</div>
+          </div>
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Yesterday — UNANSWERED</span></div>
+            <div class="thread-body">Hi, Our current policy is $1M/$2M. We are upgrading to $1M/$3M — insurer says 2 weeks.
+<strong>Q1: Can we proceed with the application while the upgraded policy is being issued?</strong>
+<strong>Q2: Does the 10-14 day clock start from receipt of insurance cert, or from our original submission date?</strong></div>
+          </div>
+        </div>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open the case — confirm the 3-email thread in Activity</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
+          <li>Read the output against the checklist below</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Opens as a follow-up — NOT a re-listing of all 5 enrollment documents</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q1: whether application can proceed while insurance upgrades</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q2: when the 10-14 day processing clock starts</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found]"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">States or references the $1M/$3M insurance minimum (mandatory from the template)</span></li>
+        </ul>
+
+        <div class="pass"><strong>Pass:</strong> Opens as a follow-up. Both questions answered. Documents not re-listed. The <span class="mono">Credentialing_New_Practice_Enrollment_Follow_Up</span> EmailTemplate body was fetched.</div>
+      </div>
+    </div>
+
+    <!-- B-3 -->
+    <div class="test-card">
+      <div class="tc-header path-b-hdr">
+        <span class="tc-id path-b-id">B-3</span>
+        <span class="tc-title">Product Access Review — Customer Disputing Eligibility</span>
+        <span class="badge tmpl-c">Product_Support_Not_Eligible_Follow_Up</span>
+        <span class="badge path-b-id">Reply</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "TEST Path B — Product Access Review - Customer Disputing"</div>
+
+        <div class="section-lbl">Email thread already on this case (4 emails)</div>
+        <div class="thread-box">
+          <div class="thread-msg thread-from-csr">
+            <div class="thread-meta"><span class="from-csr-lbl">CSR → CUSTOMER</span><span class="thread-day">12 days ago</span></div>
+            <div class="thread-body">Dear Sarah, your practice does not meet the requirements... Please review Form AM-EL-010. Reply within 30 days with supporting documentation to dispute.</div>
+          </div>
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">5 days ago</span></div>
+            <div class="thread-body">We are formally disputing this. Attached: Dr. Patel's renewed CA license and updated insurance declaration ($2M/$4M). Please conduct a formal review.</div>
+          </div>
+          <div class="thread-msg thread-from-csr">
+            <div class="thread-meta"><span class="from-csr-lbl">CSR → CUSTOMER</span><span class="thread-day">4 days ago</span></div>
+            <div class="thread-body">Thank you. We received the renewed license and insurance declaration. Escalated to credentialing review team. Expect a decision within 5–7 business days.</div>
+          </div>
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Today — UNANSWERED</span></div>
+            <div class="thread-body">It has been 5 business days and we have not received a decision. <strong>Could you provide an update on where the review stands?</strong></div>
+          </div>
+        </div>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open the case — confirm the 4-email thread in Activity</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
+          <li>Read the output against the checklist below</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Opens as a status update — NOT a re-determination of eligibility</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Acknowledges the dispute was filed and is under review</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Does NOT say "your practice does not meet requirements"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found]"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">Provides timeline update or apology for the delay</span></li>
+        </ul>
+
+        <div class="pass"><strong>Pass:</strong> Status update tone. Dispute acknowledged. No re-determination. The <span class="mono">Product_Support_Not_Eligible_Follow_Up</span> EmailTemplate body was fetched.</div>
+      </div>
+    </div>
+
+  </div><!-- end Part B -->
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       TAB 5 — PART C
+  ═══════════════════════════════════════════════════════ -->
+  <div class="panel" id="tab-pathC">
+
+    <h2>Part C — Patient Journey (New EmailTemplates)</h2>
+    <p>These four cases use brand-new EmailTemplate records deployed as part of this architecture change. Cases C-1 and C-3 are first-contact (use <strong>CSR First Contact Email</strong>). Cases C-2 and C-4 are reply cases (use <strong>CSR Reply Email</strong>). Case type on all four: <span class="mono">Patient Support</span> / Reason: <span class="mono">Treatment</span>.</p>
+
+    <!-- C-1 -->
+    <div class="test-card">
+      <div class="tc-header path-c-hdr">
+        <span class="tc-id path-c-id">C-1</span>
+        <span class="tc-title">Patient Treatment Planning — Sculptra session for 3 patients</span>
+        <span class="badge tmpl-d">Patient_Treatment_Planning</span>
+        <span class="badge path-a-id">First Contact</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "Patient Treatment Planning - Sculptra session"</div>
+
+        <div class="section-lbl">What's in the case description</div>
+        <p>Three patients scheduled for Sculptra Aesthetic next Thursday. Dr. Patel treating. Practice wants to confirm consent forms and documentation requirements before the appointment.</p>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open the case</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR First Contact Email</strong> → Generate</li>
+          <li>Read the output against the checklist below</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain — confirms new EmailTemplate body was fetched</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Form AM-PC-005</strong> (Patient Consent Form)</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Form AM-TR-001</strong> (Treatment Record including lot number)</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Form AM-AE-003</strong> (Adverse Event Reporting Form)</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States adverse events must be reported <strong>within 24 hours</strong></span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States product requests require <strong>at least 48 hours</strong> notice</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found]"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">Mentions Sculptra or Dr. Patel (personalisation from description)</span></li>
+        </ul>
+
+        <div class="section-lbl">Expected output shape</div>
+        <div class="output-box">Selected template: AM Patient Treatment Planning
+
+Dear Sarah,
+
+Thank you for contacting Allergan Moxie Provider Services regarding
+the upcoming treatment session at Sunset Aesthetics Medical Group.
+
+Before proceeding with the Sculptra treatment for your patients, please
+ensure the following documentation is in place:
+
+<span class="hl">1. Patient Consent Form (Form AM-PC-005) — must be signed by each
+   patient prior to treatment.</span>
+<span class="hl">2. Treatment Record (Form AM-TR-001) — record the product lot number
+   and expiry date for each unit administered.</span>
+<span class="hl">3. Adverse Event Reporting (Form AM-AE-003) — any adverse events or
+   unexpected reactions must be reported within 24 hours of onset.</span>
+
+<span class="hl2">Regarding product availability: Please submit your product request
+at least 48 hours before the scheduled appointment to ensure
+availability.</span>
+
+Warm regards,
+[Your name]</div>
+
+        <div class="pass"><strong>Pass:</strong> All three form references present (AM-PC-005, AM-TR-001, AM-AE-003). Both time windows present (24hr AE, 48hr product). All come from the new <span class="mono">Patient_Treatment_Planning</span> EmailTemplate — confirms the template was deployed and the Flow fetched it correctly.</div>
+        <div class="fail"><strong>Fail — "[Body not found]" in draft:</strong> The <span class="mono">Patient_Treatment_Planning</span> EmailTemplate may not have deployed. Check Setup → Email Templates → Allergan Demo Templates → Patient Treatment Planning. If missing: <span class="mono">sf project deploy start --source-dir force-app/main/default/email -o allergan-moxie</span></div>
+        <div class="warn"><strong>If "AM Patient Adverse Event" is selected instead:</strong> Both templates match Patient Support / Treatment. The AI is reading When_To_Use__c to choose. Edit the case description to make "upcoming planned treatment" more explicit and re-generate.</div>
+      </div>
+    </div>
+
+    <!-- C-2 -->
+    <div class="test-card">
+      <div class="tc-header path-c-hdr">
+        <span class="tc-id path-c-id">C-2</span>
+        <span class="tc-title">Patient Treatment Planning — Follow-up questions from provider</span>
+        <span class="badge tmpl-d">Patient_Treatment_Planning_Follow_Up</span>
+        <span class="badge path-b-id">Reply</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "Patient Treatment Planning - Pre-treatment checklist questions"</div>
+
+        <div class="section-lbl">Email thread already on this case (3 emails)</div>
+        <div class="thread-box">
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">5 days ago</span></div>
+            <div class="thread-body">Hello, We have a Botox session next week for two new patients. What forms do they need to sign and do we need to submit anything before the appointment?</div>
+          </div>
+          <div class="thread-msg thread-from-csr">
+            <div class="thread-meta"><span class="from-csr-lbl">CSR → CUSTOMER</span><span class="thread-day">4 days ago</span></div>
+            <div class="thread-body">Dear Sarah, Patients must sign Form AM-PC-005 before treatment. Record lot number and expiry per Form AM-TR-001. Report any adverse events within 24hrs using Form AM-AE-003. You do not need to submit anything in advance.</div>
+          </div>
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Yesterday — UNANSWERED</span></div>
+            <div class="thread-body">Hi, Two follow-up questions:
+<strong>Q1: One patient is on blood thinners — does that affect documentation on our end, or is that purely a clinical decision?</strong>
+<strong>Q2: How long do we need to retain the signed consent forms?</strong></div>
+          </div>
+        </div>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open the case — confirm the 3-email thread in Activity</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
+          <li>Read the output against the checklist below</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Opens as a follow-up — NOT a re-listing of AM-PC-005, AM-TR-001, AM-AE-003</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q1: blood thinner patient — documentation scope vs clinical decision</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q2: consent form retention period</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found]"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">Does NOT repeat the 24hr AE window or 48hr product request from the prior email</span></li>
+        </ul>
+
+        <div class="pass"><strong>Pass:</strong> Both questions answered. Pre-treatment checklist not repeated. The <span class="mono">Patient_Treatment_Planning_Follow_Up</span> EmailTemplate was fetched correctly.</div>
+        <div class="fail"><strong>Fail — pre-treatment checklist repeated:</strong> The AI selected the first-contact template instead of the follow-up. Check the When_To_Use__c on the AM Patient Treatment Planning Follow Up CMT record — it should explicitly say "use when following up on an existing treatment planning case."</div>
+      </div>
+    </div>
+
+    <!-- C-3 -->
+    <div class="test-card">
+      <div class="tc-header path-c-hdr">
+        <span class="tc-id path-c-id">C-3</span>
+        <span class="tc-title">Adverse Event Report — Post-treatment swelling and redness</span>
+        <span class="badge tmpl-e">Patient_Adverse_Event</span>
+        <span class="badge path-a-id">First Contact</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "Adverse Event Report - Post-treatment swelling"</div>
+
+        <div class="section-lbl">What's in the case description</div>
+        <p>Significant swelling and redness 6 hours after Juvederm filler by Dr. Patel. Product lot JUV-2026-084512. Practice asking for reporting requirements.</p>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open the case</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR First Contact Email</strong> → Generate</li>
+          <li>Read the output against the checklist below</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain — confirms new AE EmailTemplate body was fetched</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Form AM-AE-003</strong> exactly</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States the <strong>72-hour</strong> submission deadline for Form AM-AE-003</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Section 4.2 — Safety Reporting Obligations</strong> (mandatory compliance language)</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States clinical team will follow up <strong>within one business day</strong> of receiving the form</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found]"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">Includes product lot number JUV-2026-084512 from case description</span></li>
+          <li><span class="chk"></span><span class="chk-text">Tone is serious and supportive — not dismissive of the event</span></li>
+        </ul>
+
+        <div class="section-lbl">Expected output shape</div>
+        <div class="output-box">Selected template: AM Patient Adverse Event
+
+Dear Sarah,
+
+Thank you for contacting Allergan Moxie Provider Services. We take
+all reports of adverse events very seriously.
+
+To ensure proper reporting and patient safety, please take the
+following immediate steps:
+
+<span class="hl">1. Submit Form AM-AE-003 (Adverse Event Report) within 72 hours.
+   Include: product lot number JUV-2026-084512, expiry 2027-03,
+   clinical description of onset, severity, and any interventions.</span>
+
+<span class="hl">2. Per Section 4.2 — Safety Reporting Obligations, timely adverse
+   event reporting is a requirement under our provider agreement.
+   Late reporting may affect your account standing.</span>
+
+<span class="hl">Our clinical team will follow up within one business day of
+receiving the completed form.</span>
+
+Warm regards,
+[Your name]</div>
+
+        <div class="pass"><strong>Pass:</strong> Form AM-AE-003 present. 72hr deadline present. Section 4.2 compliance language present. 1 business day follow-up present. All mandatory language comes from the new <span class="mono">Patient_Adverse_Event</span> EmailTemplate.</div>
+        <div class="warn"><strong>Compliance-sensitive template.</strong> Section 4.2 and the 72-hour window are mandatory language. If either is missing from the draft, it means the EmailTemplate body is incomplete. Open the template in Setup → Email Templates → Allergan Demo Templates → Patient Adverse Event and verify the body text.</div>
+        <div class="fail"><strong>Fail — "[Body not found]":</strong> The <span class="mono">Patient_Adverse_Event</span> EmailTemplate did not deploy. Run: <span class="mono">sf project deploy start --source-dir force-app/main/default/email -o allergan-moxie</span></div>
+      </div>
+    </div>
+
+    <!-- C-4 -->
+    <div class="test-card">
+      <div class="tc-header path-c-hdr">
+        <span class="tc-id path-c-id">C-4</span>
+        <span class="tc-title">Adverse Event Follow-Up — Questions about the reporting process</span>
+        <span class="badge tmpl-e">Patient_Adverse_Event_Follow_Up</span>
+        <span class="badge path-b-id">Reply</span>
+      </div>
+      <div class="tc-body">
+
+        <div class="section-lbl">Find this case</div>
+        <div class="case-id-box">Search: "Adverse Event Follow-Up - Form AM-AE-003 submission questions"</div>
+
+        <div class="section-lbl">Email thread already on this case (3 emails)</div>
+        <div class="thread-box">
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">3 days ago</span></div>
+            <div class="thread-body">Hello, I need to report an adverse event. Patient experienced mild eyelid drooping 3 days after Botox. Lot: BTX-2026-091233. What do we need to do?</div>
+          </div>
+          <div class="thread-msg thread-from-csr">
+            <div class="thread-meta"><span class="from-csr-lbl">CSR → CUSTOMER</span><span class="thread-day">2 days ago</span></div>
+            <div class="thread-body">Dear Sarah, Please submit Form AM-AE-003 within 72 hours. Include lot BTX-2026-091233. Late reporting may affect account standing under Section 4.2. Clinical team will follow up within 1 business day of receiving the form.</div>
+          </div>
+          <div class="thread-msg thread-from-cust">
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Yesterday — UNANSWERED</span></div>
+            <div class="thread-body">Hi, We submitted Form AM-AE-003 this morning. Two questions:
+<strong>Q1: Does the 72-hour window start from when the patient called us, or from when treatment was performed?</strong>
+<strong>Q2: Will this affect the patient's ability to receive Botox in the future?</strong></div>
+          </div>
+        </div>
+
+        <div class="section-lbl">Click path</div>
+        <ol class="steps">
+          <li>Open the case — confirm the 3-email thread in Activity</li>
+          <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
+          <li>Read the output against the checklist below</li>
+        </ol>
+
+        <div class="section-lbl">What the output MUST contain</div>
+        <ul class="checklist">
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Acknowledges Form AM-AE-003 was already submitted — does NOT ask them to submit it again</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Answers Q1: when the 72-hour window starts</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q2: future treatment eligibility — defers clinical decision to physician</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Does NOT re-list the full AE checklist (form, lot number, Section 4.2) already sent 2 days ago</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found]"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text">Tone is supportive — acknowledges the practice reported promptly and correctly</span></li>
+        </ul>
+
+        <div class="pass"><strong>Pass:</strong> Both questions answered. AE checklist not repeated. Acknowledges the form was already submitted. The <span class="mono">Patient_Adverse_Event_Follow_Up</span> EmailTemplate was fetched correctly.</div>
+        <div class="fail"><strong>Fail — output asks them to submit AM-AE-003 again:</strong> The LLM did not read that the form was already submitted this morning. This is a Reply prompt failure — the thread was not read correctly. Report it for prompt tuning. As a workaround click Revise and type: "The customer already submitted Form AM-AE-003 this morning. Answer only the two questions they asked."</div>
+      </div>
+    </div>
+
+  </div><!-- end Part C -->
+
+
+</div>
+
+<script>
+  function show(tab, el) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>

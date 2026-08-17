@@ -19,20 +19,11 @@
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
+        <field>Email_Template_API_Name__c</field>
+        <value xsi:type="xsd:string">Credentialing_Medical_Director_Change_Follow_Up</value>
+    </values>
+    <values>
         <field>Template_Body__c</field>
-        <value xsi:type="xsd:string">Dear [Contact.FirstName],
-
-Thank you for your follow-up regarding Case #[Case.CaseNumber] for [Account.Name].
-
-[Address the customer's specific questions here based on the email thread above.]
-
-Once all required documentation is received and verified, please allow 5-7 business days for processing. You will receive a confirmation email when the change has been finalized.
-
-If you have any additional questions, please do not hesitate to reply to this email or call our Provider Services line.
-
-Warm regards,
-[User.FirstName] [User.LastName]
-Provider Services Representative
-Allergan Moxie</value>
+        <value xsi:nil="true"/>
     </values>
 </CustomMetadata>

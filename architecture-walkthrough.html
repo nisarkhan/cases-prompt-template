@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Allergan Moxie — Architecture Walkthrough</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0a1628; color: #e8f0f8; min-height: 100vh; }
+
+    /* ── Header ── */
+    .hdr { background: linear-gradient(135deg, #032d60 0%, #0b4f8a 100%); padding: 36px 48px 32px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .hdr-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #7ec8e3; margin-bottom: 8px; }
+    .hdr-title   { font-size: 28px; font-weight: 900; color: #ffffff; margin-bottom: 6px; }
+    .hdr-sub     { font-size: 14px; color: #a8c4d8; }
+
+    /* ── Tabs ── */
+    .tab-bar { background: #0d1f35; border-bottom: 1px solid #1a3050; padding: 0 48px; display: flex; gap: 0; }
+    .tab-btn { padding: 16px 24px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; background: none; color: #6a90b0; border-bottom: 3px solid transparent; transition: all 0.15s; }
+    .tab-btn:hover { color: #a8c8e8; }
+    .tab-btn.active { color: #4db8ff; border-bottom-color: #4db8ff; }
+
+    .tab-panel { display: none; padding: 48px; }
+    .tab-panel.active { display: block; }
+
+    /* ── Section title ── */
+    .section-title { font-size: 20px; font-weight: 800; color: #e8f4ff; margin-bottom: 6px; }
+    .section-sub   { font-size: 13px; color: #7090b0; margin-bottom: 36px; }
+
+    /* ══════════════════════════════════
+       TAB 1 — LIVE FLOW
+    ══════════════════════════════════ */
+    .flow-container { display: flex; flex-direction: column; align-items: center; gap: 0; max-width: 820px; margin: 0 auto; }
+
+    .flow-node {
+      width: 100%;
+      border-radius: 14px;
+      padding: 22px 28px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      border: 1px solid transparent;
+    }
+    .flow-node:hover { transform: translateY(-2px); }
+
+    .node-step   { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 5px; }
+    .node-title  { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
+    .node-detail { font-size: 12.5px; line-height: 1.65; }
+    .node-badge  { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 20px; margin-right: 6px; margin-bottom: 4px; }
+    .node-code   { font-family: 'Courier New', monospace; font-size: 11px; background: rgba(0,0,0,0.3); padding: 2px 7px; border-radius: 4px; }
+
+    /* node colours */
+    .node-csr    { background: #0d2640; border-color: #1e4a7a; box-shadow: 0 4px 20px rgba(0,100,200,0.15); }
+    .node-csr .node-step    { color: #4db8ff; }
+    .node-csr .node-title   { color: #b8d8f8; }
+    .node-csr .node-detail  { color: #7090b0; }
+
+    .node-agent  { background: #1a1040; border-color: #4a2090; box-shadow: 0 4px 20px rgba(100,0,200,0.2); }
+    .node-agent .node-step  { color: #c080ff; }
+    .node-agent .node-title { color: #d8b8ff; }
+    .node-agent .node-detail{ color: #9070b0; }
+
+    .node-flow   { background: #0d2a10; border-color: #1a5020; box-shadow: 0 4px 20px rgba(0,150,50,0.15); }
+    .node-flow .node-step   { color: #50e080; }
+    .node-flow .node-title  { color: #90e8a0; }
+    .node-flow .node-detail { color: #507060; }
+
+    .node-cmt    { background: #2a1a00; border-color: #604000; box-shadow: 0 4px 20px rgba(200,120,0,0.15); }
+    .node-cmt .node-step    { color: #ffa040; }
+    .node-cmt .node-title   { color: #ffd080; }
+    .node-cmt .node-detail  { color: #907040; }
+
+    .node-template { background: #001a2a; border-color: #004060; box-shadow: 0 4px 20px rgba(0,150,200,0.15); }
+    .node-template .node-step  { color: #00c8e8; }
+    .node-template .node-title { color: #80d8f0; }
+    .node-template .node-detail{ color: #406070; }
+
+    .node-ai     { background: #1a0010; border-color: #500030; box-shadow: 0 4px 20px rgba(200,0,100,0.2); }
+    .node-ai .node-step   { color: #ff6090; }
+    .node-ai .node-title  { color: #ffa0c0; }
+    .node-ai .node-detail { color: #906070; }
+
+    .node-output { background: #001820; border-color: #003040; box-shadow: 0 4px 20px rgba(0,180,200,0.1); }
+    .node-output .node-step  { color: #40e0d0; }
+    .node-output .node-title { color: #80f0e8; }
+    .node-output .node-detail{ color: #406880; }
+
+    /* connector arrow */
+    .arrow { width: 2px; height: 32px; background: linear-gradient(to bottom, #1a3050, #2a4060); margin: 0 auto; position: relative; }
+    .arrow::after { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #2a4060; }
+
+    .arrow-label { text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #304050; margin: 6px 0; }
+
+    /* ══════════════════════════════════
+       TAB 2 — COMPONENT MAP
+    ══════════════════════════════════ */
+    .comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 900px; }
+    @media(max-width:640px){.comp-grid{grid-template-columns:1fr;}}
+
+    .comp-card { border-radius: 12px; padding: 24px; border: 1px solid; }
+    .comp-card-title { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
+    .comp-card-sub   { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+    .comp-card p     { font-size: 12.5px; line-height: 1.65; margin-bottom: 10px; }
+    .comp-card p:last-child { margin-bottom: 0; }
+    .code { font-family: 'Courier New', monospace; font-size: 11px; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 3px; }
+
+    .cc-sf   { background: #0c1e38; border-color: #1a3a6a; }
+    .cc-sf .comp-card-title { color: #7ec8ff; }
+    .cc-sf .comp-card-sub   { color: #3a6080; }
+    .cc-sf p { color: #6090b0; }
+
+    .cc-pt   { background: #160e30; border-color: #3a1a70; }
+    .cc-pt .comp-card-title { color: #c090ff; }
+    .cc-pt .comp-card-sub   { color: #50306a; }
+    .cc-pt p { color: #806898; }
+
+    .cc-flow { background: #0c2010; border-color: #1a4820; }
+    .cc-flow .comp-card-title { color: #70e890; }
+    .cc-flow .comp-card-sub   { color: #2a5030; }
+    .cc-flow p { color: #507068; }
+
+    .cc-cmt  { background: #201400; border-color: #503800; }
+    .cc-cmt .comp-card-title { color: #ffc060; }
+    .cc-cmt .comp-card-sub   { color: #603800; }
+    .cc-cmt p { color: #806040; }
+
+    .cc-et   { background: #001c28; border-color: #003850; }
+    .cc-et .comp-card-title { color: #50d8f0; }
+    .cc-et .comp-card-sub   { color: #205060; }
+    .cc-et p { color: #406880; }
+
+    .cc-ai   { background: #1a0018; border-color: #480030; }
+    .cc-ai .comp-card-title { color: #ff80b0; }
+    .cc-ai .comp-card-sub   { color: #600030; }
+    .cc-ai p { color: #906878; }
+
+    /* ══════════════════════════════════
+       TAB 3 — TEMPLATE MAP
+    ══════════════════════════════════ */
+    .tmpl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 900px; }
+    @media(max-width:640px){.tmpl-grid{grid-template-columns:1fr;}}
+
+    .tmpl-card { border-radius: 10px; padding: 20px 22px; border: 1px solid; }
+    .tmpl-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .tmpl-card-title { font-size: 13px; font-weight: 800; }
+    .tmpl-card-badge { font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 20px; white-space: nowrap; }
+    .tmpl-pointer { font-family: 'Courier New', monospace; font-size: 11px; margin-bottom: 6px; }
+    .tmpl-when  { font-size: 12px; line-height: 1.55; }
+    .tmpl-use   { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+
+    .tc-cred-fc  { background: #0c1e38; border-color: #1a3a6a; }
+    .tc-cred-fc .tmpl-card-title { color: #7ec8ff; }
+    .tc-cred-fc .tmpl-pointer    { color: #3a6080; }
+    .tc-cred-fc .tmpl-use        { color: #3a6080; }
+    .tc-cred-fc .tmpl-when       { color: #6090b0; }
+    .tc-cred-fc .tmpl-card-badge { background: #1a3a6a; color: #7ec8ff; }
+
+    .tc-cred-fu  { background: #0c2238; border-color: #1a4a7a; }
+    .tc-cred-fu .tmpl-card-title { color: #60b0ff; }
+    .tc-cred-fu .tmpl-pointer    { color: #304870; }
+    .tc-cred-fu .tmpl-use        { color: #304870; }
+    .tc-cred-fu .tmpl-when       { color: #5080a0; }
+    .tc-cred-fu .tmpl-card-badge { background: #1a4a7a; color: #60b0ff; }
+
+    .tc-pat-fc   { background: #0c2018; border-color: #1a4030; }
+    .tc-pat-fc .tmpl-card-title  { color: #70e890; }
+    .tc-pat-fc .tmpl-pointer     { color: #2a5038; }
+    .tc-pat-fc .tmpl-use         { color: #2a5038; }
+    .tc-pat-fc .tmpl-when        { color: #507068; }
+    .tc-pat-fc .tmpl-card-badge  { background: #1a4030; color: #70e890; }
+
+    .tc-pat-fu   { background: #101e14; border-color: #203828; }
+    .tc-pat-fu .tmpl-card-title  { color: #50d870; }
+    .tc-pat-fu .tmpl-pointer     { color: #285038; }
+    .tc-pat-fu .tmpl-use         { color: #285038; }
+    .tc-pat-fu .tmpl-when        { color: #407060; }
+    .tc-pat-fu .tmpl-card-badge  { background: #203828; color: #50d870; }
+
+    /* section heading inside tab */
+    .sub-heading { font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #3a5878; margin: 32px 0 14px; }
+    .sub-heading:first-child { margin-top: 0; }
+
+    /* ══════════════════════════════════
+       TAB 4 — BEFORE / AFTER
+    ══════════════════════════════════ */
+    .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 900px; }
+    @media(max-width:640px){.ba-grid{grid-template-columns:1fr;}}
+
+    .ba-col-title { font-size: 15px; font-weight: 800; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid; }
+    .ba-before .ba-col-title { color: #e88060; border-color: #402010; }
+    .ba-after  .ba-col-title { color: #60e880; border-color: #104020; }
+
+    .ba-item { padding: 14px 16px; border-radius: 8px; margin-bottom: 10px; font-size: 12.5px; line-height: 1.6; }
+    .ba-before .ba-item { background: #1e0e04; border: 1px solid #402010; color: #906050; }
+    .ba-after  .ba-item { background: #041e0a; border: 1px solid #104020; color: #507050; }
+    .ba-item strong { display: block; margin-bottom: 4px; }
+    .ba-before .ba-item strong { color: #e09070; }
+    .ba-after  .ba-item strong { color: #70d080; }
+
+    .ba-callout { margin-top: 32px; background: #0c1e38; border: 1px solid #1a3a6a; border-radius: 10px; padding: 20px 24px; max-width: 900px; }
+    .ba-callout-title { font-size: 13px; font-weight: 800; color: #7ec8ff; margin-bottom: 8px; }
+    .ba-callout p { font-size: 12.5px; color: #6090b0; line-height: 1.65; }
+
+    /* ══════════════════════════════════
+       SHARED UTILS
+    ══════════════════════════════════ */
+    .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 20px; margin-right: 5px; margin-bottom: 4px; }
+    .pill-blue   { background: #1a3a6a; color: #7ec8ff; }
+    .pill-purple { background: #3a1a70; color: #c090ff; }
+    .pill-green  { background: #1a4030; color: #70e890; }
+    .pill-orange { background: #503800; color: #ffc060; }
+    .pill-teal   { background: #003850; color: #50d8f0; }
+    .pill-red    { background: #480030; color: #ff80b0; }
+  </style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-eyebrow">Allergan Moxie · Agentforce Email Draft</div>
+  <div class="hdr-title">Architecture Walkthrough</div>
+  <div class="hdr-sub">How the system routes a case to the right email template — and drafts the response</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="show('flow',this)">Live Flow</button>
+  <button class="tab-btn" onclick="show('components',this)">Components</button>
+  <button class="tab-btn" onclick="show('templates',this)">Template Map</button>
+  <button class="tab-btn" onclick="show('beforeafter',this)">Before / After</button>
+</div>
+
+
+<!-- ══════════════════════════════════
+     TAB 1 — LIVE FLOW
+══════════════════════════════════ -->
+<div class="tab-panel active" id="panel-flow">
+  <div class="section-title">End-to-end: CSR clicks "Draft with AI"</div>
+  <div class="section-sub">Follow each step from the case record to the generated email draft</div>
+
+  <div class="flow-container">
+
+    <!-- Step 1 -->
+    <div class="flow-node node-csr">
+      <div class="node-step">Step 1 — Salesforce Case</div>
+      <div class="node-title">CSR opens a case and clicks "Draft with AI"</div>
+      <div class="node-detail">
+        The case already has a <strong>Case Type</strong> and <strong>Case Reason</strong> set by the CSR or intake process.
+        These two fields are the routing keys — everything downstream depends on them.<br/><br/>
+        <span class="node-badge" style="background:#1a3a6a;color:#7ec8ff;">Case Type</span>
+        <span class="node-badge" style="background:#1a3a6a;color:#7ec8ff;">Case Reason</span>
+        <span class="node-badge" style="background:#1a3a6a;color:#7ec8ff;">Email Thread (Activity)</span>
+      </div>
+    </div>
+
+    <div class="arrow"></div>
+
+    <!-- Step 2 -->
+    <div class="flow-node node-agent">
+      <div class="node-step">Step 2 — GenAI Prompt Template (Agentforce)</div>
+      <div class="node-title">CSR picks a template: "CSR First Contact Email" or "CSR Reply Email"</div>
+      <div class="node-detail">
+        Two GenAI Prompt Templates are available. The CSR picks one based on whether this is a new enquiry or an ongoing thread.<br/><br/>
+        <span class="node-badge" style="background:#3a1a70;color:#c090ff;">Custom_CSR_Response</span> First Contact &nbsp;·&nbsp;
+        <span class="node-badge" style="background:#3a1a70;color:#c090ff;">Custom_CSR_Reply</span> Reply<br/><br/>
+        Each template calls the same <strong>Prompt Flow</strong> to inject the relevant template context before the AI writes the draft.
+      </div>
+    </div>
+
+    <div class="arrow"></div>
+    <div class="arrow-label">Prompt Flow invoked</div>
+    <div class="arrow"></div>
+
+    <!-- Step 3 -->
+    <div class="flow-node node-flow">
+      <div class="node-step">Step 3 — Prompt Flow</div>
+      <div class="node-title">Add Historical Case Emails to Prompt2</div>
+      <div class="node-detail">
+        The flow reads the Case fields and does two things in parallel:<br/><br/>
+        <strong>1. Fetches the email history</strong> — loops the Activity timeline and appends prior emails to the prompt so the AI has full context.<br/><br/>
+        <strong>2. Finds candidate templates</strong> — queries <span class="node-code">Template_Scenario__mdt</span> where Case Type and Case Reason match.
+        For each match, it reads the <span class="node-code">Email_Template_API_Name__c</span> pointer and fetches the body from <span class="node-code">EmailTemplate</span>.
+        The template name, when-to-use guidance, and body are all appended to the prompt.
+      </div>
+    </div>
+
+    <div class="arrow"></div>
+    <div class="arrow-label">CMT lookup</div>
+    <div class="arrow"></div>
+
+    <!-- Step 4 -->
+    <div class="flow-node node-cmt">
+      <div class="node-step">Step 4 — Custom Metadata Type (Routing Index)</div>
+      <div class="node-title">Template_Scenario__mdt — matches Case Type + Reason to a template pointer</div>
+      <div class="node-detail">
+        Each CMT record is a routing rule. The flow queries: <span class="node-code">WHERE Case_Type__c = [case type] AND Case_Reason__c = [case reason]</span><br/><br/>
+        <strong>What it returns:</strong> one or more records, each with:<br/>
+        &nbsp;· <span class="node-code">MasterLabel</span> — human-readable template name<br/>
+        &nbsp;· <span class="node-code">When_To_Use__c</span> — guidance text for the AI on when to pick this template<br/>
+        &nbsp;· <span class="node-code">Email_Template_API_Name__c</span> — the pointer to the actual EmailTemplate<br/><br/>
+        <span class="node-badge" style="background:#503800;color:#ffc060;">8 records</span> covering credentialing + patient support scenarios.
+      </div>
+    </div>
+
+    <div class="arrow"></div>
+    <div class="arrow-label">EmailTemplate lookup by DeveloperName</div>
+    <div class="arrow"></div>
+
+    <!-- Step 5 -->
+    <div class="flow-node node-template">
+      <div class="node-step">Step 5 — EmailTemplate (Body Source)</div>
+      <div class="node-title">Flow fetches body: EmailTemplate WHERE DeveloperName = [pointer]</div>
+      <div class="node-detail">
+        The EmailTemplate <span class="node-code">Body</span> field holds the full template text — form references, SLA numbers, compliance language, policy statements.<br/><br/>
+        <strong>Why here?</strong> Content teams edit template language in Setup → Email Templates, a familiar UI. They never touch CMT or Flow metadata.<br/><br/>
+        <span class="node-badge" style="background:#003850;color:#50d8f0;">10 EmailTemplates</span> in the Allergan Demo Templates folder — 6 credentialing + 4 patient journey.
+      </div>
+    </div>
+
+    <div class="arrow"></div>
+    <div class="arrow-label">All context assembled → sent to AI</div>
+    <div class="arrow"></div>
+
+    <!-- Step 6 -->
+    <div class="flow-node node-ai">
+      <div class="node-step">Step 6 — Einstein AI (LLM)</div>
+      <div class="node-title">AI selects the best template and writes the personalised draft</div>
+      <div class="node-detail">
+        The AI receives a prompt containing:<br/>
+        &nbsp;· Case description and details<br/>
+        &nbsp;· Prior email thread (from Activity)<br/>
+        &nbsp;· All candidate templates with their <em>when-to-use</em> guidance and full body text<br/><br/>
+        It selects the most relevant template, uses its body as the structural backbone, and personalises the draft using case-specific details (names, dates, product lots).
+      </div>
+    </div>
+
+    <div class="arrow"></div>
+
+    <!-- Step 7 -->
+    <div class="flow-node node-output">
+      <div class="node-step">Step 7 — Output</div>
+      <div class="node-title">Draft appears in the Email composer. CSR reviews and sends.</div>
+      <div class="node-detail">
+        The draft is pre-populated in the Salesforce Email composer. The CSR can edit, revise, or regenerate before sending. The selected template name appears at the top of the draft so the CSR knows which template drove the output.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     TAB 2 — COMPONENTS
+══════════════════════════════════ -->
+<div class="tab-panel" id="panel-components">
+  <div class="section-title">Component Inventory</div>
+  <div class="section-sub">What each piece is, where it lives, and who owns it</div>
+
+  <div class="comp-grid">
+
+    <div class="comp-card cc-sf">
+      <div class="comp-card-sub">Salesforce Platform</div>
+      <div class="comp-card-title">Case Record</div>
+      <p><strong>What it is:</strong> A standard Salesforce Service Cloud Case. Holds the customer inquiry, contact, and email Activity thread.</p>
+      <p><strong>Key fields used:</strong> <span class="code">Type</span> (Case Type) and <span class="code">Reason</span> (Case Reason) — the two routing keys that determine which templates are returned.</p>
+      <p><strong>Who owns it:</strong> Allergan Moxie team — CSRs create and manage cases.</p>
+    </div>
+
+    <div class="comp-card cc-pt">
+      <div class="comp-card-sub">Agentforce / Einstein GenAI</div>
+      <div class="comp-card-title">GenAI Prompt Templates</div>
+      <p><strong>What it is:</strong> Two Salesforce GenAI Prompt Templates configured in the org. These are the entry points — the CSR picks one from the Draft with AI menu.</p>
+      <p><strong>Records:</strong><br/>
+        <span class="code">Custom_CSR_Response</span> — "CSR First Contact Email"<br/>
+        <span class="code">Custom_CSR_Reply</span> — "CSR Reply Email"
+      </p>
+      <p><strong>Who owns it:</strong> Salesforce admin / SA. Each template calls the Prompt Flow to assemble context.</p>
+    </div>
+
+    <div class="comp-card cc-flow">
+      <div class="comp-card-sub">Salesforce Flow (PromptFlow type)</div>
+      <div class="comp-card-title">Prompt Flow</div>
+      <p><strong>What it is:</strong> A Flow of type <span class="code">PromptFlow</span>. It assembles the full AI prompt — email history + template candidates + template bodies.</p>
+      <p><strong>Record:</strong> <span class="code">Add_Historical_Case_Emails_to_Prompt2</span></p>
+      <p><strong>Key nodes:</strong><br/>
+        <span class="code">Get_Candidate_Templates</span> → CMT query<br/>
+        <span class="code">Get_Email_Template_Body</span> → EmailTemplate lookup<br/>
+        <span class="code">Append_Template_Entry</span> → builds the prompt string
+      </p>
+      <p><strong>Who owns it:</strong> Salesforce admin / SA. Do not edit without testing.</p>
+    </div>
+
+    <div class="comp-card cc-cmt">
+      <div class="comp-card-sub">Custom Metadata Type</div>
+      <div class="comp-card-title">Template Scenario (Routing Index)</div>
+      <p><strong>What it is:</strong> <span class="code">Template_Scenario__mdt</span> — a Custom Metadata Type where each record maps a Case Type + Reason combination to a template pointer.</p>
+      <p><strong>Key fields:</strong><br/>
+        <span class="code">Case_Type__c</span> · <span class="code">Case_Reason__c</span> — routing keys<br/>
+        <span class="code">Email_Template_API_Name__c</span> — pointer to EmailTemplate<br/>
+        <span class="code">When_To_Use__c</span> — guidance text passed to the AI
+      </p>
+      <p><strong>Who owns it:</strong> Salesforce admin. Allergan team can add new routing rules here when new scenarios are needed.</p>
+    </div>
+
+    <div class="comp-card cc-et">
+      <div class="comp-card-sub">Salesforce Email Templates</div>
+      <div class="comp-card-title">EmailTemplate (Body Source)</div>
+      <p><strong>What it is:</strong> Native Salesforce Email Templates, stored in the <strong>Allergan Demo Templates</strong> folder. Each template's <span class="code">Body</span> field holds the full template text.</p>
+      <p><strong>10 templates deployed:</strong> 6 credentialing + 4 patient journey. Each has a unique <span class="code">DeveloperName</span> that the CMT record points to.</p>
+      <p><strong>Who owns it:</strong> Content team / Allergan. Template language is edited here — no code changes needed to update an email template.</p>
+    </div>
+
+    <div class="comp-card cc-ai">
+      <div class="comp-card-sub">Einstein AI / LLM</div>
+      <div class="comp-card-title">Draft Generation</div>
+      <p><strong>What it is:</strong> The Einstein LLM that receives the fully assembled prompt and generates the personalised email draft.</p>
+      <p><strong>What it receives:</strong> case fields, email thread, candidate templates with when-to-use guidance, and the full template body text for each candidate.</p>
+      <p><strong>What it does:</strong> Selects the best-fit template based on the when-to-use guidance, uses the template body as structure, and personalises using case-specific details.</p>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     TAB 3 — TEMPLATE MAP
+══════════════════════════════════ -->
+<div class="tab-panel" id="panel-templates">
+  <div class="section-title">Template Map</div>
+  <div class="section-sub">All 8 CMT records and which EmailTemplate each one points to</div>
+
+  <div class="sub-heading">Credentialing — First Contact</div>
+  <div class="tmpl-grid">
+    <div class="tmpl-card tc-cred-fc">
+      <div class="tmpl-card-header">
+        <div class="tmpl-card-title">Medical Director Change</div>
+        <span class="tmpl-card-badge">First Contact</span>
+      </div>
+      <div class="tmpl-use">CMT Label</div>
+      <div class="tmpl-pointer">AM Medical Director Change</div>
+      <div class="tmpl-use">Points to EmailTemplate</div>
+      <div class="tmpl-pointer">Credentialing_Medical_Director_Change</div>
+      <div class="tmpl-use">When to use</div>
+      <div class="tmpl-when">First contact when a provider requests to change the Medical Director on their account.</div>
+    </div>
+    <div class="tmpl-card tc-cred-fc">
+      <div class="tmpl-card-header">
+        <div class="tmpl-card-title">New Practice Enrollment</div>
+        <span class="tmpl-card-badge">First Contact</span>
+      </div>
+      <div class="tmpl-use">CMT Label</div>
+      <div class="tmpl-pointer">AM New Practice Enrollment</div>
+      <div class="tmpl-use">Points to EmailTemplate</div>
+      <div class="tmpl-pointer">Credentialing_New_Practice_Enrollment</div>
+      <div class="tmpl-use">When to use</div>
+      <div class="tmpl-when">First contact when a new practice submits an enrollment application to the Allergan Moxie network.</div>
+    </div>
+    <div class="tmpl-card tc-cred-fc">
+      <div class="tmpl-card-header">
+        <div class="tmpl-card-title">Product Access — Not Eligible</div>
+        <span class="tmpl-card-badge">First Contact</span>
+      </div>
+      <div class="tmpl-use">CMT Label</div>
+      <div class="tmpl-pointer">AM Product Access Not Eligible</div>
+      <div class="tmpl-use">Points to EmailTemplate</div>
+      <div class="tmpl-pointer">Product_Support_Not_Eligible</div>
+      <div class="tmpl-use">When to use</div>
+      <div class="tmpl-when">First contact when a practice does not meet the eligibility requirements. Compliance-sensitive — do not change the not-eligible determination language.</div>
+    </div>
+  </div>
+
+  <div class="sub-heading">Credentialing — Follow-Up (Reply)</div>
+  <div class="tmpl-grid">
+    <div class="tmpl-card tc-cred-fu">
+      <div class="tmpl-card-header">
+        <div class="tmpl-card-title">Medical Director Change — Follow Up</div>
+        <span class="tmpl-card-badge">Reply</span>
+      </div>
+      <div class="tmpl-use">CMT Label</div>
+      <div class="tmpl-pointer">AM Medical Director Change Follow Up</div>
+      <div class="tmpl-use">Points to EmailTemplate</div>
+      <div class="tmpl-pointer">Credentialing_Medical_Director_Change_Follow_Up</div>
+      <div class="tmpl-use">When to use</div>
+      <div class="tmpl-when">Follow-up when documents were already requested. Addresses Q&amp;A without re-sending the full requirements list.</div>
+    </div>
+    <div class="tmpl-card tc-cred-fu">
+      <div class="tmpl-card-header">
+        <div class="tmpl-card-title">New Practice Enrollment — Follow Up</div>
+        <span class="tmpl-card-badge">Reply</span>
+      </div>
+      <div class="tmpl-use">CMT Label</div>
+      <div class="tmpl-pointer">AM New Practice Enrollment Follow Up</div>
+      <div class="tmpl-use">Points to EmailTemplate</div>
+      <div class="tmpl-pointer">Credentialing_New_Practice_Enrollment_Follow_Up</div>
+      <div class="tmpl-use">When to use</div>
+      <div class="tmpl-when">Follow-up on an enrollment case where some documents were already received. Focuses on missing items or timeline questions.</div>
+    </div>
+    <div class="tmpl-card tc-cred-fu">
+      <div class="tmpl-card-header">
+        <div class="tmpl-card-title">Product Access — Not Eligible Follow Up</div>
+        <span class="tmpl-card-badge">Reply</span>
+      </div>
+      <div class="tmpl-use">CMT Label</div>
+      <div class="tmpl-pointer">AM Product Access Not Eligible Follow Up</div>
+      <div class="tmpl-use">Points to EmailTemplate</div>
+      <div class="tmpl-pointer">Product_Support_Not_Eligible_Follow_Up</div>
+      <div class="tmpl-use">When to use</div>
+      <div class="tmpl-when">Follow-up when a dispute has been filed. Status update tone — no re-determination.</div>
+    </div>
+  </div>
+
+  <div class="sub-heading">Patient Journey — First Contact</div>
+  <div class="tmpl-grid">
+    <div class="tmpl-card tc-pat-fc">
+      <div class="tmpl-card-header">
+        <div class="tmpl-card-title">Patient Treatment Planning</div>
+        <span class="tmpl-card-badge">First Contact</span>
+      </div>
+      <div class="tmpl-use">CMT Label</div>
+      <div class="tmpl-pointer">AM Patient Treatment Planning</div>
+      <div class="tmpl-use">Points to EmailTemplate</div>
+      <div class="tmpl-pointer">Patient_Treatment_Planning</div>
+      <div class="tmpl-use">When to use</div>
+      <div class="tmpl-when">First contact for an upcoming planned treatment session. Covers consent forms, lot number recording, and adverse event reporting setup.</div>
+    </div>
+    <div class="tmpl-card tc-pat-fc">
+      <div class="tmpl-card-header">
+        <div class="tmpl-card-title">Patient Adverse Event</div>
+        <span class="tmpl-card-badge">First Contact</span>
+      </div>
+      <div class="tmpl-use">CMT Label</div>
+      <div class="tmpl-pointer">AM Patient Adverse Event</div>
+      <div class="tmpl-use">Points to EmailTemplate</div>
+      <div class="tmpl-pointer">Patient_Adverse_Event</div>
+      <div class="tmpl-use">When to use</div>
+      <div class="tmpl-when">First contact when a provider reports a patient adverse event or unexpected reaction. Compliance-sensitive — 72hr window and Section 4.2 language are mandatory.</div>
+    </div>
+  </div>
+
+  <div class="sub-heading">Patient Journey — Follow-Up (Reply)</div>
+  <div class="tmpl-grid">
+    <div class="tmpl-card tc-pat-fu">
+      <div class="tmpl-card-header">
+        <div class="tmpl-card-title">Patient Treatment Planning — Follow Up</div>
+        <span class="tmpl-card-badge">Reply</span>
+      </div>
+      <div class="tmpl-use">CMT Label</div>
+      <div class="tmpl-pointer">AM Patient Treatment Planning Follow Up</div>
+      <div class="tmpl-use">Points to EmailTemplate</div>
+      <div class="tmpl-pointer">Patient_Treatment_Planning_Follow_Up</div>
+      <div class="tmpl-use">When to use</div>
+      <div class="tmpl-when">Follow-up on a treatment planning case where initial checklist has already been sent. Answers provider questions without repeating the pre-treatment list.</div>
+    </div>
+    <div class="tmpl-card tc-pat-fu">
+      <div class="tmpl-card-header">
+        <div class="tmpl-card-title">Patient Adverse Event — Follow Up</div>
+        <span class="tmpl-card-badge">Reply</span>
+      </div>
+      <div class="tmpl-use">CMT Label</div>
+      <div class="tmpl-pointer">AM Patient Adverse Event Follow Up</div>
+      <div class="tmpl-use">Points to EmailTemplate</div>
+      <div class="tmpl-pointer">Patient_Adverse_Event_Follow_Up</div>
+      <div class="tmpl-use">When to use</div>
+      <div class="tmpl-when">Follow-up when the AE form has already been submitted. Answers process questions without repeating the full AE reporting checklist.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     TAB 4 — BEFORE / AFTER
+══════════════════════════════════ -->
+<div class="tab-panel" id="panel-beforeafter">
+  <div class="section-title">Before vs After</div>
+  <div class="section-sub">What changed when we moved the template body out of CMT and into EmailTemplate</div>
+
+  <div class="ba-grid">
+
+    <div class="ba-before">
+      <div class="ba-col-title">Before — Template body stored in CMT</div>
+
+      <div class="ba-item">
+        <strong>Where the body lived</strong>
+        <span class="code" style="font-family:monospace;font-size:11px;background:rgba(255,100,0,0.15);padding:2px 6px;border-radius:3px;color:#d08060;">Template_Body__c</span> field on each CMT record — a long text area baked into the metadata object.
+      </div>
+      <div class="ba-item">
+        <strong>How to update template language</strong>
+        Go to Setup → Custom Metadata Types → Template Scenario → manage records. Edit the Template Body field (a textarea, no formatting). Deploy if in a sandbox. Not intuitive for a content team.
+      </div>
+      <div class="ba-item">
+        <strong>Who can edit it</strong>
+        Salesforce admin or SA only — requires metadata deployment access in most orgs. Content teams cannot edit CMT records in production without a release.
+      </div>
+      <div class="ba-item">
+        <strong>Flow behaviour</strong>
+        Flow read <span class="code" style="font-family:monospace;font-size:11px;background:rgba(255,100,0,0.15);padding:2px 6px;border-radius:3px;color:#d08060;">{!CurrentTemplate.Template_Body__c}</span> directly — simple, but body was frozen in deployed metadata.
+      </div>
+      <div class="ba-item">
+        <strong>Adding a new scenario</strong>
+        Create a CMT record, paste the entire body into Template_Body__c, deploy. Two steps, one tool.
+      </div>
+    </div>
+
+    <div class="ba-after">
+      <div class="ba-col-title">After — Template body stored in EmailTemplate</div>
+
+      <div class="ba-item">
+        <strong>Where the body lives</strong>
+        <span class="code" style="font-family:monospace;font-size:11px;background:rgba(0,200,100,0.15);padding:2px 6px;border-radius:3px;color:#60d090;">EmailTemplate.Body</span> — native Salesforce Email Templates in the Allergan Demo Templates folder.
+      </div>
+      <div class="ba-item">
+        <strong>How to update template language</strong>
+        Setup → Email Templates → Allergan Demo Templates → open template → edit body. Familiar UI, rich text supported, no deployment required. Content teams can own this.
+      </div>
+      <div class="ba-item">
+        <strong>Who can edit it</strong>
+        Any Salesforce user with the Manage Public Classic Email Templates permission — no metadata deployment access needed for edits.
+      </div>
+      <div class="ba-item">
+        <strong>Flow behaviour</strong>
+        Flow reads <span class="code" style="font-family:monospace;font-size:11px;background:rgba(0,200,100,0.15);padding:2px 6px;border-radius:3px;color:#60d090;">Email_Template_API_Name__c</span> from CMT, then does a live lookup: <span class="code" style="font-family:monospace;font-size:11px;background:rgba(0,200,100,0.15);padding:2px 6px;border-radius:3px;color:#60d090;">EmailTemplate WHERE DeveloperName = [pointer]</span>. Body is always the current live version.
+      </div>
+      <div class="ba-item">
+        <strong>Adding a new scenario</strong>
+        Create EmailTemplate (folder: Allergan Demo Templates) → create CMT record pointing to it → optionally deploy CMT record. Two tools, cleaner ownership split.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ba-callout">
+    <div class="ba-callout-title">What stayed exactly the same for the CSR</div>
+    <p>The CSR experience is identical. Same "Draft with AI" button. Same template names in the dropdown. Same draft quality. Same ability to revise or regenerate. The change is entirely under the hood — the CSR never sees CMT fields or EmailTemplate DeveloperNames. The only observable difference is that when Allergan's content team updates template language, the next draft generation reflects the change immediately — no waiting for a deployment.</p>
+  </div>
+
+</div>
+
+
+<script>
+  function show(tab, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + tab).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+</body>
+</html>
