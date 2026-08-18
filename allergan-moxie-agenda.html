@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Allergan Moxie — Session Agenda</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f0f5f9;
+  color: #1e3448;
+  min-height: 100vh;
+  padding-bottom: 60px;
+}
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, #1a5276 0%, #2e86c1 60%, #5dade2 100%);
+  padding: 52px 64px 48px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.hero-left { flex: 1; }
+.hero-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: #aed6f1; margin-bottom: 10px; }
+.hero-title   { font-size: 34px; font-weight: 900; color: #fff; line-height: 1.15; margin-bottom: 10px; }
+.hero-sub     { font-size: 15px; color: #d6eaf8; line-height: 1.7; max-width: 540px; }
+.hero-meta {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  padding: 20px 24px;
+  min-width: 220px;
+  align-self: flex-start;
+}
+.hero-meta-row { display: flex; flex-direction: column; gap: 10px; }
+.hm-item-label { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #aed6f1; margin-bottom: 2px; }
+.hm-item-val   { font-size: 13px; font-weight: 700; color: #fff; }
+
+/* BODY */
+.body-wrap { max-width: 860px; margin: 0 auto; padding: 48px 32px 0; }
+
+/* SECTION LABEL */
+.section-label {
+  font-size: 10px; font-weight: 900; letter-spacing: 2.5px;
+  text-transform: uppercase; color: #7fa8c4;
+  margin-bottom: 16px; margin-top: 40px;
+  padding-bottom: 8px; border-bottom: 2px solid #d6e8f5;
+}
+.section-label:first-child { margin-top: 0; }
+
+/* AGENDA ITEMS */
+.agenda-item {
+  background: #fff;
+  border: 1px solid #d6e8f5;
+  border-radius: 14px;
+  display: flex;
+  gap: 0;
+  overflow: hidden;
+  margin-bottom: 12px;
+  transition: box-shadow 0.15s;
+}
+.agenda-item:hover { box-shadow: 0 4px 16px rgba(30,52,72,0.09); }
+
+.ai-num {
+  width: 56px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 900; color: #fff;
+}
+.ai-body { flex: 1; padding: 18px 22px; }
+.ai-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #7fa8c4; margin-bottom: 4px; }
+.ai-title   { font-size: 15px; font-weight: 900; color: #1a3a52; margin-bottom: 5px; }
+.ai-desc    { font-size: 12.5px; color: #4a6e8a; line-height: 1.65; }
+.ai-meta {
+  padding: 18px 20px 18px 0;
+  display: flex; flex-direction: column; justify-content: center;
+  align-items: flex-end; gap: 6px; flex-shrink: 0;
+  min-width: 110px;
+}
+.ai-time  { font-size: 12px; font-weight: 800; color: #2e86c1; }
+.ai-tag   { font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+
+/* colour variants */
+.ai-blue .ai-num   { background: #2e86c1; }
+.ai-green .ai-num  { background: #27ae60; }
+.ai-purple .ai-num { background: #7d3c98; }
+.ai-amber .ai-num  { background: #d4ac0d; }
+.ai-dark .ai-num   { background: #1a3a52; }
+
+.tag-context  { background: #d6eaf8; color: #1a5276; }
+.tag-demo     { background: #d5f5e3; color: #1e5631; }
+.tag-discuss  { background: #e8daef; color: #6c3483; }
+.tag-decision { background: #fef9e7; color: #7d6608; }
+.tag-internal { background: #f0f5f9; color: #5a7e98; }
+
+/* DIVIDER — live demo */
+.demo-divider {
+  background: linear-gradient(135deg, #1e5631 0%, #27ae60 100%);
+  border-radius: 12px;
+  padding: 18px 28px;
+  display: flex; align-items: center; gap: 18px;
+  margin: 8px 0 12px;
+  color: #fff;
+}
+.dd-icon  { font-size: 28px; flex-shrink: 0; }
+.dd-label { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #a9dfbf; margin-bottom: 3px; }
+.dd-title { font-size: 17px; font-weight: 900; }
+.dd-desc  { font-size: 12.5px; color: #d5f5e3; line-height: 1.6; margin-top: 3px; }
+.dd-time  { margin-left: auto; font-size: 14px; font-weight: 900; color: #fff; flex-shrink: 0; }
+
+/* TIME TOTAL BAR */
+.time-bar {
+  background: #fff;
+  border: 1px solid #d6e8f5;
+  border-radius: 12px;
+  padding: 18px 24px;
+  margin-top: 36px;
+  display: flex; align-items: center; gap: 0; overflow: hidden;
+}
+.tb-seg { flex: 1; text-align: center; padding: 8px 4px; border-right: 1px solid #edf4fa; }
+.tb-seg:last-child { border-right: none; }
+.tb-seg-val   { font-size: 18px; font-weight: 900; color: #1a3a52; }
+.tb-seg-label { font-size: 10px; font-weight: 700; color: #7fa8c4; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+/* GOAL BOX */
+.goal-box {
+  background: #1a3a52;
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-top: 32px;
+  display: flex; gap: 18px; align-items: flex-start;
+}
+.gb-icon { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
+.gb-title { font-size: 14px; font-weight: 900; color: #fff; margin-bottom: 8px; }
+.gb-list  { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.gb-list li { font-size: 13px; color: #aed6f1; line-height: 1.6; padding-left: 14px; position: relative; }
+.gb-list li::before { content: ''; position: absolute; left: 0; top: 7px; width: 5px; height: 5px; border-radius: 50%; background: #5dade2; }
+
+/* GROUND RULES */
+.rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 0; }
+@media(max-width:600px){ .rules-grid{ grid-template-columns:1fr; } }
+.rule-card { background: #fff; border: 1px solid #d6e8f5; border-radius: 10px; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; }
+.rule-icon  { font-size: 18px; flex-shrink: 0; }
+.rule-title { font-size: 12.5px; font-weight: 800; color: #1a3a52; margin-bottom: 3px; }
+.rule-desc  { font-size: 12px; color: #5a7e98; line-height: 1.55; }
+
+/* FOOTER NOTE */
+.footer-note { font-size: 12px; color: #7fa8c4; text-align: center; margin-top: 36px; line-height: 1.7; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Allergan Moxie · Provider Services · Agentforce</div>
+    <div class="hero-title">AI Email Drafting<br/>Session Agenda</div>
+    <div class="hero-sub">A working solution that takes template selection and email drafting off the CSR's plate — and a transparent look at what comes next.</div>
+  </div>
+  <div class="hero-meta">
+    <div class="hero-meta-row">
+      <div>
+        <div class="hm-item-label">Presenter</div>
+        <div class="hm-item-val">Nisar Khan</div>
+      </div>
+      <div>
+        <div class="hm-item-label">Role</div>
+        <div class="hm-item-val">Success Architect</div>
+      </div>
+      <div>
+        <div class="hm-item-label">Total time</div>
+        <div class="hm-item-val">~45 minutes</div>
+      </div>
+      <div>
+        <div class="hm-item-label">Format</div>
+        <div class="hm-item-val">Presentation + Live Demo</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="body-wrap">
+
+  <!-- PART 1 — CONTEXT -->
+  <div class="section-label">Part 1 — Setting the scene</div>
+
+  <div class="agenda-item ai-blue">
+    <div class="ai-num">1</div>
+    <div class="ai-body">
+      <div class="ai-eyebrow">The Problem</div>
+      <div class="ai-title">What your team is dealing with today</div>
+      <div class="ai-desc">We start with the problem as we heard it — 1,600 templates, inconsistent selection, missed policy requirements, and 20 minutes of manual work per email. We want to confirm we understood the pain correctly before showing the solution.</div>
+    </div>
+    <div class="ai-meta">
+      <div class="ai-time">5 min</div>
+      <div class="ai-tag tag-context">Context</div>
+    </div>
+  </div>
+
+  <div class="agenda-item ai-blue">
+    <div class="ai-num">2</div>
+    <div class="ai-body">
+      <div class="ai-eyebrow">What We Built</div>
+      <div class="ai-title">The solution — what is working today</div>
+      <div class="ai-desc">A quick headline of what the proof of concept delivers: automatic template selection, policy-accurate drafts, thread-aware replies, and a human in the loop. Before we show it, we explain what you are about to see.</div>
+    </div>
+    <div class="ai-meta">
+      <div class="ai-time">5 min</div>
+      <div class="ai-tag tag-context">Context</div>
+    </div>
+  </div>
+
+  <div class="agenda-item ai-blue">
+    <div class="ai-num">3</div>
+    <div class="ai-body">
+      <div class="ai-eyebrow">How It Works — Architecture</div>
+      <div class="ai-title">The wiring — so you know what you are watching in the demo</div>
+      <div class="ai-desc">A 2-minute walk through the high-level flow: CSR clicks Draft with AI → Prompt Flow queries the routing index → fetches the right email template → Einstein personalises → draft appears in the composer. No surprises in the demo.</div>
+    </div>
+    <div class="ai-meta">
+      <div class="ai-time">5 min</div>
+      <div class="ai-tag tag-context">Context</div>
+    </div>
+  </div>
+
+  <!-- LIVE DEMO -->
+  <div class="demo-divider">
+    <div class="dd-icon">⚡</div>
+    <div>
+      <div class="dd-label">Live Demo</div>
+      <div class="dd-title">Agentforce Email Drafting — in your org</div>
+      <div class="dd-desc">Three live cases: New Practice Enrollment (first contact) · Medical Director Change Reply · Patient Treatment Planning. Each shows a different scenario and template being selected automatically.</div>
+    </div>
+    <div class="dd-time">15 min</div>
+  </div>
+
+  <!-- PART 2 — GAPS & OPTIONS -->
+  <div class="section-label">Part 2 — What is open and what comes next</div>
+
+  <div class="agenda-item ai-amber">
+    <div class="ai-num">5</div>
+    <div class="ai-body">
+      <div class="ai-eyebrow">The Gaps</div>
+      <div class="ai-title">What the proof of concept does not cover yet</div>
+      <div class="ai-desc">We are transparent about two open items: historical case learning (the voting model you asked for) and the audit trail on sent emails. We explain why they are gaps, how we defended the approach we took, and what the path forward looks like.</div>
+    </div>
+    <div class="ai-meta">
+      <div class="ai-time">5 min</div>
+      <div class="ai-tag tag-discuss">Discussion</div>
+    </div>
+  </div>
+
+  <div class="agenda-item ai-purple">
+    <div class="ai-num">6</div>
+    <div class="ai-body">
+      <div class="ai-eyebrow">Three Options</div>
+      <div class="ai-title">How to close the gaps — your decision</div>
+      <div class="ai-desc">Option 1 is what is live today. Option 2 adds Data Cloud for historical learning (Calculated Insights, CRM Connector). Option 3 extends your existing custom LWC to embed the draft trigger and add the audit trail. We walk through what each option requires and recommend a sequence.</div>
+    </div>
+    <div class="ai-meta">
+      <div class="ai-time">10 min</div>
+      <div class="ai-tag tag-decision">Decision</div>
+    </div>
+  </div>
+
+  <!-- PART 3 — Q&A -->
+  <div class="section-label">Part 3 — Questions</div>
+
+  <div class="agenda-item ai-dark">
+    <div class="ai-num">7</div>
+    <div class="ai-body">
+      <div class="ai-eyebrow">Open Discussion</div>
+      <div class="ai-title">Questions, concerns, and next steps</div>
+      <div class="ai-desc">Open floor. Common questions we are prepared for: What happens when there is no matching template? What if the CSR edits the draft heavily — does the AI learn? How do we get from the 10 templates today to the full template library? What does production deployment look like?</div>
+    </div>
+    <div class="ai-meta">
+      <div class="ai-time">5 min</div>
+      <div class="ai-tag tag-discuss">Q&amp;A</div>
+    </div>
+  </div>
+
+  <!-- TIME BAR -->
+  <div class="time-bar">
+    <div class="tb-seg">
+      <div class="tb-seg-val">15 min</div>
+      <div class="tb-seg-label">Context</div>
+    </div>
+    <div class="tb-seg">
+      <div class="tb-seg-val">15 min</div>
+      <div class="tb-seg-label">Live Demo</div>
+    </div>
+    <div class="tb-seg">
+      <div class="tb-seg-val">15 min</div>
+      <div class="tb-seg-label">Gaps + Options</div>
+    </div>
+    <div class="tb-seg">
+      <div class="tb-seg-val">5 min</div>
+      <div class="tb-seg-label">Q&amp;A</div>
+    </div>
+    <div class="tb-seg" style="background:#f0f5f9;border-radius:0 8px 8px 0;">
+      <div class="tb-seg-val" style="color:#2e86c1;">~50 min</div>
+      <div class="tb-seg-label">Total</div>
+    </div>
+  </div>
+
+  <!-- SESSION GOALS -->
+  <div class="goal-box">
+    <div class="gb-icon">🎯</div>
+    <div>
+      <div class="gb-title">What we want you to leave with</div>
+      <ul class="gb-list">
+        <li>Confidence that the core AI drafting capability works and is tested against real cases in your org</li>
+        <li>A clear picture of what is built, what is open, and what the three paths forward are</li>
+        <li>A decision — or at least a clear next conversation — on which option to prioritise</li>
+        <li>The solution overview page to share with your team after this session</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- GROUND RULES -->
+  <div class="section-label" style="margin-top:36px;">A few things to know before we start</div>
+  <div class="rules-grid">
+    <div class="rule-card">
+      <div class="rule-icon">🙋</div>
+      <div>
+        <div class="rule-title">Stop us any time</div>
+        <div class="rule-desc">If something is unclear or you want to go deeper on any section, interrupt — we would rather answer questions in context than at the end.</div>
+      </div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-icon">👤</div>
+      <div>
+        <div class="rule-title">Human always in the loop</div>
+        <div class="rule-desc">Every draft is reviewed and approved by the CSR before sending. Nothing goes out automatically — ever.</div>
+      </div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-icon">🔧</div>
+      <div>
+        <div class="rule-title">This is a proof of concept</div>
+        <div class="rule-desc">10 scenarios are live and tested today. Extending to the full template library is an admin and content exercise — no development needed for new scenarios.</div>
+      </div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-icon">📋</div>
+      <div>
+        <div class="rule-title">We will share materials after</div>
+        <div class="rule-desc">The solution overview page, further reading with official Salesforce documentation, and the three options summary are all available to share with your team.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Allergan Moxie · Provider Services · Agentforce Email Drafting POC<br/>
+    Presented by Nisar Khan, Success Architect · Salesforce
+  </div>
+
+</div>
+</body>
+</html>
