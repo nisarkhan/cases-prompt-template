@@ -281,6 +281,105 @@ NEW: CMT record → Email_Template_API_Name__c → EmailTemplate.Body (fetched a
   <div class="panel" id="tab-pathA">
 
     <h2>Part A — Credentialing First Contact</h2>
+
+    <!-- EMAIL TEMPLATE LIBRARY -->
+    <div style="background:#fff;border:1px solid #d6e8f5;border-radius:12px;padding:22px 26px;margin-bottom:28px;">
+      <div style="font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#2e86c1;margin-bottom:6px;">Template Library</div>
+      <div style="font-size:16px;font-weight:900;color:#1a3a52;margin-bottom:4px;">10 Email Templates — built and deployed</div>
+      <div style="font-size:13px;color:#5a7e98;margin-bottom:18px;line-height:1.6;">Each template stores the policy-accurate language for its scenario. The Prompt Flow fetches the right one at runtime using the <code style="font-size:11px;background:#e8f1f8;padding:1px 5px;border-radius:3px;">DeveloperName</code> pointer stored in the CMT routing record.</div>
+
+      <!-- Credentialing group -->
+      <div style="font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:#7fa8c4;margin-bottom:8px;">Account Support / Credentialing — 6 templates</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:18px;">
+        <thead>
+          <tr style="background:#eaf4fc;">
+            <th style="padding:8px 12px;text-align:left;font-size:10px;font-weight:900;color:#1a5276;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #d6e8f5;">#</th>
+            <th style="padding:8px 12px;text-align:left;font-size:10px;font-weight:900;color:#1a5276;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #d6e8f5;">Template Name (DeveloperName)</th>
+            <th style="padding:8px 12px;text-align:left;font-size:10px;font-weight:900;color:#1a5276;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #d6e8f5;">Scenario</th>
+            <th style="padding:8px 12px;text-align:left;font-size:10px;font-weight:900;color:#1a5276;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #d6e8f5;">Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #edf4fa;">
+            <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">1</td>
+            <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Credentialing_Medical_Director_Change</code></td>
+            <td style="padding:9px 12px;color:#3a5a72;">Medical Director Change — new request, checklist not yet sent</td>
+            <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d6eaf8;color:#1a5276;">First Contact</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid #edf4fa;background:#fafcff;">
+            <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">2</td>
+            <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Credentialing_Medical_Director_Change_Follow_Up</code></td>
+            <td style="padding:9px 12px;color:#3a5a72;">Medical Director Change — checklist already sent, answering follow-up questions</td>
+            <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d5f5e3;color:#1e5631;">Follow-Up</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid #edf4fa;">
+            <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">3</td>
+            <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Credentialing_New_Practice_Enrollment</code></td>
+            <td style="padding:9px 12px;color:#3a5a72;">New Practice Enrollment — first time enrolling as an authorized provider</td>
+            <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d6eaf8;color:#1a5276;">First Contact</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid #edf4fa;background:#fafcff;">
+            <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">4</td>
+            <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Credentialing_New_Practice_Enrollment_Follow_Up</code></td>
+            <td style="padding:9px 12px;color:#3a5a72;">New Practice Enrollment — requirements already sent, answering follow-up questions</td>
+            <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d5f5e3;color:#1e5631;">Follow-Up</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid #edf4fa;">
+            <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">5</td>
+            <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Product_Support_Not_Eligible</code></td>
+            <td style="padding:9px 12px;color:#3a5a72;">Product Access — practice does not meet eligibility, 30-day dispute process</td>
+            <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d6eaf8;color:#1a5276;">First Contact</span></td>
+          </tr>
+          <tr style="background:#fafcff;">
+            <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">6</td>
+            <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Product_Support_Not_Eligible_Follow_Up</code></td>
+            <td style="padding:9px 12px;color:#3a5a72;">Product Access — eligibility decision already communicated, answering dispute questions</td>
+            <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d5f5e3;color:#1e5631;">Follow-Up</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Patient Support group -->
+      <div style="font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:#7fa8c4;margin-bottom:8px;">Patient Support / Treatment — 4 templates</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+        <thead>
+          <tr style="background:#eafaf1;">
+            <th style="padding:8px 12px;text-align:left;font-size:10px;font-weight:900;color:#1e5631;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #a9dfbf;">#</th>
+            <th style="padding:8px 12px;text-align:left;font-size:10px;font-weight:900;color:#1e5631;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #a9dfbf;">Template Name (DeveloperName)</th>
+            <th style="padding:8px 12px;text-align:left;font-size:10px;font-weight:900;color:#1e5631;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #a9dfbf;">Scenario</th>
+            <th style="padding:8px 12px;text-align:left;font-size:10px;font-weight:900;color:#1e5631;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #a9dfbf;">Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #edf4fa;">
+            <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">7</td>
+            <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Patient_Adverse_Event</code></td>
+            <td style="padding:9px 12px;color:#3a5a72;">Patient adverse event or treatment complication — compliance-sensitive, mandatory reporting steps</td>
+            <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d6eaf8;color:#1a5276;">First Contact</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid #edf4fa;background:#fafcff;">
+            <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">8</td>
+            <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Patient_Adverse_Event_Follow_Up</code></td>
+            <td style="padding:9px 12px;color:#3a5a72;">Adverse event — reporting checklist already sent, answering questions about timeline or clinical next steps</td>
+            <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d5f5e3;color:#1e5631;">Follow-Up</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid #edf4fa;">
+            <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">9</td>
+            <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Patient_Treatment_Planning</code></td>
+            <td style="padding:9px 12px;color:#3a5a72;">Treatment planning — confirming product availability, protocol, and documentation before appointment</td>
+            <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d6eaf8;color:#1a5276;">First Contact</span></td>
+          </tr>
+          <tr style="background:#fafcff;">
+            <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">10</td>
+            <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Patient_Treatment_Planning_Follow_Up</code></td>
+            <td style="padding:9px 12px;color:#3a5a72;">Treatment planning — requirements already communicated, answering provider questions without repeating checklist</td>
+            <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d5f5e3;color:#1e5631;">Follow-Up</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- END TEMPLATE LIBRARY -->
+
     <p>Use <strong>CSR First Contact Email</strong> for all three cases below. These are the same cases from the main testing guide — here you are specifically confirming that the template body comes from <strong>EmailTemplate</strong> (not from Template_Body__c). The form references, SLA numbers, and policy language in the draft prove the EmailTemplate body was fetched correctly.</p>
 
     <!-- A-1 -->

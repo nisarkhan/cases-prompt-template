@@ -261,6 +261,7 @@ body {
   <button class="tab-btn" onclick="show('gaps',this)">The Gaps</button>
   <button class="tab-btn" onclick="show('options',this)">Three Options</button>
   <button class="tab-btn" onclick="show('resources',this)">Further Reading</button>
+  <button class="tab-btn" onclick="show('fallback',this)">Edge Cases</button>
 </div>
 
 
@@ -276,7 +277,12 @@ body {
     <div class="ps-eyebrow">Core Problem</div>
     <div class="ps-title">CSRs spend 20 minutes drafting every provider email - and there is no reliable way to pick the right template</div>
     <div class="ps-body">The org has approximately <strong>1,600 email templates</strong> built up over many years. When a provider case comes in, a CSR must know from experience which template applies. New joiners have no idea - they ask a colleague or guess. Even experienced reps use different templates for the same case type, leading to <strong>inconsistent responses and missed policy requirements</strong>.</div>
-  </div>
+    <br>
+ 
+      <div class="ps-body">The Provider Services team came in with one core problem: <strong>CSRs — especially new joiners — have no reliable way to know which email template to use out of approximately 1,600 email templates in the org.</strong> Different reps use different templates for the same case type, leading to inconsistent responses and missed policy requirements.</div>
+      <div class="ps-body">Their original ask was for Agentforce to <strong>look at historically successful closed cases, learn which templates experienced reps used, and recommend the "winning" template</strong> for each new case — essentially a voting model based on past rep behaviour.</div>
+      <div class="ps-body">They also wanted the system to <strong>read the full email thread</strong> on a case before drafting a reply, so CSRs are not repeating information already sent. And they wanted a <strong>human in the loop</strong> — the CSR reviews and approves every draft before it goes out.</div>
+    </div>
 
   <div class="pain-grid">
     <div class="pain-card">
@@ -955,6 +961,136 @@ body {
       Share this page with the customer's Salesforce admin or developer. Each link goes directly to the official Salesforce documentation for the component it describes. The documentation validates that every technique used in this solution - CMT routing, Prompt Flow, Prompt Templates, LWC extensibility - is a supported, documented Salesforce platform capability, not a custom workaround.
       <br/><br/>
       For the backup question specifically: point the team to the <strong>Deployment &amp; Source Control</strong> section. The <code style="font-size:11px;background:#dce9f5;padding:1px 4px;border-radius:3px;">sf project retrieve start</code> command pulls the complete solution from the org into the local <code style="font-size:11px;background:#dce9f5;padding:1px 4px;border-radius:3px;">force-app</code> folder. Push that folder to a private GitHub repository and the entire solution - Prompt Templates, Flow, CMT records, and Email Templates - is fully backed up and can be redeployed to any org.
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════
+     TAB 6 — EDGE CASES
+══════════════════════════════ -->
+<div class="tab-panel" id="tab-fallback">
+  <div class="sec-eyebrow">Areas We Are Exploring</div>
+  <div class="sec-title">What happens when Case Type + Reason don't match</div>
+  <div class="sec-sub">The system always produces a draft — it never blocks the CSR. But the quality of that draft depends on whether a routing match was found. These are the four scenarios to be aware of.</div>
+
+  <!-- SCENARIO 1 — most dangerous -->
+  <div style="background:#fff;border:1px solid #f5c6c2;border-left:5px solid #e74c3c;border-radius:12px;overflow:hidden;margin-bottom:16px;">
+    <div style="background:#fdf2f2;padding:14px 22px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f5c6c2;">
+      <div style="width:30px;height:30px;border-radius:50%;background:#e74c3c;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:900;color:#7b241c;">No CMT record exists for this Case Type + Reason</div>
+      </div>
+      <span style="font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#fadbd8;color:#c0392b;">Silent failure — most critical</span>
+    </div>
+    <div style="padding:18px 22px;">
+      <div style="font-size:13px;color:#4a6e8a;line-height:1.7;margin-bottom:12px;">The Prompt Flow finds zero matching records in the CMT routing index. It hits the fallback branch and injects this message into the prompt instead of a template body: <em>"No matching email templates were found. Draft a professional response based on the case details above."</em></div>
+      <div style="font-size:13px;color:#4a6e8a;line-height:1.7;margin-bottom:14px;">Einstein still produces a draft that looks polished and professional — but it has <strong style="color:#c0392b;">no form references, no SLAs, no mandatory compliance language</strong>. The CSR receives a draft that looks fine on the surface and may send it without realising critical policy requirements are missing.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="background:#fdf2f2;border-radius:8px;padding:12px 14px;">
+          <div style="font-size:10px;font-weight:900;color:#c0392b;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;">Why it's the most critical</div>
+          <div style="font-size:12px;color:#7b241c;line-height:1.6;">The failure is invisible. There is no error message, no warning in the draft. A CSR has no way of knowing the template was missing unless they already know what the correct output should look like.</div>
+        </div>
+        <div style="background:#eafaf1;border-radius:8px;padding:12px 14px;">
+          <div style="font-size:10px;font-weight:900;color:#1e8449;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;">How to address it</div>
+          <div style="font-size:12px;color:#1e5631;line-height:1.6;">Start with the top 10–15 highest-volume case types. Build CMT records for those first. Use cases that produce generic drafts as a signal of what to build next — not a system failure, a prioritisation queue. The key question to ask the customer is: <strong>"Of the 1,600 templates, how many are actually still in active use?"</strong> — in most orgs, a large percentage are legacy or duplicates. That audit will likely shrink the real number significantly.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIO 2 — multiple matches -->
+  <div style="background:#fff;border:1px solid #f9e79f;border-left:5px solid #d4ac0d;border-radius:12px;overflow:hidden;margin-bottom:16px;">
+    <div style="background:#fef9e7;padding:14px 22px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f9e79f;">
+      <div style="width:30px;height:30px;border-radius:50%;background:#d4ac0d;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:900;color:#7d6608;">Multiple CMT records match the same Case Type + Reason</div>
+      </div>
+      <span style="font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#fef9e7;color:#7d6608;border:1px solid #f9e79f;">Future consideration</span>
+    </div>
+    <div style="padding:18px 22px;">
+      <div style="font-size:13px;color:#4a6e8a;line-height:1.7;margin-bottom:14px;">If the same Case Type + Reason combination maps to more than one template — for example, different responses depending on provider specialty or plan type — the CMT lookup returns multiple rows and the system needs to decide which one to use.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="background:#fef9e7;border-radius:8px;padding:12px 14px;">
+          <div style="font-size:10px;font-weight:900;color:#7d6608;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;">How it is handled today</div>
+          <div style="font-size:12px;color:#7d5500;line-height:1.6;">The <code style="font-size:11px;background:#fde68a;padding:1px 4px;border-radius:3px;">When_To_Use__c</code> field is already built for this. The Prompt Flow passes all candidate templates and their <code style="font-size:11px;background:#fde68a;padding:1px 4px;border-radius:3px;">When_To_Use__c</code> descriptions to Einstein, which picks the most appropriate one based on the case context.</div>
+        </div>
+        <div style="background:#eafaf1;border-radius:8px;padding:12px 14px;">
+          <div style="font-size:10px;font-weight:900;color:#1e8449;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;">POC status</div>
+          <div style="font-size:12px;color:#1e5631;line-height:1.6;">All 8 current routing records are unique Type + Reason combinations, so this scenario does not come up in the POC. Worth flagging to the customer as a future consideration when they expand the template library.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIO 3 — token limits -->
+  <div style="background:#fff;border:1px solid #f9e79f;border-left:5px solid #d4ac0d;border-radius:12px;overflow:hidden;margin-bottom:16px;">
+    <div style="background:#fef9e7;padding:14px 22px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f9e79f;">
+      <div style="width:30px;height:30px;border-radius:50%;background:#d4ac0d;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:900;color:#7d6608;">Very long email threads approaching token limits</div>
+      </div>
+      <span style="font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#fef9e7;color:#7d6608;border:1px solid #f9e79f;">Production consideration</span>
+    </div>
+    <div style="padding:18px 22px;">
+      <div style="font-size:13px;color:#4a6e8a;line-height:1.7;margin-bottom:14px;">Einstein AI models available through Salesforce support context windows in the range of approximately 16K–32K tokens depending on the model selected in the Prompt Template (GPT-4o Mini vs GPT-4o). A single email is roughly 200–500 tokens, so a thread of 30 or more emails could start pushing against those limits.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="background:#fef9e7;border-radius:8px;padding:12px 14px;">
+          <div style="font-size:10px;font-weight:900;color:#7d6608;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;">POC status</div>
+          <div style="font-size:12px;color:#7d5500;line-height:1.6;">Not an issue in the POC — test threads are short. The Prompt Flow already caps the current thread at 5 emails and historical cases at 3. This is a production consideration for cases with very long back-and-forth history.</div>
+        </div>
+        <div style="background:#eafaf1;border-radius:8px;padding:12px 14px;">
+          <div style="font-size:10px;font-weight:900;color:#1e8449;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;">Recommended approach for production</div>
+          <div style="font-size:12px;color:#1e5631;line-height:1.6;">Truncate to the last 10–15 emails in the Prompt Flow, or summarise older messages before passing them to Einstein. This is a Flow configuration change — no changes to the Prompt Template needed.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIO 4 — first contact vs reply -->
+  <div style="background:#fff;border:1px solid #a9dfbf;border-left:5px solid #27ae60;border-radius:12px;overflow:hidden;margin-bottom:28px;">
+    <div style="background:#eafaf1;padding:14px 22px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #a9dfbf;">
+      <div style="width:30px;height:30px;border-radius:50%;background:#27ae60;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:900;color:#1e5631;">CSR selects First Contact template on a reply case (or vice versa)</div>
+      </div>
+      <span style="font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#d5f5e3;color:#1e5631;">Handled by design</span>
+    </div>
+    <div style="padding:18px 22px;">
+      <div style="font-size:13px;color:#4a6e8a;line-height:1.7;margin-bottom:14px;">Keeping First Contact and Reply as two separate Prompt Templates was a deliberate design choice — it avoids instruction confusion in the LLM. Each template has a distinct set of instructions appropriate for its context. The CSR selects which one to use from the "Draft with AI" menu, so the responsibility stays with them.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="background:#eafaf1;border-radius:8px;padding:12px 14px;">
+          <div style="font-size:10px;font-weight:900;color:#1e8449;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;">Why this is not a system problem</div>
+          <div style="font-size:12px;color:#1e5631;line-height:1.6;">If a CSR selects First Contact on a case that already has an email thread, Einstein still reads the thread (the Prompt Flow always injects it) and instruction 7 in the First Contact template tells it to treat the presence of a thread as a reply signal. The output will still be reasonable — not ideal, but not broken.</div>
+        </div>
+        <div style="background:#eafaf1;border-radius:8px;padding:12px 14px;">
+          <div style="font-size:10px;font-weight:900;color:#1e8449;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;">Best handled via Option 3 (custom LWC)</div>
+          <div style="font-size:12px;color:#1e5631;line-height:1.6;">If the customer wants to eliminate the choice entirely, the custom LWC can auto-select the correct template based on whether an email thread exists on the case — First Contact if no thread, Reply if a thread is present. No CSR decision needed.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY CALLOUT -->
+  <div style="background:#fff;border:1px solid #d6e8f5;border-radius:12px;padding:22px 26px;">
+    <div style="font-size:14px;font-weight:900;color:#1a3a52;margin-bottom:14px;">Summary — how to think about these during rollout</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div style="background:#fdf2f2;border-radius:8px;padding:14px 16px;">
+        <div style="font-size:12px;font-weight:800;color:#c0392b;margin-bottom:6px;">Scenario 1 — prioritise prevention</div>
+        <div style="font-size:12px;color:#7b241c;line-height:1.65;">Generic drafts will appear for case types without a CMT record. Expected during rollout — treat each one as a signal of a template to build next. Ask the customer to audit how many of the 1,600 templates are actually still in active use. The real number is almost always much smaller.</div>
+      </div>
+      <div style="background:#fef9e7;border-radius:8px;padding:14px 16px;">
+        <div style="font-size:12px;font-weight:800;color:#7d6608;margin-bottom:6px;">Scenarios 2 &amp; 3 — future-proof considerations</div>
+        <div style="font-size:12px;color:#7d5500;line-height:1.65;">Multiple matches are already handled by <code style="font-size:11px;background:#fde68a;padding:1px 4px;border-radius:3px;">When_To_Use__c</code> — not a concern for the POC. Token limits are not an issue with short threads but worth addressing in the Prompt Flow before production go-live.</div>
+      </div>
+      <div style="background:#eafaf1;border-radius:8px;padding:14px 16px;">
+        <div style="font-size:12px;font-weight:800;color:#1e8449;margin-bottom:6px;">Scenario 4 — handled well by design</div>
+        <div style="font-size:12px;color:#1e5631;line-height:1.65;">Two separate templates avoids LLM instruction confusion. The custom LWC (Option 3) can auto-select the right template based on whether a thread exists — removing the CSR decision entirely if the customer wants that.</div>
+      </div>
+      <div style="background:#eaf4fc;border-radius:8px;padding:14px 16px;">
+        <div style="font-size:12px;font-weight:800;color:#1a5276;margin-bottom:6px;">None of these block the POC</div>
+        <div style="font-size:12px;color:#1a4a6a;line-height:1.65;">All four scenarios are either already handled, not applicable to the current 8-template scope, or production considerations. The POC can proceed and these are framed as transparent discussion points with the customer.</div>
+      </div>
     </div>
   </div>
 
