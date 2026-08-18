@@ -1158,11 +1158,64 @@ Warm regards, Nisar Khan</div>
 
     <div class="a-node an-4">
       <div class="a-node-num">Step 4 — Custom Metadata Type (Routing Index)</div>
-      <div class="a-node-title">Template_Scenario__mdt returns one or more matching routing records</div>
-      <div class="a-node-body">Each CMT record is a routing rule. The query can return multiple records — this is intentional. First-contact and follow-up variants share the same Case Type + Reason but have different <span class="mono">When_To_Use__c</span> text, which is what the AI reads to choose between them.<br/><br/>
-        <br/><br/>Custom Metadata gives us a routing index that's deployable, queryable, admin-owned, and free from governor limits — it's the Salesforce-native way to map business rules to actions without code
-        Each matched record provides: <span class="mono">MasterLabel</span> · <span class="mono">When_To_Use__c</span> · <span class="mono">Email_Template_API_Name__c</span>.<br/><br/>
-        <span class="a-node-badge" style="background:#fcf3cf;color:#7d6608;">8 routing records — credentialing + patient support</span>
+      <div class="a-node-title">Template_Scenario__mdt — the phone book that maps every case to the right template</div>
+      <div class="a-node-body">
+
+        <div style="background:#fef9e7;border-left:3px solid #d4ac0d;border-radius:6px;padding:12px 14px;margin-bottom:14px;">
+          <strong style="font-size:12px;color:#7d6608;">The Phone Book Analogy</strong><br/>
+          <span style="font-size:12px;color:#7d5500;line-height:1.65;">Think of <span class="mono">Template_Scenario__mdt</span> as a phone book. The case gives you a name (Case Type + Case Reason), and the phone book gives you the number to call (the email template developer name). Without it, you'd search through all 1,600 contacts every time. With it, you look up the name and get the answer instantly.</span>
+        </div>
+
+        <strong style="font-size:12px;color:#1a3a52;">Why Custom Metadata — not a custom object, custom setting, or hardcoded logic</strong>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:7px;">
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#3a5a72;line-height:1.6;">
+            <span style="color:#27ae60;font-weight:900;flex-shrink:0;">✓</span>
+            <span><strong>Deployable across environments</strong> — CMT records travel with metadata deployments (sandbox → production). Custom object records don't. Routing rules never need to be manually recreated in each environment.</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#3a5a72;line-height:1.6;">
+            <span style="color:#27ae60;font-weight:900;flex-shrink:0;">✓</span>
+            <span><strong>Queryable in Flows — no custom code</strong> — The Prompt Flow queries it at runtime with a simple lookup: give me the row where Case Type = X and Case Reason = Y. No Apex, no developer needed.</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#3a5a72;line-height:1.6;">
+            <span style="color:#27ae60;font-weight:900;flex-shrink:0;">✓</span>
+            <span><strong>Admin-editable, no code required</strong> — Your content team adds, changes, or removes routing rules in Setup without a developer. New case scenario? Add a row. Template changed? Update the developer name. Done.</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#3a5a72;line-height:1.6;">
+            <span style="color:#27ae60;font-weight:900;flex-shrink:0;">✓</span>
+            <span><strong>No governor limit concerns</strong> — CMT queries don't count against SOQL limits. This matters at scale when the system is generating drafts across hundreds of cases per day.</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#3a5a72;line-height:1.6;">
+            <span style="color:#27ae60;font-weight:900;flex-shrink:0;">✓</span>
+            <span><strong>Version-controlled and auditable</strong> — Every change is trackable through metadata deployments. You always know who changed which routing rule and when.</span>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid #edf4fa;">
+          <strong style="font-size:12px;color:#1a3a52;">Why store the Email Template Developer Name — not the Id</strong>
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px;">
+            <div style="font-size:12px;color:#3a5a72;line-height:1.6;display:flex;gap:8px;"><span style="color:#2e86c1;font-weight:900;flex-shrink:0;">→</span><span><strong>Developer names are stable across environments</strong> — the same template has the same developer name in sandbox and production, but different Ids. Storing the Id would break routing rules every time you migrate.</span></div>
+            <div style="font-size:12px;color:#3a5a72;line-height:1.6;display:flex;gap:8px;"><span style="color:#2e86c1;font-weight:900;flex-shrink:0;">→</span><span><strong>Developer names are human-readable</strong> — an admin sees <span class="mono">Credentialing_Medical_Director_Change</span> and immediately knows what it is. An Id like <span class="mono">00Xf4000001abc</span> tells them nothing.</span></div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid #edf4fa;">
+          <strong style="font-size:12px;color:#1a3a52;">Why the When_To_Use__c field</strong>
+          <div style="font-size:12px;color:#3a5a72;line-height:1.65;margin-top:6px;">This is the instruction label for Einstein AI — a plain-English description like <em>"Use this template when the provider is following up on a Medical Director Change request where the document checklist has already been sent."</em> It serves two purposes:<br/><br/>
+          <span style="display:flex;gap:8px;margin-bottom:5px;"><span style="color:#7d3c98;font-weight:900;flex-shrink:0;">1.</span><span>Helps Einstein disambiguate when multiple templates share the same Case Type + Reason</span></span>
+          <span style="display:flex;gap:8px;"><span style="color:#7d3c98;font-weight:900;flex-shrink:0;">2.</span><span>Acts as documentation for admins — they can read the field and understand when each routing rule fires without needing to open the template</span></span>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;background:#1a3a52;border-radius:6px;padding:11px 14px;font-size:12px;color:#d6eaf8;line-height:1.6;">
+          <strong style="color:#fff;">One-sentence pitch:</strong> Custom Metadata gives us a routing index that's deployable, queryable, admin-owned, and free from governor limits — it's the Salesforce-native way to map business rules to actions without code.
+        </div>
+
+        <div style="margin-top:12px;">
+          <span class="a-node-badge" style="background:#fcf3cf;color:#7d6608;">8 routing records — credentialing + patient support</span>
+          &nbsp;
+          <span class="a-node-badge" style="background:#e8f1f8;color:#1a5276;">Each record: MasterLabel · Case_Type__c · Case_Reason__c · Email_Template_API_Name__c · When_To_Use__c</span>
+        </div>
+
       </div>
     </div>
     <div class="arch-arrow-label">EmailTemplate lookup: WHERE DeveloperName = pointer</div>
