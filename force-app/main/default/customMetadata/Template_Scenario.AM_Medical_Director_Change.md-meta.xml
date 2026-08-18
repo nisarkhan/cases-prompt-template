@@ -3,27 +3,27 @@
     <label>AM Medical Director Change</label>
     <protected>false</protected>
     <values>
-        <field>When_To_Use__c</field>
-        <value xsi:type="xsd:string">Use when a credentialed account is requesting to change or update the Medical Director on their account.</value>
+        <field>Case_Reason__c</field>
+        <value xsi:type="xsd:string">Credentialing</value>
     </values>
     <values>
         <field>Case_Type__c</field>
         <value xsi:type="xsd:string">Account Support</value>
     </values>
     <values>
-        <field>Case_Reason__c</field>
-        <value xsi:type="xsd:string">Credentialing</value>
+        <field>Email_Template_API_Name__c</field>
+        <value xsi:type="xsd:string">Credentialing_Medical_Director_Change</value>
     </values>
     <values>
         <field>Is_Active__c</field>
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
-        <field>Email_Template_API_Name__c</field>
-        <value xsi:type="xsd:string">Credentialing_Medical_Director_Change</value>
-    </values>
-    <values>
         <field>Template_Body__c</field>
         <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>When_To_Use__c</field>
+        <value xsi:type="xsd:string">Use when a credentialed account is requesting to change or update the Medical Director on their account.</value>
     </values>
 </CustomMetadata>

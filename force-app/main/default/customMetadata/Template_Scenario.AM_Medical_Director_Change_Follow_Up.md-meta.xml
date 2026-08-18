@@ -3,27 +3,27 @@
     <label>AM Medical Director Change Follow Up</label>
     <protected>false</protected>
     <values>
-        <field>When_To_Use__c</field>
-        <value xsi:type="xsd:string">Use when following up on an existing Medical Director Change request where the document checklist has already been sent. Addresses customer questions about the process without repeating the full document list.</value>
+        <field>Case_Reason__c</field>
+        <value xsi:type="xsd:string">Credentialing</value>
     </values>
     <values>
         <field>Case_Type__c</field>
         <value xsi:type="xsd:string">Account Support</value>
     </values>
     <values>
-        <field>Case_Reason__c</field>
-        <value xsi:type="xsd:string">Credentialing</value>
+        <field>Email_Template_API_Name__c</field>
+        <value xsi:type="xsd:string">Credentialing_Medical_Director_Change_Follow_Up</value>
     </values>
     <values>
         <field>Is_Active__c</field>
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
-        <field>Email_Template_API_Name__c</field>
-        <value xsi:type="xsd:string">Credentialing_Medical_Director_Change_Follow_Up</value>
-    </values>
-    <values>
         <field>Template_Body__c</field>
         <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>When_To_Use__c</field>
+        <value xsi:type="xsd:string">Use when following up on an existing Medical Director Change request where the document checklist has already been sent. Addresses customer questions about the process without repeating the full document list.</value>
     </values>
 </CustomMetadata>

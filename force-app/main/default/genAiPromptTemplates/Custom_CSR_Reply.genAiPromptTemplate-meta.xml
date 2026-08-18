@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
     <activeVersionIdentifier>zprM71aH4IcF78Ud1z4hLdrwO3Dy0hNzJ+4AQB9BoQs=_1</activeVersionIdentifier>
-    <description>Reply - Drafts a follow-up email response that addresses the customer&apos;s questions based on the existing email thread. Does not repeat the document checklist or submission requirements already sent.</description>
+    <description>Drafts a follow-up email for an ongoing case - reads the full email thread, answers the provider&apos;s specific questions, and avoids repeating information already sent.</description>
     <developerName>Custom_CSR_Reply</developerName>
     <masterLabel>CSR Reply Email</masterLabel>
     <overridable>false</overridable>
@@ -31,7 +31,7 @@ CSR Name:     {!$Input:Sender.FirstName} {!$Input:Sender.LastName}
 5. Acknowledge the prior exchange briefly and naturally — do not start with a generic &quot;thank you for contacting us.&quot;
 6. Keep the response focused and concise. Do not add filler sections, do not re-explain the process the customer already knows.
 7. Adjust the tone to be warm and professional. The email must read as written by a human, not a system.
-8. End with the CSR Name shown in the CURRENT CASE section above — use that exact value, do not use any name from the email thread. Follow it with &quot;Provider Services Representative&quot; and &quot;Allergan Moxie&quot;.
+8. End with the CSR&apos;s real name from the case details above, followed by &quot;Provider Services Representative&quot; and &quot;Allergan Moxie&quot;.
 9. When referencing people by name, use the name exactly once in its simplest form. Never duplicate a name or title. Write &quot;Dr. Patel&quot; not &quot;Dr. Anita Dr. Patel&quot;. Write &quot;Dr. Kim&quot; not &quot;Dr. Kim (Dr. Kim)&quot;. Pick one clean version of each name and use it consistently throughout.</content>
         <inputs>
             <apiName>Case</apiName>

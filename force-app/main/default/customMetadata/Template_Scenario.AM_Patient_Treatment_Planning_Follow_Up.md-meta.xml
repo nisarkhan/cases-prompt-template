@@ -3,27 +3,27 @@
     <label>AM Patient Treatment Planning Follow Up</label>
     <protected>false</protected>
     <values>
-        <field>When_To_Use__c</field>
-        <value xsi:type="xsd:string">Use when following up on an existing patient treatment planning case where the initial requirements have already been communicated. Addresses provider questions without repeating the full pre-treatment checklist.</value>
+        <field>Case_Reason__c</field>
+        <value xsi:type="xsd:string">Treatment</value>
     </values>
     <values>
         <field>Case_Type__c</field>
         <value xsi:type="xsd:string">Patient Support</value>
     </values>
     <values>
-        <field>Case_Reason__c</field>
-        <value xsi:type="xsd:string">Treatment</value>
+        <field>Email_Template_API_Name__c</field>
+        <value xsi:type="xsd:string">Patient_Treatment_Planning_Follow_Up</value>
     </values>
     <values>
         <field>Is_Active__c</field>
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
-        <field>Email_Template_API_Name__c</field>
-        <value xsi:type="xsd:string">Patient_Treatment_Planning_Follow_Up</value>
-    </values>
-    <values>
         <field>Template_Body__c</field>
         <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>When_To_Use__c</field>
+        <value xsi:type="xsd:string">Use when following up on an existing patient treatment planning case where the initial requirements have already been communicated. Addresses provider questions without repeating the full pre-treatment checklist.</value>
     </values>
 </CustomMetadata>

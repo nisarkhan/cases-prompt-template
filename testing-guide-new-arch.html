@@ -117,6 +117,8 @@
     <div class="tab" onclick="show('pathA',this)">Part A — First Contact</div>
     <div class="tab" onclick="show('pathB',this)">Part B — Reply</div>
     <div class="tab" onclick="show('pathC',this)">Part C — Patient Journey</div>
+    <div class="tab" onclick="show('solution',this)">Solution Scope</div>
+    <div class="tab" onclick="show('customer',this)">Customer Summary</div>
   </div>
 
 
@@ -818,6 +820,203 @@ Warm regards,
     </div>
 
   </div><!-- end Part C -->
+
+
+  <!-- ══════════════════════════════
+       SOLUTION SCOPE TAB
+  ══════════════════════════════ -->
+  <div class="panel" id="tab-solution">
+
+    <h2>Solution Scope — What We Built, What the Gaps Are, and How to Think About It</h2>
+    <p style="color:#5a7896;margin-bottom:28px;">This is a proof-of-concept and a working demonstration of the core AI routing capability — not a finished end-to-end production system. The goal is to show the customer what is possible with Agentforce and give them a clear path forward to build the full solution on their own platform.</p>
+
+    <!-- FRAMING -->
+    <div class="note"><strong>How to position this to the customer:</strong> "We are not handing you a finished product. We are proving that the core capability works — AI reads a case, finds the right policy template automatically, and produces a personalised, compliance-accurate draft. The plumbing is real and tested. What you build on top of it is yours to extend."</div>
+
+    <!-- WHAT WE BUILT -->
+    <h3>What We Built — Working and Tested</h3>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
+      <div class="pass" style="margin:0;"><strong>AI template routing — deterministic and reliable</strong><br/>Case Type + Case Reason → CMT routing index → EmailTemplate body fetched at runtime. Tested across 10 templates and 8 routing rules covering credentialing and patient support scenarios. Zero hardcoded content in the Flow.</div>
+      <div class="pass" style="margin:0;"><strong>Two entry points — First Contact and Reply</strong><br/>Custom GenAI Prompt Templates for both scenarios. First Contact generates an opening email with the full policy checklist. Reply reads the full email thread and answers the provider's specific questions without repeating what was already sent.</div>
+      <div class="pass" style="margin:0;"><strong>Two-layer intelligence — policy structure + personalisation</strong><br/>EmailTemplate body = mandatory policy language (forms, SLAs, compliance statements) that the AI cannot change. Case description + thread = personalisation layer. Both layers proven in live testing against real cases (00001156, 00001157).</div>
+      <div class="pass" style="margin:0;"><strong>Content team ownership — no deployment for template edits</strong><br/>EmailTemplate bodies live in Setup → Email Templates. Content and compliance teams can edit policy language instantly without admin access or deployment. CMT routing records are managed by admin with no code changes.</div>
+      <div class="pass" style="margin:0;"><strong>Extensible by design — new scenarios in two steps</strong><br/>Adding a new scenario requires only: create an EmailTemplate body + create a CMT routing record pointing to it. No Flow changes, no developer needed. Proven architecture pattern.</div>
+    </div>
+
+    <!-- THE GAPS -->
+    <h3>Gaps — What Is Not in This Proof of Concept</h3>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
+
+      <div class="warn" style="margin:0;">
+        <strong>Gap 1 — Historical case mining and template voting</strong><br/>
+        <strong>What the customer asked for:</strong> The system should look at historically successful closed cases, see which templates experienced reps used, and vote on the "winning template" — essentially learning from past rep behaviour.<br/><br/>
+        <strong>What we built instead:</strong> Deterministic routing — Case Type + Reason → CMT → right template, every time.<br/><br/>
+        <strong>Why our approach is actually better:</strong> The customer's own transcript reveals the problem with the voting model — different reps used different templates for the same case. Rohit used one, others used another. A vote would pick whoever handled the most cases, not whoever was most accurate. Our CMT routing puts the right human (your compliance team) in control of which template is correct, then enforces it consistently. That is more reliable and auditable than learned behaviour.<br/><br/>
+        <strong>If they still want historical mining:</strong> This would require Data Cloud or a custom analytics layer to read EmailMessage history, identify which template was used per case outcome, and surface a recommendation. That is a separate, larger engagement — not part of this proof of concept.
+      </div>
+
+      <div class="warn" style="margin:0;">
+        <strong>Gap 2 — Template used is not tracked on EmailMessage</strong><br/>
+        <strong>What the customer asked about:</strong> Shankar specifically asked — "can you track down what template was used to build out that outbound email?"<br/><br/>
+        <strong>Current state:</strong> The standard Salesforce EmailMessage object does not store which EmailTemplate or Prompt Template generated the email body. Once the draft is sent, that link is lost.<br/><br/>
+        <strong>Path forward — custom LWC development:</strong> A custom field on EmailMessage (e.g. <span class="mono">AI_Template_Used__c</span>) could be stamped at send time via a custom LWC component or a Flow trigger. This gives the customer the audit trail they want. This is a scoped piece of custom development the customer can add — it does not require changes to the AI routing layer.
+      </div>
+
+      <div class="warn" style="margin:0;">
+        <strong>Gap 3 — The 1,600 email template migration</strong><br/>
+        <strong>What exists today:</strong> The customer org has approximately 1,600 email templates built up over many years. This proof of concept covers 10 scenarios.<br/><br/>
+        <strong>What is needed for production:</strong> The customer needs to audit their 1,600 templates, identify which scenarios are still active and relevant, create corresponding EmailTemplate records in the new folder, and create CMT routing records for each one. This is a content and admin exercise — not a technical development problem. It can be done incrementally, starting with the highest-volume case types.<br/><br/>
+        <strong>Suggested approach:</strong> Start with the top 10–15 case types by volume. Prove value. Expand from there. The architecture supports as many scenarios as needed with no changes to the Flow.
+      </div>
+
+      <div class="warn" style="margin:0;">
+        <strong>Gap 4 — Custom LWC component integration</strong><br/>
+        <strong>Current state in the demo:</strong> The CSR accesses Draft with AI through the standard Agentforce "Draft with AI" button on the case email composer.<br/><br/>
+        <strong>What the customer currently has:</strong> A custom LWC component page with its own navigation and multiple clicks to reach the email composer. The proof of concept does not integrate with or replace that custom component.<br/><br/>
+        <strong>Path forward:</strong> If the customer wants to embed the AI drafting capability directly inside their existing custom LWC page — reducing clicks and keeping the CSR in their familiar workflow — that is a custom LWC development task. The AI routing layer (CMT + Flow + Prompt Templates) stays exactly the same. Only the surface the CSR interacts with changes.
+      </div>
+
+    </div>
+
+    <!-- PATH FORWARD -->
+    <h3>Path Forward — What Custom Development Covers the Gaps</h3>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
+      <div class="note" style="margin:0;"><strong>Custom LWC Development (Gaps 2 + 4)</strong><br/>A single custom LWC engagement covers both remaining gaps: embed the Draft with AI trigger inside the existing CSR component (eliminating extra clicks) and stamp <span class="mono">AI_Template_Used__c</span> on EmailMessage at send time (giving Shankar the audit trail). The AI routing layer does not change — the LWC is only the surface layer on top of it.</div>
+      <div class="note" style="margin:0;"><strong>Template Migration (Gap 3)</strong><br/>Not a development task — an admin and content exercise. SA team can provide a migration template (spreadsheet) mapping existing email templates to CMT records. Customer admin and content team execute it incrementally by case type volume.</div>
+      <div class="note" style="margin:0;"><strong>Historical mining (Gap 1)</strong><br/>Not recommended as a first step. Prove the deterministic routing model first. If the customer still wants historical learning after seeing the routing in production, that conversation belongs in a separate Data Cloud or Analytics Cloud engagement.</div>
+    </div>
+
+    <!-- POSITIONING STATEMENT -->
+    <h3>The One-Paragraph Positioning Statement</h3>
+    <div style="background:#f0f4ff;border:2px solid #0070d2;border-radius:10px;padding:20px 24px;font-size:13px;color:#003580;line-height:1.75;">
+      "What we are showing you today is the core AI capability working end to end — case comes in, system finds the right policy template automatically, Einstein personalises the draft, CSR reviews and sends. That core works right now and we have tested it. What we are <em>not</em> delivering is a finished production system with your 1,600 templates migrated, your custom LWC integrated, and your EmailMessage audit trail built. Those are the next steps and they are well-defined. The routing architecture is proven — extending it to your full template library and your existing UI is a scoped implementation effort, not a research problem."
+    </div>
+
+  </div><!-- end Solution Scope -->
+
+
+  <!-- ══════════════════════════════
+       CUSTOMER SUMMARY TAB
+  ══════════════════════════════ -->
+  <div class="panel" id="tab-customer">
+
+    <h2>Customer Summary</h2>
+    <p style="color:#5a7896;margin-bottom:28px;">A high-level view of what has been delivered, where the gaps are, and the recommended path to close them. No technical detail — written for a customer conversation.</p>
+
+    <!-- CUSTOMER ASK -->
+    <h3>What the Customer Asked For</h3>
+    <div style="background:#f0f4ff;border:1px solid #aed6f1;border-left:4px solid #0070d2;border-radius:8px;padding:18px 22px;margin-bottom:32px;">
+      <p style="margin-bottom:10px;color:#003580;">The Provider Services team came in with one core problem: <strong>CSRs — especially new joiners — have no reliable way to know which email template to use out of approximately 1,600 email templates in the org.</strong> Different reps use different templates for the same case type, leading to inconsistent responses and missed policy requirements.</p>
+      <p style="margin-bottom:10px;color:#003580;">Their original ask was for Agentforce to <strong>look at historically successful closed cases, learn which templates experienced reps used, and recommend the "winning" template</strong> for each new case — essentially a voting model based on past rep behaviour.</p>
+      <p style="margin-bottom:0;color:#003580;">They also wanted the system to <strong>read the full email thread</strong> on a case before drafting a reply, so CSRs are not repeating information already sent. And they wanted a <strong>human in the loop</strong> — the CSR reviews and approves every draft before it goes out.</p>
+    </div>
+
+    <!-- WHAT WE DELIVERED -->
+    <h3>What We Delivered</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px;">
+
+      <div style="background:#f4faf4;border:1px solid #28a745;border-left:4px solid #28a745;border-radius:8px;padding:16px 18px;">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#28a745;margin-bottom:5px;">Delivered</div>
+        <div style="font-size:13px;font-weight:800;color:#155724;margin-bottom:6px;">Automatic template selection</div>
+        <div style="font-size:12.5px;color:#1a4a2a;line-height:1.65;">The system reads the case and automatically finds the right email template. No CSR needs to know which template to use — the AI picks it based on case type and reason.</div>
+      </div>
+
+      <div style="background:#f4faf4;border:1px solid #28a745;border-left:4px solid #28a745;border-radius:8px;padding:16px 18px;">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#28a745;margin-bottom:5px;">Delivered</div>
+        <div style="font-size:13px;font-weight:800;color:#155724;margin-bottom:6px;">Policy-accurate drafts every time</div>
+        <div style="font-size:12.5px;color:#1a4a2a;line-height:1.65;">Mandatory language — form references, SLAs, compliance statements — comes from the template and cannot be changed by the AI. Every draft is consistent regardless of which CSR generated it.</div>
+      </div>
+
+      <div style="background:#f4faf4;border:1px solid #28a745;border-left:4px solid #28a745;border-radius:8px;padding:16px 18px;">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#28a745;margin-bottom:5px;">Delivered</div>
+        <div style="font-size:13px;font-weight:800;color:#155724;margin-bottom:6px;">First contact and reply — both covered</div>
+        <div style="font-size:12.5px;color:#1a4a2a;line-height:1.65;">Opening emails and follow-up replies are both handled. The reply AI reads the full email thread before drafting so it never repeats what was already sent.</div>
+      </div>
+
+      <div style="background:#f4faf4;border:1px solid #28a745;border-left:4px solid #28a745;border-radius:8px;padding:16px 18px;">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#28a745;margin-bottom:5px;">Delivered</div>
+        <div style="font-size:13px;font-weight:800;color:#155724;margin-bottom:6px;">Your team owns the content — no developer needed</div>
+        <div style="font-size:12.5px;color:#1a4a2a;line-height:1.65;">Template language is edited by your content team directly in Salesforce Setup. Changes are live immediately. Adding a new scenario is a two-step admin task with no code or deployment.</div>
+      </div>
+
+    </div>
+
+    <!-- GAPS -->
+    <h3>Gaps — What Is Not in the Current Proof of Concept</h3>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:32px;">
+
+      <div style="background:#fff8e1;border:1px solid #ffc107;border-left:4px solid #ffc107;border-radius:8px;padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
+        <div>
+          <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#856404;margin-bottom:5px;">Gap</div>
+          <div style="font-size:13px;font-weight:800;color:#664d03;margin-bottom:5px;">Historical case learning</div>
+          <div style="font-size:12.5px;color:#7a5c00;line-height:1.65;">The current solution uses fixed routing rules — not historical case data — to pick the template. The original ask was for the AI to learn from past rep behaviour and vote on the best template.</div>
+        </div>
+        <div style="background:#fff3cd;border-radius:6px;padding:12px 14px;">
+          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#856404;margin-bottom:5px;">Recommendation</div>
+          <div style="font-size:12.5px;color:#664d03;line-height:1.65;">The fixed routing model is more reliable and auditable — the voting approach breaks down when different reps used different templates for the same case. If historical learning is still needed in future, this is a <strong>Data Cloud</strong> engagement.</div>
+        </div>
+      </div>
+
+      <div style="background:#fff8e1;border:1px solid #ffc107;border-left:4px solid #ffc107;border-radius:8px;padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
+        <div>
+          <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#856404;margin-bottom:5px;">Gap</div>
+          <div style="font-size:13px;font-weight:800;color:#664d03;margin-bottom:5px;">Audit trail — which template was used</div>
+          <div style="font-size:12.5px;color:#7a5c00;line-height:1.65;">Once an email is sent, there is no record of which template the AI used to generate it. The team asked specifically whether this could be tracked.</div>
+        </div>
+        <div style="background:#fff3cd;border-radius:6px;padding:12px 14px;">
+          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#856404;margin-bottom:5px;">Recommendation</div>
+          <div style="font-size:12.5px;color:#664d03;line-height:1.65;">Stamp the template name on the EmailMessage record at send time. This is a targeted <strong>custom LWC</strong> or Flow development task — scoped, low risk, no changes to the AI routing layer.<br><strong>Path forward</strong> — custom LWC development: A custom field on EmailMessage (e.g. AI_Template_Used__c) could be stamped at send time via a custom LWC component or a Flow trigger. </div>
+        </div>
+      </div>
+
+      <div style="background:#fff8e1;border:1px solid #ffc107;border-left:4px solid #ffc107;border-radius:8px;padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
+        <div>
+          <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#856404;margin-bottom:5px;">Gap</div>
+          <div style="font-size:13px;font-weight:800;color:#664d03;margin-bottom:5px;">Custom LWC integration</div>
+          <div style="font-size:12.5px;color:#7a5c00;line-height:1.65;">The current demo uses the standard Agentforce button. Your team currently works through a custom LWC component with its own navigation. The AI drafting is not yet embedded in that existing experience.</div>
+        </div>
+        <div style="background:#fff3cd;border-radius:6px;padding:12px 14px;">
+          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#856404;margin-bottom:5px;">Recommendation</div>
+          <div style="font-size:12.5px;color:#664d03;line-height:1.65;">Embed the Draft with AI trigger inside the existing <strong>custom LWC</strong>. The AI routing layer stays exactly the same — only the surface the CSR sees changes. This reduces clicks and keeps CSRs in their familiar workflow.</div>
+        </div>
+      </div>
+
+      <div style="background:#fff8e1;border:1px solid #ffc107;border-left:4px solid #ffc107;border-radius:8px;padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
+        <div>
+          <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#856404;margin-bottom:5px;">Gap</div>
+          <div style="font-size:13px;font-weight:800;color:#664d03;margin-bottom:5px;">Full template library — 1,600 templates</div>
+          <div style="font-size:12.5px;color:#7a5c00;line-height:1.65;">The proof of concept covers 10 scenarios. Your org has approximately 1,600 email templates. A production rollout requires identifying which are still active and creating routing rules for each one.</div>
+        </div>
+        <div style="background:#fff3cd;border-radius:6px;padding:12px 14px;">
+          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#856404;margin-bottom:5px;">Recommendation</div>
+          <div style="font-size:12.5px;color:#664d03;line-height:1.65;">This is an <strong>admin and content exercise</strong>, not a development task. Start with the top 10–15 case types by volume, prove value, then expand. The architecture handles unlimited scenarios with no changes to the Flow.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- NEXT STEPS -->
+    <h3>Recommended Next Steps</h3>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;gap:14px;align-items:flex-start;background:#f0f4ff;border:1px solid #cce0ff;border-radius:8px;padding:14px 16px;">
+        <div style="width:28px;height:28px;border-radius:50%;background:#0070d2;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+        <div style="font-size:13px;color:#003580;line-height:1.65;"><strong>Deploy and validate in sandbox</strong> — run the 10 test cases in this testing guide against the customer's sandbox org to confirm routing and draft quality on their data.</div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:flex-start;background:#f0f4ff;border:1px solid #cce0ff;border-radius:8px;padding:14px 16px;">
+        <div style="width:28px;height:28px;border-radius:50%;background:#0070d2;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+        <div style="font-size:13px;color:#003580;line-height:1.65;"><strong>Identify top 10–15 case types by volume</strong> — customer admin and content team map existing templates to the new routing structure. SA team provides a migration guide.</div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:flex-start;background:#f0f4ff;border:1px solid #cce0ff;border-radius:8px;padding:14px 16px;">
+        <div style="width:28px;height:28px;border-radius:50%;background:#0070d2;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+        <div style="font-size:13px;color:#003580;line-height:1.65;"><strong>Custom LWC engagement</strong> — scope and deliver the two LWC items together: embed Draft with AI in the existing CSR component + stamp template name on EmailMessage at send time.</div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:flex-start;background:#f0f4ff;border:1px solid #cce0ff;border-radius:8px;padding:14px 16px;">
+        <div style="width:28px;height:28px;border-radius:50%;background:#0070d2;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
+        <div style="font-size:13px;color:#003580;line-height:1.65;"><strong>Historical learning — revisit after step 1–3</strong> — once the deterministic routing is in production and CSRs are using it, revisit whether Data Cloud-based historical learning adds value on top of it.</div>
+      </div>
+    </div>
+
+  </div><!-- end Customer Summary -->
 
 
 </div>

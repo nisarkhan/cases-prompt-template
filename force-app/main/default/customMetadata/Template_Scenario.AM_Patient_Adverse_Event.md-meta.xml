@@ -3,27 +3,27 @@
     <label>AM Patient Adverse Event</label>
     <protected>false</protected>
     <values>
-        <field>When_To_Use__c</field>
-        <value xsi:type="xsd:string">Use when a provider reports a patient adverse event, unexpected reaction, or treatment complication following an Allergan Moxie product administration. This is a compliance-sensitive communication — all mandatory reporting steps must be preserved exactly.</value>
+        <field>Case_Reason__c</field>
+        <value xsi:type="xsd:string">Treatment</value>
     </values>
     <values>
         <field>Case_Type__c</field>
         <value xsi:type="xsd:string">Patient Support</value>
     </values>
     <values>
-        <field>Case_Reason__c</field>
-        <value xsi:type="xsd:string">Treatment</value>
+        <field>Email_Template_API_Name__c</field>
+        <value xsi:type="xsd:string">Patient_Adverse_Event</value>
     </values>
     <values>
         <field>Is_Active__c</field>
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
-        <field>Email_Template_API_Name__c</field>
-        <value xsi:type="xsd:string">Patient_Adverse_Event</value>
-    </values>
-    <values>
         <field>Template_Body__c</field>
         <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>When_To_Use__c</field>
+        <value xsi:type="xsd:string">Use when a provider reports a patient adverse event, unexpected reaction, or treatment complication following an Allergan Moxie product administration. This is a compliance-sensitive communication — all mandatory reporting steps must be preserved exactly.</value>
     </values>
 </CustomMetadata>

@@ -3,27 +3,27 @@
     <label>AM Patient Treatment Planning</label>
     <protected>false</protected>
     <values>
-        <field>When_To_Use__c</field>
-        <value xsi:type="xsd:string">Use when a provider contacts us after scheduling or planning a patient treatment to confirm product availability, treatment protocol, and documentation requirements before the appointment.</value>
+        <field>Case_Reason__c</field>
+        <value xsi:type="xsd:string">Treatment</value>
     </values>
     <values>
         <field>Case_Type__c</field>
         <value xsi:type="xsd:string">Patient Support</value>
     </values>
     <values>
-        <field>Case_Reason__c</field>
-        <value xsi:type="xsd:string">Treatment</value>
+        <field>Email_Template_API_Name__c</field>
+        <value xsi:type="xsd:string">Patient_Treatment_Planning</value>
     </values>
     <values>
         <field>Is_Active__c</field>
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
-        <field>Email_Template_API_Name__c</field>
-        <value xsi:type="xsd:string">Patient_Treatment_Planning</value>
-    </values>
-    <values>
         <field>Template_Body__c</field>
         <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>When_To_Use__c</field>
+        <value xsi:type="xsd:string">Use when a provider contacts us after scheduling or planning a patient treatment to confirm product availability, treatment protocol, and documentation requirements before the appointment.</value>
     </values>
 </CustomMetadata>

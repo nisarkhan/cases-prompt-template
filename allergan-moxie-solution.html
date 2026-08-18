@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Allergan Moxie - Solution Overview</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f0f5f9;
+  color: #1e3448;
+  min-height: 100vh;
+}
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, #1a5276 0%, #2e86c1 60%, #5dade2 100%);
+  padding: 48px 64px 44px;
+}
+.hero-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: #aed6f1; margin-bottom: 10px; }
+.hero-title   { font-size: 32px; font-weight: 900; color: #fff; line-height: 1.2; margin-bottom: 12px; }
+.hero-desc    { font-size: 15px; color: #d6eaf8; line-height: 1.7; max-width: 580px; }
+
+/* TAB BAR */
+.tab-bar {
+  background: #fff;
+  border-bottom: 2px solid #d6e8f5;
+  padding: 0 64px;
+  display: flex; gap: 0; flex-wrap: wrap;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 8px rgba(30,52,72,0.07);
+}
+.tab-btn {
+  padding: 16px 24px; font-size: 13px; font-weight: 700;
+  cursor: pointer; border: none; background: none;
+  color: #7fa8c4; border-bottom: 3px solid transparent;
+  transition: all 0.15s; white-space: nowrap;
+}
+.tab-btn:hover  { color: #2e86c1; }
+.tab-btn.active { color: #1a5276; border-bottom-color: #2e86c1; }
+
+.tab-panel { display: none; padding: 48px 64px; max-width: 1060px; }
+.tab-panel.active { display: block; }
+
+/* TYPOGRAPHY */
+.sec-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: #7fa8c4; margin-bottom: 6px; }
+.sec-title   { font-size: 26px; font-weight: 900; color: #1a3a52; margin-bottom: 8px; }
+.sec-sub     { font-size: 14px; color: #5a7e98; line-height: 1.7; margin-bottom: 36px; max-width: 660px; }
+.mono { font-family: 'Courier New', monospace; font-size: 11px; background: #e8f1f8; padding: 2px 6px; border-radius: 4px; color: #1a5276; }
+
+/* CALLOUTS */
+.callout { border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 13px; line-height: 1.65; border-left: 4px solid; }
+.callout strong { display: block; font-size: 13px; margin-bottom: 4px; }
+.c-blue  { background: #eaf4fc; border-color: #5dade2; color: #1a4a6a; }
+.c-blue strong  { color: #1a5276; }
+.c-green { background: #eafaf1; border-color: #58d68d; color: #1a4a2a; }
+.c-green strong { color: #1e8449; }
+.c-amber { background: #fef9e7; border-color: #f4d03f; color: #5a4200; }
+.c-amber strong { color: #7d6608; }
+.c-red   { background: #fdf2f2; border-color: #e74c3c; color: #6b1a1a; }
+.c-red strong   { color: #c0392b; }
+
+
+/* ══ TAB 1 - PROBLEM ══ */
+.problem-statement {
+  background: #fff;
+  border: 1px solid #d6e8f5;
+  border-left: 5px solid #c0392b;
+  border-radius: 12px;
+  padding: 28px 32px;
+  margin-bottom: 32px;
+}
+.ps-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #c0392b; margin-bottom: 8px; }
+.ps-title   { font-size: 20px; font-weight: 900; color: #7b241c; margin-bottom: 14px; line-height: 1.3; }
+.ps-body    { font-size: 13.5px; color: #5a3030; line-height: 1.75; }
+.ps-body strong { color: #7b241c; }
+
+.pain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 32px; }
+@media(max-width:640px){ .pain-grid{ grid-template-columns:1fr; } }
+.pain-card { background: #fff; border: 1px solid #f5c6c2; border-radius: 10px; padding: 18px 20px; }
+.pain-icon  { font-size: 22px; margin-bottom: 8px; }
+.pain-title { font-size: 13px; font-weight: 800; color: #7b241c; margin-bottom: 6px; }
+.pain-desc  { font-size: 12.5px; color: #8a4040; line-height: 1.6; }
+
+.ask-box {
+  background: #eaf4fc;
+  border: 1px solid #aed6f1;
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 32px;
+}
+.ask-title { font-size: 14px; font-weight: 800; color: #1a5276; margin-bottom: 14px; }
+.ask-list  { display: flex; flex-direction: column; gap: 10px; }
+.ask-item  { display: flex; gap: 12px; font-size: 13px; color: #1a4a6a; line-height: 1.6; align-items: flex-start; }
+.ask-num   { width: 24px; height: 24px; border-radius: 50%; background: #2e86c1; color: #fff; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+
+/* ══ TAB 2 - WHAT WE SOLVED ══ */
+.solved-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 32px; }
+@media(max-width:640px){ .solved-grid{ grid-template-columns:1fr; } }
+.solved-card {
+  background: #fff;
+  border: 1px solid #a9dfbf;
+  border-left: 4px solid #27ae60;
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+.solved-icon  { font-size: 20px; margin-bottom: 8px; }
+.solved-title { font-size: 13px; font-weight: 800; color: #1e5631; margin-bottom: 6px; }
+.solved-desc  { font-size: 12.5px; color: #2a6a3a; line-height: 1.6; }
+
+.how-it-works {
+  background: #fff;
+  border: 1px solid #d6e8f5;
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 32px;
+}
+.hw-title { font-size: 14px; font-weight: 800; color: #1a3a52; margin-bottom: 16px; }
+.hw-steps { display: flex; flex-direction: column; gap: 10px; }
+.hw-step  { display: flex; gap: 14px; align-items: flex-start; }
+.hw-num   { width: 28px; height: 28px; border-radius: 50%; background: #2e86c1; color: #fff; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.hw-body  { flex: 1; }
+.hw-step-title { font-size: 13px; font-weight: 800; color: #1a3a52; margin-bottom: 2px; }
+.hw-step-desc  { font-size: 12.5px; color: #4a6e8a; line-height: 1.6; }
+
+
+/* ══ TAB 3 - GAPS ══ */
+.gap-card {
+  background: #fff;
+  border: 1px solid #d6e8f5;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.gap-hdr {
+  background: #fef9e7;
+  border-bottom: 1px solid #f9e79f;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.gap-num   { width: 28px; height: 28px; border-radius: 50%; background: #d4ac0d; color: #fff; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.gap-title { font-size: 14px; font-weight: 800; color: #7d6608; flex: 1; }
+.gap-tag   { font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 20px; background: #fcf3cf; color: #7d6608; white-space: nowrap; }
+.gap-body  { padding: 18px 22px; }
+.gap-what  { font-size: 13px; color: #4a6e8a; line-height: 1.65; margin-bottom: 12px; }
+.gap-fix   { background: #eafaf1; border: 1px solid #a9dfbf; border-radius: 8px; padding: 12px 16px; font-size: 12.5px; color: #1e5631; line-height: 1.65; }
+.gap-fix strong { color: #1e5631; display: block; margin-bottom: 3px; font-size: 12.5px; }
+
+
+/* ══ TAB 4 - THREE OPTIONS ══ */
+.options-intro {
+  background: #fff;
+  border: 1px solid #d6e8f5;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+  font-size: 13px;
+  color: #3a5a72;
+  line-height: 1.7;
+}
+.options-intro strong { color: #1a3a52; }
+
+.option-card {
+  background: #fff;
+  border: 1px solid #d6e8f5;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.opt-hdr {
+  padding: 20px 24px;
+  border-bottom: 1px solid #edf4fa;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.opt-num-wrap { flex-shrink: 0; }
+.opt-num {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 900; color: #fff;
+}
+.opt-hdr-text { flex: 1; }
+.opt-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+.opt-title   { font-size: 17px; font-weight: 900; margin-bottom: 4px; }
+.opt-subtitle{ font-size: 12.5px; line-height: 1.5; }
+.opt-badge   { font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 20px; white-space: nowrap; align-self: flex-start; flex-shrink: 0; }
+
+/* Option 1 - current */
+.opt-1 .opt-num      { background: #2e86c1; }
+.opt-1 .opt-eyebrow  { color: #2e86c1; }
+.opt-1 .opt-title    { color: #1a5276; }
+.opt-1 .opt-subtitle { color: #3a6a8a; }
+.opt-1 .opt-badge    { background: #d6eaf8; color: #1a5276; }
+/* Option 2 - data cloud */
+.opt-2 .opt-num      { background: #7d3c98; }
+.opt-2 .opt-eyebrow  { color: #7d3c98; }
+.opt-2 .opt-title    { color: #6c3483; }
+.opt-2 .opt-subtitle { color: #7d5090; }
+.opt-2 .opt-badge    { background: #e8daef; color: #6c3483; }
+/* Option 3 - custom lwc */
+.opt-3 .opt-num      { background: #27ae60; }
+.opt-3 .opt-eyebrow  { color: #27ae60; }
+.opt-3 .opt-title    { color: #1e5631; }
+.opt-3 .opt-subtitle { color: #2a6a3a; }
+.opt-3 .opt-badge    { background: #d5f5e3; color: #1e5631; }
+
+.opt-body { padding: 20px 24px; }
+.opt-section-label { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #7fa8c4; margin-bottom: 8px; margin-top: 16px; }
+.opt-section-label:first-child { margin-top: 0; }
+.opt-desc  { font-size: 13px; color: #3a5a72; line-height: 1.7; margin-bottom: 0; }
+.opt-pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+@media(max-width:640px){ .opt-pros-cons{ grid-template-columns:1fr; } }
+.opt-pros { background: #eafaf1; border-radius: 8px; padding: 12px 14px; }
+.opt-cons { background: #fdf2f2; border-radius: 8px; padding: 12px 14px; }
+.opt-pc-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.opt-pros .opt-pc-label { color: #1e8449; }
+.opt-cons .opt-pc-label { color: #c0392b; }
+.opt-pc-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.opt-pc-list li { font-size: 12px; color: #2a3a2a; line-height: 1.55; padding-left: 14px; position: relative; }
+.opt-cons .opt-pc-list li { color: #5a2020; }
+.opt-pc-list li::before { content: ''; position: absolute; left: 0; top: 6px; width: 6px; height: 6px; border-radius: 50%; background: #27ae60; }
+.opt-cons .opt-pc-list li::before { background: #c0392b; }
+
+.opt-solves { margin-top: 12px; }
+.opt-solves-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #7fa8c4; margin-bottom: 8px; }
+.opt-gap-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.opt-gap-pill  { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+.pill-solved  { background: #d5f5e3; color: #1e5631; }
+.pill-partial { background: #fef9e7; color: #7d6608; }
+.pill-open    { background: #fdf2f2; color: #c0392b; }
+
+/* comparison table */
+.compare-table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #d6e8f5; margin-top: 28px; }
+.compare-table th { background: #eaf4fc; padding: 12px 16px; text-align: left; font-size: 10px; font-weight: 900; color: #1a5276; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #d6e8f5; }
+.compare-table td { padding: 12px 16px; border-bottom: 1px solid #edf4fa; vertical-align: middle; color: #3a5a72; }
+.compare-table tr:last-child td { border-bottom: none; }
+.ct-label { font-weight: 800; color: #1a3a52; }
+.ct-yes  { color: #1e8449; font-weight: 700; }
+.ct-no   { color: #c0392b; font-weight: 700; }
+.ct-part { color: #d4ac0d; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Allergan Moxie · Agentforce · Provider Services</div>
+  <div class="hero-title">AI-Powered Email Drafting<br/>Solution Overview</div>
+  <div class="hero-desc">A focused summary of the problem, what has been solved today, what the gaps are, and three options to close them.</div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="show('problem',this)">The Problem</button>
+  <button class="tab-btn" onclick="show('solved',this)">What We Solved</button>
+  <button class="tab-btn" onclick="show('gaps',this)">The Gaps</button>
+  <button class="tab-btn" onclick="show('options',this)">Three Options</button>
+  <button class="tab-btn" onclick="show('resources',this)">Further Reading</button>
+</div>
+
+
+<!-- ══════════════════════════════
+     TAB 1 - THE PROBLEM
+══════════════════════════════ -->
+<div class="tab-panel active" id="tab-problem">
+  <div class="sec-eyebrow">Discovery</div>
+  <div class="sec-title">What the team is dealing with today</div>
+  <div class="sec-sub">Captured directly from the customer discovery session with the Provider Services team.</div>
+
+  <div class="problem-statement">
+    <div class="ps-eyebrow">Core Problem</div>
+    <div class="ps-title">CSRs spend 20 minutes drafting every provider email - and there is no reliable way to pick the right template</div>
+    <div class="ps-body">The org has approximately <strong>1,600 email templates</strong> built up over many years. When a provider case comes in, a CSR must know from experience which template applies. New joiners have no idea - they ask a colleague or guess. Even experienced reps use different templates for the same case type, leading to <strong>inconsistent responses and missed policy requirements</strong>.</div>
+  </div>
+
+  <div class="pain-grid">
+    <div class="pain-card">
+      <div class="pain-icon">🔍</div>
+      <div class="pain-title">No one knows which template to use</div>
+      <div class="pain-desc">New CSRs sit through training just to learn which of 1,600 templates applies to which case. That knowledge lives in people's heads, not in the system.</div>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">⚠️</div>
+      <div class="pain-title">Different reps, different templates, same case</div>
+      <div class="pain-desc">Rohit and colleagues observed that multiple reps use different templates for identical case types. Providers get inconsistent emails depending on who handles their case.</div>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">📋</div>
+      <div class="pain-title">Missed policy requirements</div>
+      <div class="pain-desc">Form references, SLA timelines, compliance statements - if the CSR picks the wrong template or forgets a field, the provider gets incomplete information and the case requires a follow-up.</div>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">⏱️</div>
+      <div class="pain-title">20 minutes per email - manually</div>
+      <div class="pain-desc">Find the right template, copy the body, personalise with provider details, check the email thread to avoid repetition, verify nothing was missed. All done by hand, every single time.</div>
+    </div>
+  </div>
+
+  <div class="ask-box">
+    <div class="ask-title">What the team asked for</div>
+    <div class="ask-list">
+      <div class="ask-item"><div class="ask-num">1</div><span>The AI should look at <strong>historically successful closed cases</strong>, see which templates experienced reps used, and recommend the best template for each new case - a voting model based on past behaviour.</span></div>
+      <div class="ask-item"><div class="ask-num">2</div><span>The draft should <strong>read the full email thread</strong> before generating a reply so the CSR never repeats information already sent to the provider.</span></div>
+      <div class="ask-item"><div class="ask-num">3</div><span>A <strong>human must stay in the loop</strong> - the CSR reviews and approves every draft before it goes out. Nothing is sent automatically.</span></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════
+     TAB 2 - WHAT WE SOLVED
+══════════════════════════════ -->
+<div class="tab-panel" id="tab-solved">
+  <div class="sec-eyebrow">Delivered</div>
+  <div class="sec-title">What is working today</div>
+  <div class="sec-sub">A working proof of concept demonstrating the core AI capability - tested against real cases in the org.</div>
+
+  <div class="solved-grid">
+    <div class="solved-card">
+      <div class="solved-icon">🎯</div>
+      <div class="solved-title">Automatic template selection</div>
+      <div class="solved-desc">The system reads the case and picks the right email template automatically based on case type and reason. No CSR needs to know which of 1,600 templates applies.</div>
+    </div>
+    <div class="solved-card">
+      <div class="solved-icon">✅</div>
+      <div class="solved-title">Policy-accurate drafts - every time</div>
+      <div class="solved-desc">Mandatory language - form references, SLAs, compliance statements - comes from the template and cannot be changed by the AI. Every draft is consistent regardless of which CSR generated it.</div>
+    </div>
+    <div class="solved-card">
+      <div class="solved-icon">📖</div>
+      <div class="solved-title">Thread-aware replies</div>
+      <div class="solved-desc">The AI reads the full email thread before drafting a reply. It answers the provider's specific questions and never repeats what was already sent.</div>
+    </div>
+    <div class="solved-card">
+      <div class="solved-icon">👤</div>
+      <div class="solved-title">Human in the loop</div>
+      <div class="solved-desc">The draft appears in the email composer for the CSR to review, edit, and approve before sending. Nothing goes out automatically.</div>
+    </div>
+    <div class="solved-card">
+      <div class="solved-icon">⚡</div>
+      <div class="solved-title">Under 2 minutes per email</div>
+      <div class="solved-desc">From clicking "Draft with AI" to a complete personalised draft ready for review - under 2 minutes. Down from 20 minutes of manual work.</div>
+    </div>
+    <div class="solved-card">
+      <div class="solved-icon">🔧</div>
+      <div class="solved-title">No developer needed for new scenarios</div>
+      <div class="solved-desc">Adding a new case scenario is two steps - create an email template body and add a routing rule. Your content and admin teams own this. No code, no deployment.</div>
+    </div>
+  </div>
+
+  <div class="how-it-works">
+    <div class="hw-title">How it works in one paragraph</div>
+    <div class="hw-steps">
+      <div class="hw-step">
+        <div class="hw-num">1</div>
+        <div class="hw-body">
+          <div class="hw-step-title">CSR clicks "Draft with AI" on the case</div>
+          <div class="hw-step-desc">Selects First Contact (new case) or Reply (ongoing thread). That is the only decision the CSR makes.</div>
+        </div>
+      </div>
+      <div class="hw-step">
+        <div class="hw-num">2</div>
+        <div class="hw-body">
+          <div class="hw-step-title">System reads Case Type + Case Reason and finds the right template</div>
+          <div class="hw-step-desc">A routing index (Custom Metadata) maps the case to the correct email template. Out of 1,600 templates, the right one is fetched in under a second.</div>
+        </div>
+      </div>
+      <div class="hw-step">
+        <div class="hw-num">3</div>
+        <div class="hw-body">
+          <div class="hw-step-title">Einstein AI personalizes the draft</div>
+          <div class="hw-step-desc">The template body provides the policy-accurate structure. The case description, provider name, and email thread provide the personalisation. Einstein combines both into a complete draft.</div>
+        </div>
+      </div>
+      <div class="hw-step">
+        <div class="hw-num">4</div>
+        <div class="hw-body">
+          <div class="hw-step-title">CSR reviews and sends</div>
+          <div class="hw-step-desc">The draft appears in the Salesforce email composer. CSR reads it, edits if needed, and sends.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout c-blue">
+    <strong>Proof of concept scope</strong>
+    This has been built and tested against 10 scenarios covering credentialing and patient support cases. The architecture supports as many scenarios as needed - extending it to the full template library is an admin and content exercise, not a development task.
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════
+     TAB 3 - THE GAPS
+══════════════════════════════ -->
+<div class="tab-panel" id="tab-gaps">
+  <div class="sec-eyebrow">Gaps</div>
+  <div class="sec-title">What is not in the current proof of concept</div>
+  <div class="sec-sub">Two gaps remain from the original ask. Both are addressable - the right path depends on how the customer wants to proceed.</div>
+
+  <div class="gap-card">
+    <div class="gap-hdr">
+      <div class="gap-num">1</div>
+      <div class="gap-title">Historical case learning - the "voting model"</div>
+      <div class="gap-tag">Not in POC</div>
+    </div>
+    <div class="gap-body">
+      <div class="gap-what">The team asked for the AI to look at historically successful closed cases, see which templates experienced reps used, and vote on the best template. The current solution uses a deterministic routing rule instead - the admin defines which template applies to which case type, and the AI enforces it every time.</div>
+      <div class="gap-fix">
+        <strong>Why the current approach is actually stronger</strong>
+        The voting model has a fundamental flaw the customer discussion itself revealed - different reps used different templates for the same case. A vote would pick whoever handled the most cases, not whoever was most accurate. The routing rule model puts the right human (your compliance team) in control of what is correct, then enforces it consistently. If historical learning is still wanted, it is addressed in Option 2 and Option 3 below.
+      </div>
+    </div>
+  </div>
+
+  <div class="gap-card">
+    <div class="gap-hdr">
+      <div class="gap-num">2</div>
+      <div class="gap-title">No audit trail - which template was used to generate the email</div>
+      <div class="gap-tag">Not in POC</div>
+    </div>
+    <div class="gap-body">
+      <div class="gap-what">Once an email is sent, there is no record stored on the case of which template the AI used to draft it. The team specifically asked whether this could be tracked. The standard Salesforce EmailMessage object does not store this today.</div>
+      <div class="gap-fix">
+        <strong>Fix path</strong>
+        A custom field on EmailMessage stamped at send time - either through a custom LWC component or a Flow trigger. This is a targeted, low-risk development task. It does not require changes to the AI routing layer.
+      </div>
+    </div>
+  </div>
+
+  <div class="gap-card">
+    <div class="gap-hdr">
+      <div class="gap-num">3</div>
+      <div class="gap-title">Custom LWC component - Draft with AI not embedded in the existing UI</div>
+      <div class="gap-tag">Not in POC</div>
+    </div>
+    <div class="gap-body">
+      <div class="gap-what">The team currently uses a custom LWC component with its own navigation to reach the email composer. The proof of concept uses the standard Agentforce "Draft with AI" button. The AI drafting capability is not yet embedded in the existing CSR workflow - meaning additional clicks are required today.</div>
+      <div class="gap-fix">
+        <strong>Fix path</strong>
+        Embed the Draft with AI trigger inside the existing custom LWC component. The AI routing layer (CMT routing, Prompt Flow, EmailTemplates) stays exactly the same. Only the surface the CSR interacts with changes. This can be combined with Gap 2 into a single scoped LWC development engagement.
+      </div>
+    </div>
+  </div>
+
+  <div class="callout c-green" style="margin-top:8px;">
+    <strong>All three gaps are addressable - see the Three Options tab for recommended paths forward</strong>
+    Gap 1 (historical learning) can be addressed through Data Cloud or the existing custom LWC. Gaps 2 and 3 are both custom LWC development tasks that can be delivered together in a single engagement.
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════
+     TAB 4 - THREE OPTIONS
+══════════════════════════════ -->
+<div class="tab-panel" id="tab-options">
+  <div class="sec-eyebrow">Recommended Paths Forward</div>
+  <div class="sec-title">Three options - pick one or combine</div>
+  <div class="sec-sub">Each option builds on the core proof of concept. The routing layer, Prompt Flow, and EmailTemplates stay the same in all three - only the additional capability changes.</div>
+
+  <div class="options-intro">
+    The core AI capability is proven and working today. <strong>Option 1 is what exists now.</strong> Options 2 and 3 are the recommended paths to close the gaps - they can be combined or sequenced based on what the customer prioritises.
+  </div>
+
+  <!-- OPTION 1 -->
+  <div class="option-card opt-1">
+    <div class="opt-hdr">
+      <div class="opt-num-wrap"><div class="opt-num">1</div></div>
+      <div class="opt-hdr-text">
+        <div class="opt-eyebrow">Current State - Working Today</div>
+        <div class="opt-title">Agentforce + CMT Routing</div>
+        <div class="opt-subtitle">Deterministic template selection driven by Case Type and Case Reason - no historical mining, no custom development needed</div>
+      </div>
+      <div class="opt-badge">Ready now</div>
+    </div>
+    <div class="opt-body">
+      <div class="opt-section-label">What it does</div>
+      <div class="opt-desc">The system reads the case, queries a routing index (Custom Metadata Type) using Case Type + Case Reason, fetches the matching EmailTemplate body, and passes everything to Einstein AI to produce a personalised draft. The admin defines which template is correct for each scenario. Einstein enforces it every time and personalizes using case details and the email thread.</div>
+
+      <div class="opt-section-label" style="margin-top:14px;">Components built</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;">
+        <div style="background:#eaf4fc;border:1px solid #aed6f1;border-radius:8px;padding:12px 14px;">
+          <div style="font-size:11px;font-weight:900;color:#2e86c1;margin-bottom:4px;">Prompt Builder</div>
+          <div style="font-size:12px;font-weight:800;color:#1a3a52;margin-bottom:2px;">Custom_CSR_Response &amp; Custom_CSR_Reply</div>
+          <div style="font-size:11.5px;color:#3a6a8a;line-height:1.55;">Two GenAI Prompt Templates - one for first contact emails, one for thread replies. Each includes instructions for what Einstein must do with the case data and email thread.</div>
+        </div>
+        <div style="background:#eaf4fc;border:1px solid #aed6f1;border-radius:8px;padding:12px 14px;">
+          <div style="font-size:11px;font-weight:900;color:#2e86c1;margin-bottom:4px;">Prompt Flow (Flow Builder)</div>
+          <div style="font-size:12px;font-weight:800;color:#1a3a52;margin-bottom:2px;">Add_Historical_Case_Emails_to_Prompt2</div>
+          <div style="font-size:11.5px;color:#3a6a8a;line-height:1.55;">A PromptFlow-type Flow that runs at draft time. Queries CMT for matching templates, fetches EmailTemplate bodies, reads the open email thread, and assembles everything into the AI prompt before Einstein sees it.</div>
+        </div>
+        <div style="background:#eaf4fc;border:1px solid #aed6f1;border-radius:8px;padding:12px 14px;">
+          <div style="font-size:11px;font-weight:900;color:#2e86c1;margin-bottom:4px;">Custom Metadata Type</div>
+          <div style="font-size:12px;font-weight:800;color:#1a3a52;margin-bottom:2px;">Template_Scenario__mdt - 8 routing records</div>
+          <div style="font-size:11.5px;color:#3a6a8a;line-height:1.55;">Routing index with fields: Case Type, Case Reason, Email Template API Name, When To Use. The Flow queries this at runtime to find the right template for the case - no code change needed to add new scenarios.</div>
+        </div>
+        <div style="background:#eaf4fc;border:1px solid #aed6f1;border-radius:8px;padding:12px 14px;">
+          <div style="font-size:11px;font-weight:900;color:#2e86c1;margin-bottom:4px;">Email Templates (Classic)</div>
+          <div style="font-size:12px;font-weight:800;color:#1a3a52;margin-bottom:2px;">10 policy-accurate template bodies</div>
+          <div style="font-size:11.5px;color:#3a6a8a;line-height:1.55;">Stores the mandatory email language - form names, SLAs, compliance statements. The Flow fetches the body by DeveloperName and passes it to Einstein as the structural foundation for every draft.</div>
+        </div>
+      </div>
+
+      <div class="opt-section-label" style="margin-top:14px;">Gaps it closes</div>
+      <div class="opt-gap-pills">
+        <span class="opt-gap-pill pill-solved">Template selection - automatic</span>
+        <span class="opt-gap-pill pill-solved">Policy-accurate drafts</span>
+        <span class="opt-gap-pill pill-solved">Thread-aware replies</span>
+        <span class="opt-gap-pill pill-solved">Human in the loop</span>
+        <span class="opt-gap-pill pill-solved">20 min → under 2 min</span>
+        <span class="opt-gap-pill pill-open">Historical learning - not addressed</span>
+        <span class="opt-gap-pill pill-open">Audit trail - not addressed</span>
+        <span class="opt-gap-pill pill-open">Custom LWC embed - not addressed</span>
+      </div>
+
+      <div class="opt-pros-cons">
+        <div class="opt-pros">
+          <div class="opt-pc-label">Strengths</div>
+          <ul class="opt-pc-list">
+            <li>Working and tested right now</li>
+            <li>Deterministic - compliance team controls what is correct</li>
+            <li>No additional development required</li>
+            <li>New scenarios in two steps - admin task, no code</li>
+            <li>Content team owns template language in Setup</li>
+          </ul>
+        </div>
+        <div class="opt-cons">
+          <div class="opt-pc-label">Limitations</div>
+          <ul class="opt-pc-list">
+            <li>Does not learn from historical cases</li>
+            <li>No audit trail of which template was used</li>
+            <li>Accessed via standard button - not embedded in existing LWC</li>
+            <li>Requires migration of relevant templates from 1,600 existing</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION 2 -->
+  <div class="option-card opt-2">
+    <div class="opt-hdr">
+      <div class="opt-num-wrap"><div class="opt-num">2</div></div>
+      <div class="opt-hdr-text">
+        <div class="opt-eyebrow">Future Enhancement - Historical Learning</div>
+        <div class="opt-title">Option 1 + Data Cloud</div>
+        <div class="opt-subtitle">Add historical email retrieval and template usage analysis on top of the existing routing layer using Salesforce Data Cloud</div>
+      </div>
+      <div class="opt-badge">Future phase</div>
+    </div>
+    <div class="opt-body">
+      <div class="opt-section-label">What it adds</div>
+      <div class="opt-desc">Data Cloud unifies the historical EmailMessage records stored in Salesforce with the case data. It can surface patterns - which templates were used on successfully closed cases with the same case type, which produced the fewest follow-up emails, which had the shortest time to close. This information can be passed into the AI prompt as additional context to influence template selection or to surface a recommendation to the CSR alongside the AI draft.</div>
+
+      <div class="opt-section-label" style="margin-top:14px;">Data Cloud features used</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:4px;">
+
+        <div style="background:#f5eef8;border:1px solid #d7bde2;border-radius:8px;padding:12px 16px;display:flex;gap:14px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:#7d3c98;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:900;flex-shrink:0;">1</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:#6c3483;margin-bottom:2px;">Salesforce CRM Connector</div>
+            <div style="font-size:12px;color:#5a3070;line-height:1.6;">Native connector that ingests <code style="font-size:11px;background:#e8daef;padding:1px 4px;border-radius:3px;">Case</code> and <code style="font-size:11px;background:#e8daef;padding:1px 4px;border-radius:3px;">EmailMessage</code> records from the Salesforce org into Data Cloud. This is the data pipeline - pulls all historical closed cases and the emails sent on each one.</div>
+          </div>
+        </div>
+
+        <div style="background:#f5eef8;border:1px solid #d7bde2;border-radius:8px;padding:12px 16px;display:flex;gap:14px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:#7d3c98;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:900;flex-shrink:0;">2</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:#6c3483;margin-bottom:2px;">Data Streams → Data Lake Objects (DLOs)</div>
+            <div style="font-size:12px;color:#5a3070;line-height:1.6;">Once ingested, Case and EmailMessage data lands in Data Lake Objects - the raw storage layer inside Data Cloud. Each CRM object becomes a DLO that can be queried and modelled.</div>
+          </div>
+        </div>
+
+        <div style="background:#f5eef8;border:1px solid #d7bde2;border-radius:8px;padding:12px 16px;display:flex;gap:14px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:#7d3c98;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:900;flex-shrink:0;">3</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:#6c3483;margin-bottom:2px;">Data Model Objects (DMOs)</div>
+            <div style="font-size:12px;color:#5a3070;line-height:1.6;">Maps the raw DLOs to harmonized Data Model Objects - normalising the data so Case and EmailMessage records can be joined and queried consistently. Case maps to an Engagement or Case DMO.</div>
+          </div>
+        </div>
+
+        <div style="background:#f5eef8;border:1px solid #d7bde2;border-radius:8px;padding:12px 16px;display:flex;gap:14px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:#7d3c98;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:900;flex-shrink:0;">4</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:#6c3483;margin-bottom:2px;">Calculated Insights - the "voting model"</div>
+            <div style="font-size:12px;color:#5a3070;line-height:1.6;">A saved SQL-style query that runs over the Data Cloud data and produces an aggregated metric. The Calculated Insight asks: <em>"for each Case Type + Case Reason combination, which Email Template appears most frequently on successfully closed cases?"</em> - that is the vote count. This is the core feature for the historical learning capability the customer asked for.</div>
+          </div>
+        </div>
+
+        <div style="background:#f5eef8;border:1px solid #d7bde2;border-radius:8px;padding:12px 16px;display:flex;gap:14px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:#7d3c98;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:900;flex-shrink:0;">5</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:#6c3483;margin-bottom:2px;">Data Cloud Data Provider in Prompt Builder</div>
+            <div style="font-size:12px;color:#5a3070;line-height:1.6;">Prompt Builder has a native Data Cloud data provider. The Calculated Insight result is surfaced directly into the Prompt Template - so Einstein sees both the CMT routing match <em>and</em> the historical vote context (e.g. <em>"this template was used on 47 successfully closed cases of this type"</em>) when generating the draft.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="background:#fdf2ff;border:1px solid #d7bde2;border-left:4px solid #7d3c98;border-radius:8px;padding:12px 16px;font-size:12.5px;color:#5a3070;line-height:1.65;margin-top:4px;">
+        <strong style="color:#6c3483;">Important caveat:</strong> The customer's current Data Cloud usage is limited to knowledge articles. Ingesting CRM objects, building Calculated Insights, and wiring into Prompt Builder is a meaningful configuration effort - a scoped Data Cloud engagement, not a quick admin task. Recommended after Option 1 is live and validated in production.
+      </div>
+
+      <div class="opt-section-label" style="margin-top:14px;">Gaps it closes</div>
+      <div class="opt-gap-pills">
+        <span class="opt-gap-pill pill-solved">Everything from Option 1</span>
+        <span class="opt-gap-pill pill-solved">Historical learning - addressed via Data Cloud</span>
+        <span class="opt-gap-pill pill-partial">Audit trail - partial (Data Cloud surfaces usage data)</span>
+        <span class="opt-gap-pill pill-open">Custom LWC embed - still requires LWC work</span>
+      </div>
+
+      <div class="opt-pros-cons">
+        <div class="opt-pros">
+          <div class="opt-pc-label">Strengths</div>
+          <ul class="opt-pc-list">
+            <li>Directly addresses the original customer ask</li>
+            <li>Learns from historical rep behaviour at scale</li>
+            <li>Surfaces template usage patterns and outcomes</li>
+            <li>Existing Data Cloud enablement in org (knowledge articles)</li>
+            <li>Adds intelligence without replacing working routing layer</li>
+          </ul>
+        </div>
+        <div class="opt-cons">
+          <div class="opt-pc-label">Considerations</div>
+          <ul class="opt-pc-list">
+            <li>Requires Data Cloud scoping and configuration</li>
+            <li>Historical data quality matters - different reps used different templates</li>
+            <li>Higher effort than Option 1 alone</li>
+            <li>Recommended after Option 1 is validated in production</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION 3 -->
+  <div class="option-card opt-3">
+    <div class="opt-hdr">
+      <div class="opt-num-wrap"><div class="opt-num">3</div></div>
+      <div class="opt-hdr-text">
+        <div class="opt-eyebrow">Near-Term Enhancement - Full CSR Experience</div>
+        <div class="opt-title">Option 1 + Custom LWC Component</div>
+        <div class="opt-subtitle">Embed Draft with AI directly into the existing custom LWC page the CSR team already uses - and add an audit trail at the same time</div>
+      </div>
+      <div class="opt-badge">Recommended next step</div>
+    </div>
+    <div class="opt-body">
+      <div class="opt-section-label">What it adds</div>
+      <div class="opt-desc">The customer already has a custom LWC component that CSRs use to navigate cases and compose emails. This option extends that existing component to trigger the AI draft directly - eliminating the extra navigation steps required today. At the same time, a custom field is stamped on the EmailMessage record at send time to track which template was used, giving the team the audit trail they asked for. The entire AI routing layer stays untouched.</div>
+
+      <div class="opt-section-label" style="margin-top:14px;">What the customer needs to do</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:4px;">
+
+        <div style="background:#eafaf1;border:1px solid #a9dfbf;border-radius:8px;padding:12px 16px;display:flex;gap:14px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:#27ae60;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:900;flex-shrink:0;">1</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:#1e5631;margin-bottom:2px;">Share the existing LWC component codebase</div>
+            <div style="font-size:12px;color:#2a6a3a;line-height:1.6;">The customer already has a custom LWC used by CSRs to navigate cases and compose emails. The developer needs read access to that component's code - specifically the method that opens the email composer - so the Draft with AI trigger can be wired in at the right point in the existing user flow.</div>
+          </div>
+        </div>
+
+        <div style="background:#eafaf1;border:1px solid #a9dfbf;border-radius:8px;padding:12px 16px;display:flex;gap:14px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:#27ae60;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:900;flex-shrink:0;">2</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:#1e5631;margin-bottom:2px;">Add a custom field to EmailMessage</div>
+            <div style="font-size:12px;color:#2a6a3a;line-height:1.6;">Create a custom text field on the <code style="font-size:11px;background:#c8f0d8;padding:1px 4px;border-radius:3px;">EmailMessage</code> object (e.g. <code style="font-size:11px;background:#c8f0d8;padding:1px 4px;border-radius:3px;">AI_Template_Used__c</code>) to store the name of the template that was used to generate the draft. This is the audit trail field - it gets stamped at send time by the LWC.</div>
+          </div>
+        </div>
+
+        <div style="background:#eafaf1;border:1px solid #a9dfbf;border-radius:8px;padding:12px 16px;display:flex;gap:14px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:#27ae60;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:900;flex-shrink:0;">3</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:#1e5631;margin-bottom:2px;">Extend the LWC to call the Prompt Template API</div>
+            <div style="font-size:12px;color:#2a6a3a;line-height:1.6;">Add a "Draft with AI" button or trigger inside the existing component. When clicked, the LWC calls the Agentforce <code style="font-size:11px;background:#c8f0d8;padding:1px 4px;border-radius:3px;">einstein_gpt__caseEmailDraft</code> action - the same action the standard button uses - and populates the email composer with the returned draft. No changes to the Prompt Template or Prompt Flow are needed.</div>
+          </div>
+        </div>
+
+        <div style="background:#eafaf1;border:1px solid #a9dfbf;border-radius:8px;padding:12px 16px;display:flex;gap:14px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:#27ae60;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:900;flex-shrink:0;">4</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:#1e5631;margin-bottom:2px;">Stamp the template name on EmailMessage at send</div>
+            <div style="font-size:12px;color:#2a6a3a;line-height:1.6;">When the CSR clicks Send, the LWC writes the template name returned by the Prompt Flow into the <code style="font-size:11px;background:#c8f0d8;padding:1px 4px;border-radius:3px;">AI_Template_Used__c</code> field on the EmailMessage record before saving. This can also be done via a before-insert Flow trigger on EmailMessage if the LWC approach is not preferred.</div>
+          </div>
+        </div>
+
+        <div style="background:#eafaf1;border:1px solid #a9dfbf;border-radius:8px;padding:12px 16px;display:flex;gap:14px;align-items:flex-start;">
+          <div style="width:28px;height:28px;background:#27ae60;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:900;flex-shrink:0;">5</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:#1e5631;margin-bottom:2px;">Deploy and test in sandbox first</div>
+            <div style="font-size:12px;color:#2a6a3a;line-height:1.6;">All LWC changes should be deployed to a sandbox and tested against the existing test cases (Part A - First Contact and Part B - Reply) before going to production. The AI routing layer (Prompt Template, Prompt Flow, CMT, EmailTemplates) is unchanged - only the surface the CSR interacts with is modified.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="background:#f0fdf4;border:1px solid #a9dfbf;border-left:4px solid #27ae60;border-radius:8px;padding:12px 16px;font-size:12.5px;color:#1e5631;line-height:1.65;margin-top:4px;margin-bottom:4px;">
+        <strong style="color:#1e5631;">What stays the same:</strong> The Prompt Template, Prompt Flow, CMT routing records, and EmailTemplates are not touched. The developer only modifies the existing LWC - the AI layer is already built and working.
+      </div>
+
+      <div class="opt-section-label" style="margin-top:14px;">Gaps it closes</div>
+      <div class="opt-gap-pills">
+        <span class="opt-gap-pill pill-solved">Everything from Option 1</span>
+        <span class="opt-gap-pill pill-solved">Audit trail - template name stamped on EmailMessage</span>
+        <span class="opt-gap-pill pill-solved">Custom LWC embed - Draft with AI in existing workflow</span>
+        <span class="opt-gap-pill pill-open">Historical learning - not addressed (add Option 2 if needed)</span>
+      </div>
+
+      <div class="opt-pros-cons">
+        <div class="opt-pros">
+          <div class="opt-pc-label">Strengths</div>
+          <ul class="opt-pc-list">
+            <li>Builds on existing custom LWC - no new UI to learn</li>
+            <li>Reduces CSR clicks to reach Draft with AI</li>
+            <li>Closes audit trail gap in the same engagement</li>
+            <li>Scoped, low-risk - AI layer unchanged</li>
+            <li>Can be delivered independently of Data Cloud</li>
+          </ul>
+        </div>
+        <div class="opt-cons">
+          <div class="opt-pc-label">Considerations</div>
+          <ul class="opt-pc-list">
+            <li>Requires LWC development effort</li>
+            <li>Needs access to existing LWC component codebase</li>
+            <li>Does not address historical learning (combine with Option 2 for that)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout c-green" style="margin-top:16px;margin-bottom:0;">
+        <strong>Recommended sequence</strong>
+        Deploy Option 1 now - validate the routing and draft quality in the customer's sandbox. Then deliver Option 3 (custom LWC) to embed the experience and close the audit trail gap. Add Option 2 (Data Cloud) as a future phase once the deterministic routing is proven in production.
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Capability</th>
+        <th>Option 1 - Current</th>
+        <th>Option 2 - + Data Cloud</th>
+        <th>Option 3 - + Custom LWC</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="ct-label">Automatic template selection</td><td class="ct-yes">Yes</td><td class="ct-yes">Yes</td><td class="ct-yes">Yes</td></tr>
+      <tr><td class="ct-label">Policy-accurate drafts</td><td class="ct-yes">Yes</td><td class="ct-yes">Yes</td><td class="ct-yes">Yes</td></tr>
+      <tr><td class="ct-label">Thread-aware replies</td><td class="ct-yes">Yes</td><td class="ct-yes">Yes</td><td class="ct-yes">Yes</td></tr>
+      <tr><td class="ct-label">Human in the loop</td><td class="ct-yes">Yes</td><td class="ct-yes">Yes</td><td class="ct-yes">Yes</td></tr>
+      <tr><td class="ct-label">Historical case learning</td><td class="ct-no">No</td><td class="ct-yes">Yes - Data Cloud</td><td class="ct-no">No</td></tr>
+      <tr><td class="ct-label">Audit trail on EmailMessage</td><td class="ct-no">No</td><td class="ct-part">Partial</td><td class="ct-yes">Yes - LWC stamps field</td></tr>
+      <tr><td class="ct-label">Embedded in existing LWC UI</td><td class="ct-no">No</td><td class="ct-no">No</td><td class="ct-yes">Yes</td></tr>
+      <tr><td class="ct-label">Development required</td><td class="ct-yes">None</td><td class="ct-part">Data Cloud config</td><td class="ct-part">LWC development</td></tr>
+      <tr><td class="ct-label">Ready when</td><td class="ct-yes">Now</td><td class="ct-part">Future phase</td><td class="ct-part">Next engagement</td></tr>
+    </tbody>
+  </table>
+
+</div>
+
+<!-- ══════════════════════════════
+     TAB 5 - FURTHER READING
+══════════════════════════════ -->
+<div class="tab-panel" id="tab-resources">
+  <div class="sec-eyebrow">Validation & Reference</div>
+  <div class="sec-title">Technical resources for follow-up</div>
+  <div class="sec-sub">Official Salesforce documentation and white papers that validate every component of this solution. Share with the customer's admin, developer, or architect after the presentation.</div>
+
+  <!-- SECTION: Agentforce / Prompt Builder -->
+  <div style="margin-bottom:36px;">
+    <div style="font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#2e86c1;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #d6e8f5;">Agentforce &amp; Prompt Builder</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+
+      <div style="background:#fff;border:1px solid #d6e8f5;border-radius:10px;padding:16px 20px;display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:36px;height:36px;background:#d6eaf8;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">📘</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:800;color:#1a3a52;margin-bottom:3px;">Prompt Builder - Official Documentation</div>
+          <div style="font-size:12px;color:#5a7e98;line-height:1.6;margin-bottom:6px;">Core reference for creating, versioning, and publishing GenAI Prompt Templates in Salesforce. Covers template types, inputs, Flex templates, and the Prompt Flow data provider pattern used in this solution.</div>
+          <a href="https://help.salesforce.com/s/articleView?id=sf.prompt_builder_about.htm" target="_blank" style="font-size:11px;font-weight:700;color:#2e86c1;text-decoration:none;">help.salesforce.com → Prompt Builder</a>
+        </div>
+        <div style="flex-shrink:0;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#d6eaf8;color:#1a5276;white-space:nowrap;">Salesforce Help</div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #d6e8f5;border-radius:10px;padding:16px 20px;display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:36px;height:36px;background:#d6eaf8;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">📘</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:800;color:#1a3a52;margin-bottom:3px;">Agentforce - Service Agent &amp; Case Email Draft</div>
+          <div style="font-size:12px;color:#5a7e98;line-height:1.6;margin-bottom:6px;">Documents the <code style="font-size:11px;background:#e8f1f8;padding:1px 4px;border-radius:3px;">einstein_gpt__caseEmailDraft</code> prompt template type that powers the "Draft with AI" button in the Service Console. Covers how the template type connects to the email composer and the CSR workflow.</div>
+          <a href="https://help.salesforce.com/s/articleView?id=sf.einstein_copilot_case_email_draft.htm" target="_blank" style="font-size:11px;font-weight:700;color:#2e86c1;text-decoration:none;">help.salesforce.com → Case Email Draft</a>
+        </div>
+        <div style="flex-shrink:0;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#d6eaf8;color:#1a5276;white-space:nowrap;">Salesforce Help</div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #d6e8f5;border-radius:10px;padding:16px 20px;display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:36px;height:36px;background:#d6eaf8;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">📘</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:800;color:#1a3a52;margin-bottom:3px;">Prompt Template Versions &amp; Flex Templates</div>
+          <div style="font-size:12px;color:#5a7e98;line-height:1.6;margin-bottom:6px;">Explains how template versioning works, how to publish and activate a version, and the Flex Template pattern - where a single template can serve multiple scenarios using merge fields and data providers.</div>
+          <a href="https://help.salesforce.com/s/articleView?id=sf.prompt_builder_flex_templates.htm" target="_blank" style="font-size:11px;font-weight:700;color:#2e86c1;text-decoration:none;">help.salesforce.com → Flex Templates</a>
+        </div>
+        <div style="flex-shrink:0;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#d6eaf8;color:#1a5276;white-space:nowrap;">Salesforce Help</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION: Prompt Flow -->
+  <div style="margin-bottom:36px;">
+    <div style="font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#7d3c98;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #e8daef;">Prompt Flow (Automation Layer)</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+
+      <div style="background:#fff;border:1px solid #d6e8f5;border-radius:10px;padding:16px 20px;display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:36px;height:36px;background:#e8daef;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">🔄</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:800;color:#1a3a52;margin-bottom:3px;">Prompt Flow - Data Provider for Prompt Templates</div>
+          <div style="font-size:12px;color:#5a7e98;line-height:1.6;margin-bottom:6px;">Documents the PromptFlow process type - a special Flow type that runs at prompt execution time, assembles dynamic context (records, email threads, template bodies), and returns a string injected into the AI prompt. This is the mechanism behind the routing and thread injection in this solution.</div>
+          <a href="https://help.salesforce.com/s/articleView?id=sf.prompt_builder_flow_data_provider.htm" target="_blank" style="font-size:11px;font-weight:700;color:#7d3c98;text-decoration:none;">help.salesforce.com → Prompt Flow Data Provider</a>
+        </div>
+        <div style="flex-shrink:0;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#e8daef;color:#6c3483;white-space:nowrap;">Salesforce Help</div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #d6e8f5;border-radius:10px;padding:16px 20px;display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:36px;height:36px;background:#e8daef;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">🔄</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:800;color:#1a3a52;margin-bottom:3px;">Flow Builder - Record Lookups &amp; Loops</div>
+          <div style="font-size:12px;color:#5a7e98;line-height:1.6;margin-bottom:6px;">Reference for building Get Records elements, For Each loops, and Decision branches - the core building blocks of the Prompt Flow in this solution that query CMT records, fetch EmailTemplate bodies, and loop the email thread.</div>
+          <a href="https://help.salesforce.com/s/articleView?id=sf.flow_ref_elements_data_get.htm" target="_blank" style="font-size:11px;font-weight:700;color:#7d3c98;text-decoration:none;">help.salesforce.com → Flow Get Records</a>
+        </div>
+        <div style="flex-shrink:0;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#e8daef;color:#6c3483;white-space:nowrap;">Salesforce Help</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION: Custom Metadata -->
+  <div style="margin-bottom:36px;">
+    <div style="font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#d4ac0d;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #fef9e7;">Custom Metadata Types (Routing Layer)</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+
+      <div style="background:#fff;border:1px solid #d6e8f5;border-radius:10px;padding:16px 20px;display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:36px;height:36px;background:#fef9e7;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">🗺️</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:800;color:#1a3a52;margin-bottom:3px;">Custom Metadata Types - Overview</div>
+          <div style="font-size:12px;color:#5a7e98;line-height:1.6;margin-bottom:6px;">Explains what Custom Metadata Types are, why they are preferable to Custom Settings or hard-coded values for routing configuration, and how they are deployed as part of a metadata package. The <code style="font-size:11px;background:#e8f1f8;padding:1px 4px;border-radius:3px;">Template_Scenario__mdt</code> object in this solution is a CMT.</div>
+          <a href="https://help.salesforce.com/s/articleView?id=sf.custommetadatatypes_overview.htm" target="_blank" style="font-size:11px;font-weight:700;color:#d4ac0d;text-decoration:none;">help.salesforce.com → Custom Metadata Types</a>
+        </div>
+        <div style="flex-shrink:0;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#fef9e7;color:#7d6608;white-space:nowrap;">Salesforce Help</div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #d6e8f5;border-radius:10px;padding:16px 20px;display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:36px;height:36px;background:#fef9e7;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">🗺️</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:800;color:#1a3a52;margin-bottom:3px;">Custom Metadata Types in Flow - Accessing CMT Records at Runtime</div>
+          <div style="font-size:12px;color:#5a7e98;line-height:1.6;margin-bottom:6px;">Documents how Flow can query Custom Metadata records using Get Records - the exact technique used by the Prompt Flow to look up the matching <code style="font-size:11px;background:#e8f1f8;padding:1px 4px;border-radius:3px;">Template_Scenario__mdt</code> record for a given Case Type and Case Reason at runtime.</div>
+          <a href="https://help.salesforce.com/s/articleView?id=sf.flow_ref_elements_data_get.htm" target="_blank" style="font-size:11px;font-weight:700;color:#d4ac0d;text-decoration:none;">help.salesforce.com → Get Records in Flow</a>
+        </div>
+        <div style="flex-shrink:0;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#fef9e7;color:#7d6608;white-space:nowrap;">Salesforce Help</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION: Data Cloud (Option 2) -->
+  <div style="margin-bottom:36px;">
+    <div style="font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#2e86c1;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #d6e8f5;">Data Cloud - Option 2 Reference</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+
+      <div style="background:#fff;border:1px solid #d6e8f5;border-radius:10px;padding:16px 20px;display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:36px;height:36px;background:#d6eaf8;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">☁️</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:800;color:#1a3a52;margin-bottom:3px;">Data Cloud - Overview &amp; Use Cases</div>
+          <div style="font-size:12px;color:#5a7e98;line-height:1.6;margin-bottom:6px;">Explains how Salesforce Data Cloud unifies data from multiple sources - including historical EmailMessage and Case records - and makes it available for AI enrichment and segmentation. Relevant to Option 2 for surfacing historically successful email patterns.</div>
+          <a href="https://help.salesforce.com/s/articleView?id=sf.c360_a_data_cloud.htm" target="_blank" style="font-size:11px;font-weight:700;color:#2e86c1;text-decoration:none;">help.salesforce.com → Data Cloud</a>
+        </div>
+        <div style="flex-shrink:0;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#d6eaf8;color:#1a5276;white-space:nowrap;">Salesforce Help</div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #d6e8f5;border-radius:10px;padding:16px 20px;display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:36px;height:36px;background:#d6eaf8;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">☁️</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:800;color:#1a3a52;margin-bottom:3px;">Data Cloud for AI - Grounding Prompt Templates with Unified Data</div>
+          <div style="font-size:12px;color:#5a7e98;line-height:1.6;margin-bottom:6px;">Covers how Data Cloud data can be used to ground Prompt Templates - providing AI with historical context from unified data sources to improve response relevance. This is the technical path for Option 2 in this solution.</div>
+          <a href="https://help.salesforce.com/s/articleView?id=sf.prompt_builder_data_cloud.htm" target="_blank" style="font-size:11px;font-weight:700;color:#2e86c1;text-decoration:none;">help.salesforce.com → Data Cloud in Prompt Builder</a>
+        </div>
+        <div style="flex-shrink:0;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#d6eaf8;color:#1a5276;white-space:nowrap;">Salesforce Help</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION: LWC (Option 3) -->
+  <div style="margin-bottom:36px;">
+    <div style="font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#27ae60;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #d5f5e3;">Lightning Web Components - Option 3 Reference</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+
+      <div style="background:#fff;border:1px solid #d6e8f5;border-radius:10px;padding:16px 20px;display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:36px;height:36px;background:#d5f5e3;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">⚡</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:800;color:#1a3a52;margin-bottom:3px;">Lightning Web Components Developer Guide</div>
+          <div style="font-size:12px;color:#5a7e98;line-height:1.6;margin-bottom:6px;">The primary developer reference for building and extending LWC components. Relevant to Option 3 - extending the customer's existing custom LWC to embed the Draft with AI trigger and stamp the template name on the EmailMessage record at send time.</div>
+          <a href="https://developer.salesforce.com/docs/component-library/documentation/en/lwc" target="_blank" style="font-size:11px;font-weight:700;color:#27ae60;text-decoration:none;">developer.salesforce.com → LWC Developer Guide</a>
+        </div>
+        <div style="flex-shrink:0;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#d5f5e3;color:#1e5631;white-space:nowrap;">Developer Docs</div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #d6e8f5;border-radius:10px;padding:16px 20px;display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:36px;height:36px;background:#d5f5e3;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">⚡</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:800;color:#1a3a52;margin-bottom:3px;">EmailMessage Object - Salesforce Object Reference</div>
+          <div style="font-size:12px;color:#5a7e98;line-height:1.6;margin-bottom:6px;">Describes the standard EmailMessage fields, relationships, and create/update capabilities. Relevant to Option 3 - adding a custom field to EmailMessage and stamping it from the LWC at send time to create the audit trail the customer requested.</div>
+          <a href="https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_emailmessage.htm" target="_blank" style="font-size:11px;font-weight:700;color:#27ae60;text-decoration:none;">developer.salesforce.com → EmailMessage Object</a>
+        </div>
+        <div style="flex-shrink:0;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#d5f5e3;color:#1e5631;white-space:nowrap;">Developer Docs</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION: Deployment / Backup -->
+  <div style="margin-bottom:36px;">
+    <div style="font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#5a7e98;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #d6e8f5;">Deployment &amp; Source Control (Backup)</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+
+      <div style="background:#fff;border:1px solid #d6e8f5;border-radius:10px;padding:16px 20px;display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:36px;height:36px;background:#eaf4fc;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">🛠️</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:800;color:#1a3a52;margin-bottom:3px;">Salesforce CLI (sf) - Project Retrieve &amp; Deploy</div>
+          <div style="font-size:12px;color:#5a7e98;line-height:1.6;margin-bottom:6px;">The <code style="font-size:11px;background:#e8f1f8;padding:1px 4px;border-radius:3px;">sf project retrieve start</code> and <code style="font-size:11px;background:#e8f1f8;padding:1px 4px;border-radius:3px;">sf project deploy start</code> commands back up and restore all metadata - Prompt Templates, Flows, Custom Metadata records, Email Templates - to and from a local folder that can be committed to Git.</div>
+          <a href="https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_project_commands_unified.htm" target="_blank" style="font-size:11px;font-weight:700;color:#5a7e98;text-decoration:none;">developer.salesforce.com → sf project commands</a>
+        </div>
+        <div style="flex-shrink:0;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#eaf4fc;color:#1a5276;white-space:nowrap;">Developer Docs</div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #d6e8f5;border-radius:10px;padding:16px 20px;display:flex;gap:16px;align-items:flex-start;">
+        <div style="width:36px;height:36px;background:#eaf4fc;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;">🛠️</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:800;color:#1a3a52;margin-bottom:3px;">Metadata API Developer Guide - GenAiPromptTemplate &amp; Flow Metadata Types</div>
+          <div style="font-size:12px;color:#5a7e98;line-height:1.6;margin-bottom:6px;">Defines the XML schema for <code style="font-size:11px;background:#e8f1f8;padding:1px 4px;border-radius:3px;">GenAiPromptTemplate</code>, <code style="font-size:11px;background:#e8f1f8;padding:1px 4px;border-radius:3px;">Flow</code>, and <code style="font-size:11px;background:#e8f1f8;padding:1px 4px;border-radius:3px;">CustomMetadata</code> metadata types - exactly what is stored in the <code style="font-size:11px;background:#e8f1f8;padding:1px 4px;border-radius:3px;">force-app</code> folder in this project. Use this to validate what can and cannot be version-controlled.</div>
+          <a href="https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_genaiprompttemplate.htm" target="_blank" style="font-size:11px;font-weight:700;color:#5a7e98;text-decoration:none;">developer.salesforce.com → GenAiPromptTemplate Metadata</a>
+        </div>
+        <div style="flex-shrink:0;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;background:#eaf4fc;color:#1a5276;white-space:nowrap;">Developer Docs</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CALLOUT: how to use this as a follow-up -->
+  <div style="background:#f0f5f9;border:1px solid #aed6f1;border-left:4px solid #2e86c1;border-radius:10px;padding:20px 24px;">
+    <div style="font-size:13px;font-weight:800;color:#1a5276;margin-bottom:8px;">How to use this tab after the presentation</div>
+    <div style="font-size:13px;color:#3a5a72;line-height:1.75;">
+      Share this page with the customer's Salesforce admin or developer. Each link goes directly to the official Salesforce documentation for the component it describes. The documentation validates that every technique used in this solution - CMT routing, Prompt Flow, Prompt Templates, LWC extensibility - is a supported, documented Salesforce platform capability, not a custom workaround.
+      <br/><br/>
+      For the backup question specifically: point the team to the <strong>Deployment &amp; Source Control</strong> section. The <code style="font-size:11px;background:#dce9f5;padding:1px 4px;border-radius:3px;">sf project retrieve start</code> command pulls the complete solution from the org into the local <code style="font-size:11px;background:#dce9f5;padding:1px 4px;border-radius:3px;">force-app</code> folder. Push that folder to a private GitHub repository and the entire solution - Prompt Templates, Flow, CMT records, and Email Templates - is fully backed up and can be redeployed to any org.
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function show(tab, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>When_To_Use__c</fullName>
+    <description>One or two sentences describing when a CSR should use this template. Example: Use when a practice is requesting a Medical Director change on a credentialed account.</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>When To Use</label>
+    <length>500</length>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

@@ -84,6 +84,127 @@ body {
 .kp-col-text  { font-size: 12.5px; color: #6b1a1a; line-height: 1.65; }
 
 
+/* ══════════════════════════════════════
+   TAB 10 — TIME & VALUE METRICS
+══════════════════════════════════════ */
+.metrics-kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 40px; }
+@media(max-width:700px){ .metrics-kpi-row{ grid-template-columns:1fr 1fr; } }
+.metrics-kpi { border-radius: 12px; padding: 22px 20px; border: 1px solid; text-align: center; }
+.mk-num   { font-size: 30px; font-weight: 900; margin-bottom: 6px; }
+.mk-label { font-size: 12px; font-weight: 800; margin-bottom: 4px; }
+.mk-sub   { font-size: 11px; }
+.mk-red    { background: #fdf2f2; border-color: #f5c6c2; }
+.mk-red .mk-num { color: #c0392b; } .mk-red .mk-label { color: #7b241c; } .mk-red .mk-sub { color: #a04040; }
+.mk-green  { background: #eafaf1; border-color: #a9dfbf; }
+.mk-green .mk-num { color: #1e8449; } .mk-green .mk-label { color: #1a4a2a; } .mk-green .mk-sub { color: #2a6a3a; }
+.mk-blue   { background: #eaf4fc; border-color: #aed6f1; }
+.mk-blue .mk-num { color: #2e86c1; } .mk-blue .mk-label { color: #1a3a52; } .mk-blue .mk-sub { color: #3a6a8a; }
+.mk-purple { background: #f5eef8; border-color: #d7bde2; }
+.mk-purple .mk-num { color: #7d3c98; } .mk-purple .mk-label { color: #4a235a; } .mk-purple .mk-sub { color: #7d5090; }
+
+.metrics-ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px; }
+@media(max-width:700px){ .metrics-ba-grid{ grid-template-columns:1fr; } }
+.metrics-col { background: #fff; border: 1px solid #d6e8f5; border-radius: 12px; overflow: hidden; }
+.metrics-col-hdr { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+.metrics-col-before { background: #fdf2f2; border-bottom: 2px solid #f5c6c2; }
+.metrics-col-after  { background: #eafaf1; border-bottom: 2px solid #a9dfbf; }
+.metrics-col-hdr-title { font-size: 14px; font-weight: 800; }
+.metrics-col-before .metrics-col-hdr-title { color: #7b241c; }
+.metrics-col-after  .metrics-col-hdr-title { color: #1e5631; }
+.metrics-col-hdr-time { font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 20px; }
+.metrics-col-before .metrics-col-hdr-time { background: #fadbd8; color: #c0392b; }
+.metrics-col-after  .metrics-col-hdr-time { background: #d5f5e3; color: #1e8449; }
+.metrics-step-list { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.metrics-step { display: flex; gap: 12px; align-items: flex-start; border-radius: 8px; padding: 12px 14px; }
+.ms-bad  { background: #fdf8f8; border: 1px solid #f5e0de; }
+.ms-good { background: #f4fbf6; border: 1px solid #d5f5e3; }
+.ms-num  { width: 24px; height: 24px; border-radius: 50%; font-size: 11px; font-weight: 900; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.ms-bad  .ms-num { background: #cb4335; }
+.ms-good .ms-num { background: #27ae60; }
+.ms-title { font-size: 12.5px; font-weight: 800; margin-bottom: 3px; }
+.ms-bad  .ms-title { color: #7b241c; }
+.ms-good .ms-title { color: #1e5631; }
+.ms-desc { font-size: 12px; line-height: 1.6; }
+.ms-bad  .ms-desc { color: #8a4040; }
+.ms-good .ms-desc { color: #2a6a3a; }
+
+.metrics-table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #d6e8f5; margin-bottom: 8px; }
+.metrics-table thead tr { background: #eaf4fc; }
+.metrics-table th { padding: 12px 16px; text-align: left; font-size: 10px; font-weight: 900; color: #1a5276; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #d6e8f5; }
+.metrics-table td { padding: 12px 16px; border-bottom: 1px solid #edf4fa; color: #3a5a72; vertical-align: middle; }
+.metrics-table tr:last-child td { border-bottom: none; }
+.mt-label { font-weight: 800; color: #1a3a52; }
+.mt-bad   { color: #c0392b; font-weight: 700; }
+.mt-good  { color: #1e8449; font-weight: 700; }
+.mt-save  { color: #2e86c1; font-weight: 800; }
+
+.metrics-insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media(max-width:700px){ .metrics-insight-grid{ grid-template-columns:1fr; } }
+.metrics-insight { background: #fff; border: 1px solid #d6e8f5; border-radius: 12px; padding: 20px 22px; border-left: 4px solid; }
+.mi-title { font-size: 13px; font-weight: 800; margin-bottom: 8px; }
+.mi-body  { font-size: 12.5px; color: #4a6e8a; line-height: 1.65; }
+.mi-blue   { border-left-color: #2e86c1; } .mi-blue .mi-title   { color: #1a5276; }
+.mi-green  { border-left-color: #27ae60; } .mi-green .mi-title  { color: #1e5631; }
+.mi-amber  { border-left-color: #d4ac0d; } .mi-amber .mi-title  { color: #7d6608; }
+.mi-purple { border-left-color: #7d3c98; } .mi-purple .mi-title { color: #6c3483; }
+.mi-teal   { border-left-color: #17a589; } .mi-teal .mi-title   { color: #0e6655; }
+.mi-red    { border-left-color: #c0392b; } .mi-red .mi-title    { color: #7b241c; }
+
+/* ── HIGH LEVEL ARCHITECTURE DIAGRAM ── */
+.arch-diagram { background: #fff; border: 1px solid #d6e8f5; border-radius: 16px; padding: 36px 40px; margin-bottom: 40px; overflow-x: auto; }
+.ad-row { display: flex; align-items: center; gap: 0; }
+.ad-row-center { justify-content: center; }
+.ad-row-connector { padding: 0 0 0 0; margin: 0; }
+
+.ad-block { border-radius: 12px; padding: 16px 18px; border: 2px solid; min-width: 140px; max-width: 160px; text-align: center; flex-shrink: 0; }
+.ad-block-wide { min-width: 340px; max-width: 500px; }
+.ad-block-icon  { font-size: 22px; margin-bottom: 6px; }
+.ad-block-title { font-size: 13px; font-weight: 800; margin-bottom: 5px; line-height: 1.3; }
+.ad-block-sub   { font-size: 11px; line-height: 1.6; margin-bottom: 7px; }
+.ad-block-tag   { display: inline-block; font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.ad-csr  { background: #eaf4fc; border-color: #aed6f1; }
+.ad-csr .ad-block-title { color: #1a5276; } .ad-csr .ad-block-sub { color: #3a6a8a; } .ad-csr .ad-block-tag { background: #d6eaf8; color: #1a5276; }
+.ad-sf   { background: #eaf4fc; border-color: #5dade2; }
+.ad-sf .ad-block-title { color: #1a5276; } .ad-sf .ad-block-sub { color: #3a6a8a; } .ad-sf .ad-block-tag { background: #d6eaf8; color: #1a5276; }
+.ad-flow { background: #eafaf1; border-color: #a9dfbf; }
+.ad-flow .ad-block-title { color: #1e5631; } .ad-flow .ad-block-sub { color: #2a6a3a; } .ad-flow .ad-block-tag { background: #d5f5e3; color: #1e5631; }
+.ad-case { background: #eaf4fc; border-color: #85c1e9; }
+.ad-case .ad-block-title { color: #1a5276; } .ad-case .ad-block-sub { color: #2a6080; } .ad-case .ad-block-tag { background: #d6eaf8; color: #1a5276; }
+.ad-cmt  { background: #fef9e7; border-color: #f9e79f; }
+.ad-cmt .ad-block-title { color: #7d6608; } .ad-cmt .ad-block-sub { color: #8a7020; } .ad-cmt .ad-block-tag { background: #fcf3cf; color: #7d6608; }
+.ad-et   { background: #eafaf1; border-color: #a9dfbf; }
+.ad-et .ad-block-title { color: #1e5631; } .ad-et .ad-block-sub { color: #2a6a3a; } .ad-et .ad-block-tag { background: #d5f5e3; color: #1e5631; }
+.ad-ai   { background: #f5eef8; border-color: #c39bd3; }
+.ad-ai .ad-block-title { color: #6c3483; } .ad-ai .ad-block-sub { color: #7d5090; } .ad-ai .ad-block-tag { background: #e8daef; color: #6c3483; }
+.ad-out  { background: #e8f8f5; border-color: #a2d9ce; }
+.ad-out .ad-block-title { color: #0e6655; } .ad-out .ad-block-sub { color: #117a65; } .ad-out .ad-block-tag { background: #d0ece7; color: #0e6655; }
+
+.ad-ai-step { display: block; text-align: left; padding: 4px 0; border-bottom: 1px solid #e8daef; font-size: 12px; color: #6c3483; }
+.ad-ai-step:last-child { border-bottom: none; }
+
+.ad-h-arrow { display: flex; flex-direction: column; align-items: center; padding: 0 4px; flex-shrink: 0; position: relative; min-width: 80px; }
+.ad-h-line  { height: 2px; width: 100%; background: #aed6f1; }
+.ad-h-head  { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 7px solid #aed6f1; margin-top: -1px; }
+.ad-h-head-left { border-left: none; border-right: 7px solid #aed6f1; margin-top: -1px; }
+.ad-h-label { font-size: 9px; font-weight: 700; color: #7fa8c4; text-align: center; margin-top: 4px; white-space: nowrap; letter-spacing: 0.3px; }
+.ad-h-arrow-left { flex-direction: column-reverse; }
+.ad-h-arrow-left .ad-h-label { margin-top: 0; margin-bottom: 4px; }
+
+.ad-v-arrow { display: flex; flex-direction: column; align-items: center; gap: 0; padding: 4px 0; }
+.ad-v-line  { width: 2px; height: 28px; background: #aed6f1; }
+.ad-v-head  { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid #aed6f1; }
+.ad-v-label { font-size: 9px; font-weight: 700; color: #7fa8c4; text-align: center; margin-top: 4px; white-space: nowrap; letter-spacing: 0.3px; }
+
+.ad-funnel { background: linear-gradient(135deg, #eaf4fc, #f5eef8); border: 1.5px solid #c39bd3; border-radius: 8px; padding: 10px 24px; text-align: center; margin: 0 auto 0; width: 100%; max-width: 500px; }
+.ad-funnel-label { font-size: 11px; font-weight: 800; color: #6c3483; letter-spacing: 0.5px; }
+
+.ad-legend { margin-top: 28px; padding-top: 20px; border-top: 1px solid #edf4fa; }
+.ad-legend-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #7fa8c4; margin-bottom: 10px; }
+.ad-legend-row { display: flex; flex-wrap: wrap; gap: 18px; }
+.ad-legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #4a6e8a; }
+.ad-legend-dot  { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+
 /* routing chain */
 .routing-chain { display: flex; flex-direction: column; gap: 0; max-width: 720px; margin-bottom: 24px; }
 .rc-step { display: flex; gap: 18px; align-items: flex-start; border-radius: 12px; padding: 20px 22px; border: 1.5px solid; }
@@ -474,6 +595,7 @@ body {
   <button class="tab-btn" onclick="show('owns',this)">What You Own</button>
   <button class="tab-btn" onclick="show('setup',this)">Customer Setup</button>
   <button class="tab-btn" onclick="show('faq',this)">FAQ</button>
+  <button class="tab-btn" onclick="show('metrics',this)">Time &amp; Value</button>
 </div>
 
 
@@ -820,6 +942,30 @@ Warm regards, Nisar Khan</div>
       </div>
     </div>
 
+  </div>
+
+  <!-- THREAD-AWARE REPLY EXPLAINER -->
+  <div style="background:#fff;border:1px solid #d6e8f5;border-radius:14px;padding:28px 32px;margin:40px 0 8px;">
+    <div class="sec-eyebrow" style="margin-bottom:6px;">How it works</div>
+    <div style="font-size:18px;font-weight:900;color:#1a3a52;margin-bottom:6px;">Thread-aware replies — what is actually happening</div>
+    <div style="font-size:13px;color:#5a7e98;line-height:1.7;margin-bottom:20px;">The LLM does not "know" the email thread on its own. Thread awareness is the result of two components working together.</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+      <div style="background:#eaf4fc;border:1px solid #aed6f1;border-radius:10px;padding:18px 20px;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#2e86c1;margin-bottom:6px;">Step 1 — Prompt Flow</div>
+        <div style="font-size:13px;font-weight:800;color:#1a5276;margin-bottom:6px;">Data retrieval — the Flow puts the thread into the prompt</div>
+        <div style="font-size:12.5px;color:#1a4a6a;line-height:1.65;">The <span style="font-family:monospace;font-size:11px;background:#d6eaf8;padding:1px 5px;border-radius:3px;">Add_Historical_Case_Emails_to_Prompt2</span> Prompt Flow runs at runtime. It queries the <span style="font-family:monospace;font-size:11px;background:#d6eaf8;padding:1px 5px;border-radius:3px;">EmailMessage</span> records linked to the case and assembles the full email thread as a block of text. That text is injected into the prompt payload before it reaches Einstein. The LLM never fetches the thread itself — the Flow puts it there.</div>
+      </div>
+      <div style="background:#eafaf1;border:1px solid #a9dfbf;border-radius:10px;padding:18px 20px;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#27ae60;margin-bottom:6px;">Step 2 — Prompt Template</div>
+        <div style="font-size:13px;font-weight:800;color:#1e5631;margin-bottom:6px;">LLM instructions — the template tells Einstein what to do with the thread</div>
+        <div style="font-size:12.5px;color:#2a6a3a;line-height:1.65;">The <span style="font-family:monospace;font-size:11px;background:#c8f0d8;padding:1px 5px;border-radius:3px;">Custom_CSR_Reply</span> Prompt Template includes explicit instructions telling Einstein to read the thread context it has been given, understand what was already communicated to the provider, answer the provider's specific questions, and avoid repeating information already sent.</div>
+      </div>
+    </div>
+
+    <div style="background:#f0f5f9;border-radius:10px;padding:16px 20px;font-size:13px;color:#3a5a72;line-height:1.7;">
+      <strong style="color:#1a3a52;">In plain terms:</strong> The Prompt Flow is responsible for <em>fetching and injecting</em> the email thread. The Prompt Template is responsible for <em>instructing the LLM</em> to read and respond to it. Remove either one and the thread-awareness breaks. Without the Flow, the LLM sees no thread. Without the right Template instructions, the LLM ignores it or handles it incorrectly.
+    </div>
   </div>
 
   <div class="sec-eyebrow" style="margin-top:48px;">Swimlane Detail</div>
@@ -1715,6 +1861,229 @@ Warm regards, Nisar Khan</div>
     </div>
 
   </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TAB 10 — TIME & VALUE METRICS
+══════════════════════════════════ -->
+<div class="tab-panel" id="tab-metrics">
+  <div class="sec-eyebrow">Productivity &amp; Time Savings</div>
+  <div class="sec-title">Measurable impact — not just "it saves time"</div>
+  <div class="sec-sub">Based on the current workflow observed during discovery. Numbers use a conservative 20 minutes per email — the actual time reported by the team for complex credentialing and patient support cases.</div>
+
+  <!-- KPI ROW -->
+  <div class="metrics-kpi-row">
+    <div class="metrics-kpi mk-red">
+      <div class="mk-num">20 min</div>
+      <div class="mk-label">Current time per email draft</div>
+      <div class="mk-sub">Manual process — today</div>
+    </div>
+    <div class="metrics-kpi mk-green">
+      <div class="mk-num">&lt;2 min</div>
+      <div class="mk-label">New time per email draft</div>
+      <div class="mk-sub">Click · review · send</div>
+    </div>
+    <div class="metrics-kpi mk-blue">
+      <div class="mk-num">18 min</div>
+      <div class="mk-label">Saved per email</div>
+      <div class="mk-sub">90% reduction</div>
+    </div>
+    <div class="metrics-kpi mk-purple">
+      <div class="mk-num">3 hrs</div>
+      <div class="mk-label">Saved per CSR per day</div>
+      <div class="mk-sub">Based on ~10 cases/day</div>
+    </div>
+  </div>
+
+  <!-- BEFORE / AFTER WORKFLOW -->
+  <div class="sec-eyebrow" style="margin-top:44px;">Current State vs Future State</div>
+  <div class="sec-title" style="margin-bottom:8px;">How CSRs handle an email today — vs with this feature</div>
+  <div class="sec-sub">This is the workflow observed during the discovery session. The customer currently uses a custom LWC component with multiple manual steps before a draft even begins.</div>
+
+  <div class="metrics-ba-grid">
+    <div class="metrics-col">
+      <div class="metrics-col-hdr metrics-col-before">
+        <div class="metrics-col-hdr-title">Today — Manual Process</div>
+        <div class="metrics-col-hdr-time">~20 minutes per email</div>
+      </div>
+      <div class="metrics-step-list">
+        <div class="metrics-step ms-bad">
+          <div class="ms-num">1</div>
+          <div class="ms-body">
+            <div class="ms-title">Navigate to the case</div>
+            <div class="ms-desc">CSR opens the case, reads the description, checks the email thread in Activity to understand context — multiple scrolls and clicks on a custom LWC page.</div>
+          </div>
+        </div>
+        <div class="metrics-step ms-bad">
+          <div class="ms-num">2</div>
+          <div class="ms-body">
+            <div class="ms-title">Find the right email template — manually</div>
+            <div class="ms-desc">The org has ~1,600 email templates. The CSR must know from experience which one applies to this case type. New CSRs don't know this — they need to ask a colleague or sit through training. Even experienced reps use different templates for the same scenario.</div>
+          </div>
+        </div>
+        <div class="metrics-step ms-bad">
+          <div class="ms-num">3</div>
+          <div class="ms-body">
+            <div class="ms-title">Open the template and copy the body</div>
+            <div class="ms-desc">Navigate to Setup or a saved folder, open the template, copy the body text into the email composer. If the wrong template was picked, start again.</div>
+          </div>
+        </div>
+        <div class="metrics-step ms-bad">
+          <div class="ms-num">4</div>
+          <div class="ms-body">
+            <div class="ms-title">Manually personalise the email</div>
+            <div class="ms-desc">Replace every placeholder — provider name, case number, form references, dates — by hand. Each field requires switching between the case record and the email composer.</div>
+          </div>
+        </div>
+        <div class="metrics-step ms-bad">
+          <div class="ms-num">5</div>
+          <div class="ms-body">
+            <div class="ms-title">Check the email thread to avoid repetition</div>
+            <div class="ms-desc">Scroll back through the Activity timeline to verify nothing in the draft repeats what was already sent. Done manually — no tool assistance.</div>
+          </div>
+        </div>
+        <div class="metrics-step ms-bad">
+          <div class="ms-num">6</div>
+          <div class="ms-body">
+            <div class="ms-title">Verify mandatory policy language</div>
+            <div class="ms-desc">Cross-check that all required form numbers, SLA statements, compliance language, and insurance minimums are present. A missed item requires a follow-up email — another 20 minutes.</div>
+          </div>
+        </div>
+        <div class="metrics-step ms-bad">
+          <div class="ms-num">7</div>
+          <div class="ms-body">
+            <div class="ms-title">Send</div>
+            <div class="ms-desc">After all the above — the email goes out. Quality depends entirely on which CSR handled the case, their experience level, and how much time they had.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metrics-col">
+      <div class="metrics-col-hdr metrics-col-after">
+        <div class="metrics-col-hdr-title">With Agentforce — AI-Assisted</div>
+        <div class="metrics-col-hdr-time">&lt;2 minutes per email</div>
+      </div>
+      <div class="metrics-step-list">
+        <div class="metrics-step ms-good">
+          <div class="ms-num">1</div>
+          <div class="ms-body">
+            <div class="ms-title">Open the case — already done</div>
+            <div class="ms-desc">CSR opens the case as normal. No additional navigation needed.</div>
+          </div>
+        </div>
+        <div class="metrics-step ms-good">
+          <div class="ms-num">2</div>
+          <div class="ms-body">
+            <div class="ms-title">Click "Draft with AI" — select First Contact or Reply</div>
+            <div class="ms-desc">One button. One choice: is this a new case or an ongoing thread? The system handles everything else. No template knowledge required from the CSR.</div>
+          </div>
+        </div>
+        <div class="metrics-step ms-good">
+          <div class="ms-num">3</div>
+          <div class="ms-body">
+            <div class="ms-title">AI automatically selects the right template</div>
+            <div class="ms-desc">The system queries Case Type + Case Reason → CMT routing index → fetches the correct EmailTemplate body. Out of 1,600 templates, the right one is found in under a second. No CSR input needed.</div>
+          </div>
+        </div>
+        <div class="metrics-step ms-good">
+          <div class="ms-num">4</div>
+          <div class="ms-body">
+            <div class="ms-title">AI personalizes and drafts — automatically</div>
+            <div class="ms-desc">Einstein reads the case description, provider name, email thread, and all relevant case details. The draft is personalized with the right names, dates, and specifics. Policy language is included verbatim from the template — it cannot be omitted.</div>
+          </div>
+        </div>
+        <div class="metrics-step ms-good">
+          <div class="ms-num">5</div>
+          <div class="ms-body">
+            <div class="ms-title">CSR reviews and sends</div>
+            <div class="ms-desc">A complete, policy-accurate, personalized draft appears in the email composer. CSR reads it, makes any edits, and sends. Total time from click to send: under 2 minutes.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIME SAVINGS TABLE -->
+  <div class="sec-eyebrow" style="margin-top:48px;">Projected Time Savings</div>
+  <div class="sec-title" style="margin-bottom:20px;">What this unlocks at scale</div>
+
+  <table class="metrics-table">
+    <thead>
+      <tr>
+        <th>Scenario</th>
+        <th>Emails / Day</th>
+        <th>Time Today</th>
+        <th>Time with AI</th>
+        <th>Saved / Day</th>
+        <th>Saved / Week</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="mt-label">1 CSR</td>
+        <td>10</td>
+        <td class="mt-bad">200 min (3.3 hrs)</td>
+        <td class="mt-good">20 min</td>
+        <td class="mt-save">180 min (3 hrs)</td>
+        <td class="mt-save">15 hrs</td>
+      </tr>
+      <tr>
+        <td class="mt-label">Team of 5 CSRs</td>
+        <td>50</td>
+        <td class="mt-bad">~16.5 hrs</td>
+        <td class="mt-good">~1.7 hrs</td>
+        <td class="mt-save">~15 hrs/day</td>
+        <td class="mt-save">75 hrs</td>
+      </tr>
+      <tr>
+        <td class="mt-label">Team of 10 CSRs</td>
+        <td>100</td>
+        <td class="mt-bad">~33 hrs</td>
+        <td class="mt-good">~3.3 hrs</td>
+        <td class="mt-save">~30 hrs/day</td>
+        <td class="mt-save">150 hrs</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- BEYOND TIME SAVINGS -->
+  <div class="sec-eyebrow" style="margin-top:48px;">Beyond Time Savings</div>
+  <div class="sec-title" style="margin-bottom:20px;">What the transcript tells us the team actually cares about</div>
+
+  <div class="metrics-insight-grid">
+    <div class="metrics-insight mi-blue">
+      <div class="mi-title">New CSR ramp time — eliminated</div>
+      <div class="mi-body">During the discovery session, the team described the core problem as: a new joiner like Candace has no idea which of 1,600 templates to use. They need to ask a colleague or sit through training. With this solution, a CSR on day one produces the same quality draft as a 3-year veteran. Template knowledge is no longer a prerequisite.</div>
+    </div>
+    <div class="metrics-insight mi-green">
+      <div class="mi-title">Consistency — every single draft, every CSR</div>
+      <div class="mi-body">The team observed that different reps use different templates for the same case type. Rohit and another senior rep used one template; others used a different one. The AI enforces the right choice based on Case Type + Reason — removing variation between reps entirely. Every provider gets the same policy-accurate language regardless of who handles their case.</div>
+    </div>
+    <div class="metrics-insight mi-amber">
+      <div class="mi-title">Policy compliance — zero missed requirements</div>
+      <div class="mi-body">Form numbers, SLA statements, insurance minimums, and compliance language come directly from the EmailTemplate body. Einstein cannot omit or change them. This eliminates the most expensive error in the current process — a missed requirement means a follow-up email, a delayed case, and a frustrated provider.</div>
+    </div>
+    <div class="metrics-insight mi-purple">
+      <div class="mi-title">Thread-aware replies — no repetition</div>
+      <div class="mi-body">The team specifically called out the reply scenario: when a provider follows up about a Medical Director Change, the CSR needs to read the full prior thread before drafting. Today that's manual. The AI reads the entire email thread automatically and ensures the reply addresses the provider's specific question without repeating what was already sent.</div>
+    </div>
+    <div class="metrics-insight mi-teal">
+      <div class="mi-title">No dependency on historical case mining</div>
+      <div class="mi-body">The original ask from the customer was to mine historical closed cases and learn from past rep behaviour to recommend a template. That approach is complex, fragile, and produces inconsistent results because different reps used different templates. The delivered solution is more reliable: the routing is deterministic (Case Type + Reason → CMT), and the quality of the draft is controlled through the EmailTemplate body — not guessed from historical patterns.</div>
+    </div>
+    <div class="metrics-insight mi-red">
+      <div class="mi-title">Fewer follow-up emails — reduced case cycle time</div>
+      <div class="mi-body">When the first email is complete and accurate, providers send in the right documents the first time. The back-and-forth the team described — following up after 3 days because the wrong forms were requested, or a checklist item was missed — is reduced. Fewer email exchanges per case means cases close faster and CSR capacity is freed up further.</div>
+    </div>
+  </div>
+
+  <!-- FROM THE TRANSCRIPT -->
+  <div class="callout callout-blue" style="margin-top:36px;">
+    <strong>Direct from the discovery session</strong>
+    "We want this tool to be able to say — hey, we know we have like these awesome 150 templates. This is the one that should be used because based on the experience from Rohit and the others, this is what they used in the past. Please use this template." — Rohit, Provider Services team. This is exactly what the delivered solution does, with deterministic routing rather than learned behaviour.
+  </div>
+
 </div>
 
 <!-- FOOTER -->
