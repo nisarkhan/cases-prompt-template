@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Email Template Architecture — Allergan Moxie Agentforce Demo</title>
+  <title>Email Template Architecture - Allergan Moxie Agentforce Demo</title>
   <style>
     /* ── Reset & Base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -413,7 +413,7 @@
     <span class="sep">›</span>
     <span>Email Template Design</span>
   </div>
-  <h1>Agentforce Email Draft — Architecture Design Document</h1>
+  <h1>Agentforce Email Draft - Architecture Design Document</h1>
   <p class="subtitle">
     Defines the component architecture for AI-drafted CSR emails in the Allergan Moxie Agentforce demo,
     including the revised data model that eliminates duplication between Custom Metadata Types and native
@@ -451,7 +451,7 @@
   <main class="main-content">
 
     <!-- ══════════════════════════════════════════
-         SECTION 1 — OVERVIEW
+         SECTION 1 - OVERVIEW
     ══════════════════════════════════════════ -->
     <section class="doc-section" id="overview">
       <div class="section-header">
@@ -463,7 +463,7 @@
           The Allergan Moxie Agentforce demo surfaces AI-drafted outbound emails directly in a CSR's
           Service Console. When a case is opened or a reply is needed, an Agentforce Agent Action invokes
           a Prompt Flow (<code>Add_Historical_Case_Emails_to_Prompt2</code>) that assembles a rich context
-          block — candidate template text, prior thread messages, and historical closed-case examples — and
+          block - candidate template text, prior thread messages, and historical closed-case examples - and
           feeds it into one of two GenAI Prompt Templates (<code>CSR First Contact Email</code> or
           <code>CSR Reply Email</code>). The AI returns a fully drafted message the CSR can review and send
           without starting from a blank page.
@@ -472,20 +472,20 @@
           The original implementation stored the full email body in a <strong>Custom Metadata Type (CMT)</strong>
           record, duplicating content that already existed in Salesforce's native <strong>Email Template</strong>
           object. This meant the content team had to keep two records in sync for every template. The revised
-          architecture treats the CMT purely as a <strong>selection index</strong> — it maps case attributes
-          to a template API name — while the authoritative body lives exactly once, in the Email Template object.
+          architecture treats the CMT purely as a <strong>selection index</strong> - it maps case attributes
+          to a template API name - while the authoritative body lives exactly once, in the Email Template object.
           The Prompt Flow resolves the body at runtime via a single query join.
         </p>
         <div class="callout success">
           <div class="callout-title">Design Principle</div>
           Each template body is written and maintained in exactly one place: the native Salesforce Email Template
-          record. The Custom Metadata Type only says <em>which</em> template to use — it never stores the content itself.
+          record. The Custom Metadata Type only says <em>which</em> template to use - it never stores the content itself.
         </div>
       </div>
     </section>
 
     <!-- ══════════════════════════════════════════
-         SECTION 2 — ARCHITECTURE DIAGRAM
+         SECTION 2 - ARCHITECTURE DIAGRAM
     ══════════════════════════════════════════ -->
     <section class="doc-section" id="architecture-diagram">
       <div class="section-header">
@@ -540,14 +540,14 @@
 </pre>
         </div>
         <p class="diagram-caption">
-          Figure 1 — End-to-end flow from Email Template authoring through AI draft delivery to the CSR.
+          Figure 1 - End-to-end flow from Email Template authoring through AI draft delivery to the CSR.
           The join key <code>Email_Template_API_Name__c</code> → <code>DeveloperName</code> is resolved at runtime by the Prompt Flow.
         </p>
       </div>
     </section>
 
     <!-- ══════════════════════════════════════════
-         SECTION 3 — COMPONENT INVENTORY
+         SECTION 3 - COMPONENT INVENTORY
     ══════════════════════════════════════════ -->
     <section class="doc-section" id="component-inventory">
       <div class="section-header">
@@ -569,7 +569,7 @@
             <tr>
               <td><code>Template_Scenario__mdt</code></td>
               <td><span class="badge badge-purple">Custom Metadata Type</span></td>
-              <td>Selection index — maps case attributes to a template API name. Does not store body text.</td>
+              <td>Selection index - maps case attributes to a template API name. Does not store body text.</td>
               <td><span class="badge badge-navy">Admin</span></td>
             </tr>
             <tr>
@@ -620,7 +620,7 @@
     </section>
 
     <!-- ══════════════════════════════════════════
-         SECTION 4 — DATA MODEL
+         SECTION 4 - DATA MODEL
     ══════════════════════════════════════════ -->
     <section class="doc-section" id="data-model">
       <div class="section-header">
@@ -650,14 +650,14 @@
               <li><code>Template_Scenario__mdt</code> is a selection index only</li>
               <li>Body lives once in <code>EmailTemplate.Body</code></li>
               <li>Content team updates one record per change</li>
-              <li>No sync drift possible — single source of truth</li>
+              <li>No sync drift possible - single source of truth</li>
             </ul>
           </div>
         </div>
 
         <br />
         <h3 style="font-size:14px;font-weight:700;color:#032d60;margin-bottom:12px;">
-          <code>Template_Scenario__mdt</code> — Selection Index Fields
+          <code>Template_Scenario__mdt</code> - Selection Index Fields
         </h3>
         <table class="data-table">
           <thead>
@@ -703,7 +703,7 @@
 
         <br />
         <h3 style="font-size:14px;font-weight:700;color:#032d60;margin-bottom:12px;">
-          <code>EmailTemplate</code> — Relevant Fields
+          <code>EmailTemplate</code> - Relevant Fields
         </h3>
         <table class="data-table">
           <thead>
@@ -753,7 +753,7 @@
     </section>
 
     <!-- ══════════════════════════════════════════
-         SECTION 5 — FLOW LOGIC
+         SECTION 5 - FLOW LOGIC
     ══════════════════════════════════════════ -->
     <section class="doc-section" id="flow-logic">
       <div class="section-header">
@@ -811,7 +811,7 @@
               <p>
                 Concatenate all resolved template entries into a single formatted block labeled
                 <em>"Candidate Email Templates"</em>. This block tells the AI what response patterns are
-                available and when each should be used, without prescribing which to pick — that judgment
+                available and when each should be used, without prescribing which to pick - that judgment
                 is left to the LLM based on the full case context.
               </p>
             </div>
@@ -853,7 +853,7 @@
     </section>
 
     <!-- ══════════════════════════════════════════
-         SECTION 6 — TEMPLATE INVENTORY
+         SECTION 6 - TEMPLATE INVENTORY
     ══════════════════════════════════════════ -->
     <section class="doc-section" id="template-inventory">
       <div class="section-header">
@@ -957,7 +957,7 @@
     </section>
 
     <!-- ══════════════════════════════════════════
-         SECTION 7 — WHY THIS ARCHITECTURE
+         SECTION 7 - WHY THIS ARCHITECTURE
     ══════════════════════════════════════════ -->
     <section class="doc-section" id="why-this-architecture">
       <div class="section-header">
@@ -981,7 +981,7 @@
             <div>
               <strong>No sync drift.</strong> With the old design, a body updated in one location but not
               the other would cause the AI to receive stale or inconsistent content silently. The new design
-              makes this physically impossible — the body is retrieved at runtime from the only place it exists.
+              makes this physically impossible - the body is retrieved at runtime from the only place it exists.
             </div>
           </li>
           <li>
@@ -1016,7 +1016,7 @@
             <div>
               <strong>Demo fidelity.</strong> The architecture reflects how a production Agentforce email
               assist deployment would be built in a real Salesforce org, making the demo credible as a
-              blueprint — not just a proof of concept.
+              blueprint - not just a proof of concept.
             </div>
           </li>
         </ul>
@@ -1024,7 +1024,7 @@
     </section>
 
     <!-- ══════════════════════════════════════════
-         SECTION 8 — EXTENSION GUIDE
+         SECTION 8 - EXTENSION GUIDE
     ══════════════════════════════════════════ -->
     <section class="doc-section" id="extension-guide">
       <div class="section-header">
@@ -1040,13 +1040,13 @@
         <div class="ext-step">
           <div class="ext-icon">📄</div>
           <div class="ext-step-body">
-            <h4>Step 1 — Create the Email Template</h4>
+            <h4>Step 1 - Create the Email Template</h4>
             <p>
               Navigate to <strong>Setup → Email Templates → Allergan Demo Templates</strong> (Classic Email Templates).
               Create a new text template. Set a descriptive <code>DeveloperName</code> using underscores
               (e.g., <code>Billing_Dispute_Initial_Response</code>). Write the full email body in the
               <strong>Body</strong> field. Set a Subject. Save the record. Note the exact
-              <code>DeveloperName</code> — you will need it in Step 2.
+              <code>DeveloperName</code> - you will need it in Step 2.
             </p>
           </div>
         </div>
@@ -1054,20 +1054,20 @@
         <div class="ext-step">
           <div class="ext-icon">⚙️</div>
           <div class="ext-step-body">
-            <h4>Step 2 — Create the CMT Selection Record</h4>
+            <h4>Step 2 - Create the CMT Selection Record</h4>
             <p>
               Navigate to <strong>Setup → Custom Metadata Types → Template Scenario → Manage Records →
               New</strong>. Fill in the following fields:
               <br /><br />
-              &bull; <code>MasterLabel</code> — human-readable name (e.g., <em>Billing Dispute Initial Response</em>)<br />
-              &bull; <code>Case_Type__c</code> — must match the <code>Case.Type</code> picklist value exactly<br />
-              &bull; <code>Case_Reason__c</code> — must match the <code>Case.Reason</code> picklist value exactly<br />
-              &bull; <code>Email_Template_API_Name__c</code> — the <code>DeveloperName</code> from Step 1<br />
-              &bull; <code>When_To_Use__c</code> — 1–3 sentences describing when the AI should choose this template<br />
-              &bull; <code>Is_Active__c</code> — check to enable routing to this template immediately<br />
+              &bull; <code>MasterLabel</code> - human-readable name (e.g., <em>Billing Dispute Initial Response</em>)<br />
+              &bull; <code>Case_Type__c</code> - must match the <code>Case.Type</code> picklist value exactly<br />
+              &bull; <code>Case_Reason__c</code> - must match the <code>Case.Reason</code> picklist value exactly<br />
+              &bull; <code>Email_Template_API_Name__c</code> - the <code>DeveloperName</code> from Step 1<br />
+              &bull; <code>When_To_Use__c</code> - 1–3 sentences describing when the AI should choose this template<br />
+              &bull; <code>Is_Active__c</code> - check to enable routing to this template immediately<br />
               <br />
               Save the record. The Prompt Flow will automatically include this template in its context block
-              on the next agent invocation for a matching case — no deployment required.
+              on the next agent invocation for a matching case - no deployment required.
             </p>
           </div>
         </div>
@@ -1075,7 +1075,7 @@
         <div class="callout success" style="margin-top:4px;">
           <div class="callout-title">Zero Downtime</div>
           CMT record saves deploy instantly in Salesforce (unlike Apex or Flow changes). New template scenarios
-          are live the moment the CMT record is saved — no sandbox-to-production deployment cycle required for
+          are live the moment the CMT record is saved - no sandbox-to-production deployment cycle required for
           content additions.
         </div>
 

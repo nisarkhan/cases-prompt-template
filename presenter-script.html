@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Presenter Script - Allergan Moxie</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f0f5f9;
+  color: #1e3448;
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* PROGRESS BAR - sticky top */
+.progress-bar {
+  position: sticky; top: 0; z-index: 200;
+  background: #1a3a52;
+  display: flex; align-items: stretch;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.pb-seg {
+  flex: 1; padding: 10px 12px; text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  cursor: default;
+  transition: background 0.15s;
+}
+.pb-seg:last-child { border-right: none; }
+.pb-seg-label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #7fa8c4; margin-bottom: 2px; }
+.pb-seg-time  { font-size: 12px; font-weight: 900; color: #aed6f1; }
+.pb-seg.current { background: #2e86c1; }
+.pb-seg.current .pb-seg-label { color: #d6eaf8; }
+.pb-seg.current .pb-seg-time  { color: #fff; }
+.pb-demo { background: #1e5631; }
+.pb-demo .pb-seg-label { color: #a9dfbf; }
+.pb-demo .pb-seg-time  { color: #fff; }
+
+/* BODY */
+.wrap { max-width: 800px; margin: 0 auto; padding: 36px 28px 0; }
+
+/* SECTION DIVIDER */
+.part-label {
+  font-size: 10px; font-weight: 900; letter-spacing: 3px;
+  text-transform: uppercase; color: #7fa8c4;
+  padding-bottom: 10px; border-bottom: 2px solid #d6e8f5;
+  margin-bottom: 18px; margin-top: 44px;
+  display: flex; align-items: center; gap: 10px;
+}
+.part-label:first-child { margin-top: 0; }
+.part-time {
+  margin-left: auto;
+  font-size: 10px; font-weight: 900; color: #2e86c1;
+  background: #d6eaf8; padding: 3px 10px; border-radius: 20px;
+}
+
+/* STEP CARD */
+.step-card {
+  background: #fff;
+  border: 1px solid #d6e8f5;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.step-hdr {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 20px;
+  border-bottom: 1px solid #edf4fa;
+}
+.step-num {
+  width: 34px; height: 34px; border-radius: 50%;
+  font-size: 14px; font-weight: 900; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.step-hdr-text { flex: 1; }
+.step-title { font-size: 15px; font-weight: 900; color: #1a3a52; }
+.step-sub   { font-size: 11.5px; color: #7fa8c4; margin-top: 1px; }
+.step-timer {
+  font-size: 12px; font-weight: 900; color: #2e86c1;
+  background: #eaf4fc; padding: 4px 12px; border-radius: 20px;
+  flex-shrink: 0;
+}
+
+.step-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 16px; }
+
+/* SAY THIS block */
+.say-block {
+  background: #f7fbff;
+  border: 1px solid #d6e8f5;
+  border-left: 4px solid #2e86c1;
+  border-radius: 0 8px 8px 0;
+  padding: 14px 16px;
+}
+.say-label {
+  font-size: 9px; font-weight: 900; letter-spacing: 2px;
+  text-transform: uppercase; color: #2e86c1; margin-bottom: 8px;
+}
+.say-line {
+  font-size: 13.5px; color: #1a3a52; line-height: 1.75;
+  margin-bottom: 6px;
+}
+.say-line:last-child { margin-bottom: 0; }
+.say-quote {
+  font-size: 13px; color: #1a3a52; font-style: italic;
+  line-height: 1.75; padding-left: 12px;
+  border-left: 3px solid #aed6f1; margin: 6px 0;
+}
+
+/* DO THIS block */
+.do-block {
+  background: #f0faf4;
+  border: 1px solid #a9dfbf;
+  border-left: 4px solid #27ae60;
+  border-radius: 0 8px 8px 0;
+  padding: 14px 16px;
+}
+.do-label {
+  font-size: 9px; font-weight: 900; letter-spacing: 2px;
+  text-transform: uppercase; color: #27ae60; margin-bottom: 8px;
+}
+.do-step {
+  display: flex; gap: 10px; align-items: flex-start;
+  margin-bottom: 7px; font-size: 13px; color: #1a4a2e; line-height: 1.65;
+}
+.do-step:last-child { margin-bottom: 0; }
+.do-arrow { flex-shrink: 0; color: #27ae60; font-weight: 900; margin-top: 1px; }
+
+/* IF ASKED block */
+.if-block {
+  background: #fef9e7;
+  border: 1px solid #f9e79f;
+  border-left: 4px solid #d4ac0d;
+  border-radius: 0 8px 8px 0;
+  padding: 14px 16px;
+}
+.if-label {
+  font-size: 9px; font-weight: 900; letter-spacing: 2px;
+  text-transform: uppercase; color: #d4ac0d; margin-bottom: 8px;
+}
+.if-line { font-size: 12.5px; color: #5a4200; line-height: 1.7; margin-bottom: 5px; }
+.if-line:last-child { margin-bottom: 0; }
+.if-q { font-weight: 800; color: #7d6608; }
+
+/* TRANSITION block */
+.transition-block {
+  background: #1a3a52;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex; gap: 10px; align-items: center;
+}
+.tr-arrow { font-size: 16px; flex-shrink: 0; }
+.tr-text  { font-size: 13px; color: #aed6f1; line-height: 1.6; font-style: italic; }
+
+/* DEMO DIVIDER */
+.demo-banner {
+  background: linear-gradient(135deg, #1e5631 0%, #27ae60 100%);
+  border-radius: 12px;
+  padding: 20px 26px;
+  display: flex; align-items: center; gap: 16px;
+  margin: 8px 0 18px;
+  color: #fff;
+}
+.demo-banner-icon  { font-size: 28px; flex-shrink: 0; }
+.demo-banner-title { font-size: 18px; font-weight: 900; }
+.demo-banner-sub   { font-size: 12.5px; color: #d5f5e3; margin-top: 2px; line-height: 1.5; }
+.demo-banner-time  { margin-left: auto; font-size: 15px; font-weight: 900; flex-shrink: 0; }
+
+/* DEMO CASE card */
+.demo-card {
+  background: #fff;
+  border: 1px solid #a9dfbf;
+  border-left: 5px solid #27ae60;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.demo-hdr {
+  background: #eafaf1;
+  border-bottom: 1px solid #a9dfbf;
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+.demo-case-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #27ae60; color: #fff;
+  font-size: 12px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.demo-case-title { font-size: 14px; font-weight: 900; color: #1e5631; flex: 1; }
+.demo-case-tag {
+  font-size: 10px; font-weight: 800; padding: 3px 10px;
+  border-radius: 20px; background: #d5f5e3; color: #1e5631;
+}
+.demo-body { padding: 18px 22px; display: flex; flex-direction: column; gap: 14px; }
+
+/* NOTES bar */
+.notes-bar {
+  background: #f7f0ff;
+  border: 1px solid #d7bff5;
+  border-left: 4px solid #7d3c98;
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  font-size: 12.5px; color: #4a1f6a; line-height: 1.65;
+}
+.notes-bar strong { color: #7d3c98; }
+
+/* WARNING */
+.warn-bar {
+  background: #fdf2f2;
+  border: 1px solid #f5c6c2;
+  border-left: 4px solid #e74c3c;
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  font-size: 12px; color: #7b241c; line-height: 1.65;
+}
+
+/* COLOURS */
+.c-blue   { background: #2e86c1; }
+.c-green  { background: #27ae60; }
+.c-amber  { background: #d4ac0d; }
+.c-purple { background: #7d3c98; }
+.c-dark   { background: #1a3a52; }
+.c-red    { background: #e74c3c; }
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar">
+  <div class="pb-seg current">
+    <div class="pb-seg-label">Part 1</div>
+    <div class="pb-seg-time">Context · 15 min</div>
+  </div>
+  <div class="pb-seg pb-demo">
+    <div class="pb-seg-label">Live Demo</div>
+    <div class="pb-seg-time">15 min</div>
+  </div>
+  <div class="pb-seg">
+    <div class="pb-seg-label">Part 2</div>
+    <div class="pb-seg-time">Gaps + Options · 15 min</div>
+  </div>
+  <div class="pb-seg">
+    <div class="pb-seg-label">Part 3</div>
+    <div class="pb-seg-time">Q&amp;A · 5 min</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════
+     PART 1 - CONTEXT
+═══════════════════════════════ -->
+<div class="part-label">Part 1 - Setting the scene <span class="part-time">15 min</span></div>
+
+<!-- STEP 1 - THE PROBLEM -->
+<div class="step-card">
+  <div class="step-hdr">
+    <div class="step-num c-blue">1</div>
+    <div class="step-hdr-text">
+      <div class="step-title">The Problem</div>
+      <div class="step-sub">Open with their pain - in their own words</div>
+    </div>
+    <div class="step-timer">5 min</div>
+  </div>
+  <div class="step-body">
+
+    <div class="say-block">
+      <div class="say-label">Say this</div>
+      <div class="say-line">Before I show you anything, I want to start with what your team told us - because I want to make sure we understood the problem correctly.</div>
+      <div class="say-line">Three things came up in our conversation that I wrote down.</div>
+      <div class="say-quote">"We have around close to 1,600 email templates - I think we've been carrying that baggage for a long time." - Rohit</div>
+      <div class="say-quote">"Me and Alok have been using one template, Shankar has been using another - for the same case type." - Rohit</div>
+      <div class="say-quote">"A new joiner comes in, got no idea what template to use. How can we best enable them without making them sit through training?" - Alok</div>
+      <div class="say-line" style="margin-top:8px;">So the problem is not just speed - it's consistency and onboarding. Does that match what you are still seeing today?</div>
+    </div>
+
+    <div class="if-block">
+      <div class="if-label">If they say yes / confirm</div>
+      <div class="if-line">Good - then let me show you what we built to address exactly that.</div>
+    </div>
+
+    <div class="transition-block">
+      <div class="tr-arrow">→</div>
+      <div class="tr-text">Pause briefly. Let them react. Then move to Step 2.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 2 - WHAT WE BUILT -->
+<div class="step-card">
+  <div class="step-hdr">
+    <div class="step-num c-blue">2</div>
+    <div class="step-hdr-text">
+      <div class="step-title">What We Built</div>
+      <div class="step-sub">One-minute headline - before you show the demo</div>
+    </div>
+    <div class="step-timer">5 min</div>
+  </div>
+  <div class="step-body">
+
+    <div class="do-block">
+      <div class="do-label">Open this screen</div>
+      <div class="do-step"><span class="do-arrow">→</span><span>Open <strong>allergan-moxie-solution.html</strong> and click the <strong>What We Solved</strong> tab</span></div>
+      <div class="do-step"><span class="do-arrow">→</span><span>Leave it visible while you talk - the six cards on screen match the four points you are about to say</span></div>
+    </div>
+
+    <div class="say-block">
+      <div class="say-label">Say this</div>
+      <div class="say-line">So here is what we built. When a CSR opens a case and clicks one button - <strong>Draft with AI</strong> - the system does four things automatically.</div>
+      <div class="say-line"><strong>First</strong> - it reads the case type and case reason, and picks the correct email template out of your library. The CSR does not need to know which template to use.</div>
+      <div class="say-line"><strong>Second</strong> - it pulls in the full policy language from that template. Form numbers, SLAs, compliance statements - all included, word for word. The AI cannot leave those out.</div>
+      <div class="say-line"><strong>Third</strong> - it personalises the draft using the case details. Provider name, account name, specific situation - all filled in automatically.</div>
+      <div class="say-line"><strong>Fourth</strong> - if there is already an email thread on the case, it reads that thread first so it does not repeat what was already sent.</div>
+      <div class="say-line" style="margin-top:4px;">The CSR then reviews the draft and clicks Send. That's it. The human is always in the loop - nothing goes out automatically.</div>
+    </div>
+
+    <div class="notes-bar">
+      <strong>Remind them:</strong> This is built and tested in your org today - not a demo environment, not a sandbox. Real cases, real templates.
+    </div>
+
+    <div class="transition-block">
+      <div class="tr-arrow">→</div>
+      <div class="tr-text">Move straight to the architecture. Tell them: "Let me show you the wiring quickly - so when you watch the demo, you know exactly what you are looking at."</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 3 - ARCHITECTURE -->
+<div class="step-card">
+  <div class="step-hdr">
+    <div class="step-num c-blue">3</div>
+    <div class="step-hdr-text">
+      <div class="step-title">Architecture - How It Works</div>
+      <div class="step-sub">Keep it to 2 minutes - no deep dive here</div>
+    </div>
+    <div class="step-timer">5 min</div>
+  </div>
+  <div class="step-body">
+
+    <div class="do-block">
+      <div class="do-label">Open this file</div>
+      <div class="do-step"><span class="do-arrow">→</span><span>Open <strong>demo-walkthrough.html</strong> and click the <strong>Flow Diagram</strong> tab</span></div>
+    </div>
+
+    <div class="say-block">
+      <div class="say-label">Say this - point at the diagram as you go</div>
+      <div class="say-line">So when the CSR clicks Draft with AI, this is what happens in the background.</div>
+      <div class="say-line"><strong>Step 1 -</strong> A Flow runs. It looks at the case and reads two fields: Case Type and Case Reason. Those two fields are your routing gate.</div>
+      <div class="say-line"><strong>Step 2 -</strong> It goes to a lookup table we built - think of it like a phone book. You give it a Case Type and Reason, it gives you back the name of the correct email template. That lookup table is called a Custom Metadata Type - it's admin-managed, no code needed to update it.</div>
+      <div class="say-line"><strong>Step 3 -</strong> It fetches the body of that email template. The full policy text goes into the AI prompt.</div>
+      <div class="say-line"><strong>Step 4 -</strong> If there is an email thread on the case, it reads that too and tells Einstein to take it into account when drafting the reply.</div>
+      <div class="say-line"><strong>Step 5 -</strong> Einstein writes the draft and it appears in the email composer. Done.</div>
+    </div>
+
+    <div class="if-block">
+      <div class="if-label">If they ask a technical question here</div>
+      <div class="if-line"><span class="if-q">What if the Case Type or Case Reason is blank - or doesn't match anything in the lookup table?</span><br/>The system still produces a draft - it never crashes or shows an error to the CSR. But instead of using your policy template, it falls back to a generic message and tells Einstein: "No matching template was found - draft a professional response based on the case details." So the draft will look polished but it won't have your form references, SLAs, or compliance language. It's essentially Einstein guessing from the case subject. The CSR needs to catch that in their review - which is exactly why the human stays in the loop. And it's a clear signal to go and add that case type to the routing table.</div>
+      <div class="if-line" style="margin-top:10px;"><span class="if-q">How do you add a new template?</span> - Two steps: create the email template body, add one row to the lookup table. Admin task, no code, no deployment.</div>
+      <div class="if-line" style="margin-top:6px;"><span class="if-q">What AI model is it using?</span> - GPT-4o Mini via Salesforce's Einstein AI - fully within the Salesforce trust boundary, no data leaves your org.</div>
+    </div>
+
+    <div class="transition-block">
+      <div class="tr-arrow">→</div>
+      <div class="tr-text">Say: "Alright - let me show you this live. I have three real cases ready to go."</div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════
+     LIVE DEMO
+═══════════════════════════════ -->
+<div class="demo-banner">
+  <div class="demo-banner-icon">⚡</div>
+  <div>
+    <div class="demo-banner-title">Live Demo - Agentforce Email Drafting</div>
+    <div class="demo-banner-sub">Three real cases · all in your org · show each one end to end</div>
+  </div>
+  <div class="demo-banner-time">15 min</div>
+</div>
+
+<!-- DEMO CASE 1 -->
+<div class="demo-card">
+  <div class="demo-hdr">
+    <div class="demo-case-num">A</div>
+    <div class="demo-case-title">New Practice Enrollment - First Contact</div>
+    <div class="demo-case-tag">First Contact</div>
+  </div>
+  <div class="demo-body">
+
+    <div class="do-block">
+      <div class="do-label">Do this</div>
+      <div class="do-step"><span class="do-arrow">→</span><span>Open the New Practice Enrollment case in Salesforce</span></div>
+      <div class="do-step"><span class="do-arrow">→</span><span>Click <strong>Draft with AI</strong>, select <strong>CSR First Contact Email</strong></span></div>
+      <div class="do-step"><span class="do-arrow">→</span><span>Wait for the draft to appear - point at the email composer</span></div>
+    </div>
+
+    <div class="say-block">
+      <div class="say-label">Say this while the draft loads</div>
+      <div class="say-line">So I am on a new practice enrollment case. The CSR has not done anything - they just clicked one button. Watch what comes back.</div>
+    </div>
+
+    <div class="say-block">
+      <div class="say-label">Say this once the draft appears</div>
+      <div class="say-line">Look at what it produced. The correct template was selected automatically - this is the New Practice Enrollment template, not one of the other 1,600.</div>
+      <div class="say-line">It has the provider's name, the account, the specific details from the case. And - importantly - all the required form references and policy language are here. Those came directly from the template body. The AI cannot remove them.</div>
+      <div class="say-line">The CSR reads this, makes any edits they want, and sends it. Total time - under 2 minutes.</div>
+    </div>
+
+    <div class="if-block">
+      <div class="if-label">If they ask about the template selection</div>
+      <div class="if-line">The system matched this case's Case Type - Credentialing - and Case Reason - New Practice Enrollment - to the routing table. It returned this template. No CSR decision needed.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DEMO CASE 2 -->
+<div class="demo-card">
+  <div class="demo-hdr">
+    <div class="demo-case-num">B</div>
+    <div class="demo-case-title">Medical Director Change - Reply to Provider</div>
+    <div class="demo-case-tag">Reply / Thread-aware</div>
+  </div>
+  <div class="demo-body">
+
+    <div class="do-block">
+      <div class="do-label">Do this</div>
+      <div class="do-step"><span class="do-arrow">→</span><span>Open the Medical Director Change reply case</span></div>
+      <div class="do-step"><span class="do-arrow">→</span><span>Show the email thread first - scroll down the Activity timeline briefly</span></div>
+      <div class="do-step"><span class="do-arrow">→</span><span>Click <strong>Draft with AI</strong>, select <strong>CSR Reply Email</strong></span></div>
+      <div class="do-step"><span class="do-arrow">→</span><span>Wait for the draft - point at how it addresses the provider's specific question</span></div>
+    </div>
+
+    <div class="say-block">
+      <div class="say-label">Say this before generating</div>
+      <div class="say-line">This case already has an email thread. The provider has replied with a follow-up question. In the current process, the CSR has to read the full thread manually before drafting - to make sure they don't repeat themselves.</div>
+      <div class="say-line">Watch what happens when we use the Reply template instead.</div>
+    </div>
+
+    <div class="say-block">
+      <div class="say-label">Say this once the draft appears</div>
+      <div class="say-line">Notice that this draft addresses the provider's specific question from their reply - it didn't just send the standard template again. It read the thread first.</div>
+      <div class="say-line">And it didn't repeat the document checklist that was already sent in the first email. That's intentional - the Reply template specifically instructs the AI to skip anything already covered.</div>
+    </div>
+
+    <div class="if-block">
+      <div class="if-label">If they ask how it knows what was already sent</div>
+      <div class="if-line">The Flow reads all the EmailMessage records linked to this case and passes them to Einstein before it drafts. Einstein is told - do not repeat what is already in this thread. That is a specific instruction in the Reply template.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DEMO CASE 3 -->
+<div class="demo-card">
+  <div class="demo-hdr">
+    <div class="demo-case-num">C</div>
+    <div class="demo-case-title">Patient Treatment Planning - Personalisation Example</div>
+    <div class="demo-case-tag">Personalisation</div>
+  </div>
+  <div class="demo-body">
+
+    <div class="do-block">
+      <div class="do-label">Do this</div>
+      <div class="do-step"><span class="do-arrow">→</span><span>Open the Patient Treatment Planning case</span></div>
+      <div class="do-step"><span class="do-arrow">→</span><span>Click <strong>Draft with AI</strong>, select <strong>CSR First Contact Email</strong></span></div>
+      <div class="do-step"><span class="do-arrow">→</span><span>When draft appears - point out any patient-specific details in the response</span></div>
+    </div>
+
+    <div class="say-block">
+      <div class="say-label">Say this once the draft appears</div>
+      <div class="say-line">This is the Patient Treatment Planning template. What I want to point out here is the personalisation layer.</div>
+      <div class="say-line">The email template itself does not mention patient ages or specific treatment details - it's a policy structure. But the AI read the case description and added those specific details into the draft.</div>
+      <div class="say-line">That's two layers working together - the template gives the mandatory structure and language, and Einstein fills in the personal details from the case. Both layers matter.</div>
+    </div>
+
+    <div class="if-block">
+      <div class="if-label">If the customer says - "we want it to stick strictly to the template"</div>
+      <div class="if-line">That's a valid choice. We can tighten the prompt instruction to say: only use the template body, do not add anything from the case. The personalisation is a dial - we set it based on what you prefer. It won't take long to adjust.</div>
+    </div>
+
+    <div class="transition-block">
+      <div class="tr-arrow">→</div>
+      <div class="tr-text">Say: "Okay - that's the live demo. What you just saw is working in your org today. Now let me be transparent about what it doesn't do yet."</div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════
+     PART 2 - GAPS & OPTIONS
+═══════════════════════════════ -->
+<div class="part-label" style="margin-top:36px;">Part 2 - What is open and what comes next <span class="part-time">15 min</span></div>
+
+<!-- STEP 5 - THE GAPS -->
+<div class="step-card">
+  <div class="step-hdr">
+    <div class="step-num c-amber">5</div>
+    <div class="step-hdr-text">
+      <div class="step-title">The Gaps</div>
+      <div class="step-sub">Be transparent - don't avoid this section</div>
+    </div>
+    <div class="step-timer">5 min</div>
+  </div>
+  <div class="step-body">
+
+    <div class="say-block">
+      <div class="say-label">Say this</div>
+      <div class="say-line">There are two things the current solution does not do - and I want to be upfront about them.</div>
+      <div class="say-line"><strong>Gap 1 - Historical learning.</strong> Your original ask was for the AI to look at past closed cases, see which templates experienced reps used, and recommend the winning template. We didn't build that - and here's why.</div>
+      <div class="say-line">The voting model has a flaw: different reps have been using different templates for the same case type for years. If the AI learns from that history, it learns inconsistency. The approach we took instead is deterministic - an admin defines the correct template for each case type, and the AI enforces it every time. It's more reliable and you control it directly.</div>
+      <div class="say-line"><strong>Gap 2 - Audit trail.</strong> Right now the system does not record which template was used on which email after it's sent. So you can't go back and report on template usage across your team. That's a known gap and it has a clean fix - which I'll cover in the options.</div>
+    </div>
+
+    <div class="notes-bar">
+      <strong>Key message:</strong> These are gaps by choice on the historical learning side, and a missing feature on the audit side. Neither blocks the core value you just saw in the demo.
+    </div>
+
+    <div class="transition-block">
+      <div class="tr-arrow">→</div>
+      <div class="tr-text">Say: "So let me show you three options for where we go from here - including how to close both of those gaps."</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STEP 6 - THREE OPTIONS -->
+<div class="step-card">
+  <div class="step-hdr">
+    <div class="step-num c-purple">6</div>
+    <div class="step-hdr-text">
+      <div class="step-title">Three Options</div>
+      <div class="step-sub">Walk through each option - end with a recommendation</div>
+    </div>
+    <div class="step-timer">10 min</div>
+  </div>
+  <div class="step-body">
+
+    <div class="do-block">
+      <div class="do-label">Open this file</div>
+      <div class="do-step"><span class="do-arrow">→</span><span>Open <strong>allergan-moxie-solution.html</strong> and click the <strong>Three Options</strong> tab</span></div>
+    </div>
+
+    <div class="say-block">
+      <div class="say-label">Option 1 - say this</div>
+      <div class="say-line"><strong>Option 1 is what you just saw.</strong> It's live today. The components we built are: a Prompt Flow that handles routing and context assembly, a Custom Metadata Type that is your routing table, two Prompt Templates for first contact and reply, and the 10 email templates. Everything is admin-manageable going forward - no code needed to add new scenarios.</div>
+    </div>
+
+    <div class="say-block">
+      <div class="say-label">Option 2 - say this</div>
+      <div class="say-line"><strong>Option 2 adds Data Cloud</strong> for historical learning. This is how you get closer to the original ask - the AI seeing patterns from past cases. Data Cloud ingests your CRM data, builds Calculated Insights from closed case history, and makes those insights available inside the Prompt Builder. So the AI can factor in what your best reps have done before.</div>
+      <div class="say-line">Important caveat - your current Data Cloud usage is knowledge articles only. Wiring in CRM objects and building the insights pipeline is a meaningful engagement. This is Option 1 first, then Option 2 once Option 1 is live and validated in production.</div>
+    </div>
+
+    <div class="say-block">
+      <div class="say-label">Option 3 - say this</div>
+      <div class="say-line"><strong>Option 3 fixes the audit trail gap</strong> by extending your existing custom LWC component. When the CSR sends an email, the LWC stamps a field on the EmailMessage record recording which template was used. You can then report on it - which templates are being used, by which reps, for which cases.</div>
+      <div class="say-line">It can also auto-select First Contact or Reply based on whether a thread exists, so the CSR doesn't need to make that choice. Your development team builds this - we can provide the spec.</div>
+    </div>
+
+    <div class="if-block">
+      <div class="if-label">Recommendation - say this to close</div>
+      <div class="if-line">My recommendation is Option 1 now, Option 3 next. Option 1 is already done. Option 3 closes the audit gap and is a clean scoped piece of work for your dev team. Option 2 is the longer-term path if historical learning becomes a priority after the core solution is validated in production.</div>
+    </div>
+
+    <div class="transition-block">
+      <div class="tr-arrow">→</div>
+      <div class="tr-text">Say: "That's everything from my side. What questions do you have?"</div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════
+     PART 3 - Q&A
+═══════════════════════════════ -->
+<div class="part-label">Part 3 - Q&amp;A <span class="part-time">5 min</span></div>
+
+<div class="step-card">
+  <div class="step-hdr">
+    <div class="step-num c-dark">7</div>
+    <div class="step-hdr-text">
+      <div class="step-title">Questions &amp; Next Steps</div>
+      <div class="step-sub">Common questions you're likely to get - with short answers</div>
+    </div>
+    <div class="step-timer">5 min</div>
+  </div>
+  <div class="step-body">
+
+    <div class="if-block">
+      <div class="if-label">Questions you will likely get</div>
+      <div class="if-line"><span class="if-q">What happens if the case type doesn't match any template?</span><br/>The AI still produces a draft - but it's a generic one based only on the case description. No policy language, no form references. It looks fine on the surface. That's why the human review step matters. And it's a signal to build that CMT record next.</div>
+      <div class="if-line" style="margin-top:10px;"><span class="if-q">What if the CSR edits the draft heavily - does the AI learn from that?</span><br/>No - not in the current setup. The AI produces a fresh draft each time from the same inputs. If you want the AI to learn from edits over time, that is an Option 2 conversation.</div>
+      <div class="if-line" style="margin-top:10px;"><span class="if-q">How do we get from 10 templates today to the full library?</span><br/>Two steps per scenario: write the email template body, add one row to the routing table. Your content team or admin can do this. No development needed. Start with your top 15–20 highest-volume case types and you'll cover the majority of your cases.</div>
+      <div class="if-line" style="margin-top:10px;"><span class="if-q">What does production deployment look like?</span><br/>The components are all standard Salesforce metadata - they deploy via a package. The main work before go-live is populating the routing table with your active case types and getting your email template content reviewed and signed off.</div>
+    </div>
+
+    <div class="say-block">
+      <div class="say-label">Closing - say this</div>
+      <div class="say-line">I'll share the solution overview page after this session - it has everything we covered today including the three options, the architecture, and links to official Salesforce documentation for your team to review.</div>
+      <div class="say-line">The main thing I want to leave you with: the core capability is working. What comes next is your call - and I'm here to support whichever direction you want to go.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="text-align:center;margin-top:44px;font-size:12px;color:#7fa8c4;line-height:1.8;">
+  Allergan Moxie · Agentforce Email Drafting POC · Presenter Script<br/>
+  Nisar Khan - Success Architect · Salesforce
+</div>
+
+</div>
+</body>
+</html>

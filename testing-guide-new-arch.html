@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <title>Allergan Moxie — Testing Guide (New Architecture)</title>
+  <title>Allergan Moxie - Testing Guide (New Architecture)</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f0f4f8; padding: 40px 24px; color: #1a1a2e; }
@@ -108,45 +108,45 @@
 <body>
 <div class="wrap">
 
-  <div class="page-title">Allergan Moxie — Testing Guide (New Architecture)</div>
-  <div class="page-sub">Validates the EmailTemplate body resolution — CMT now points to EmailTemplate; the Flow fetches the body at runtime</div>
+  <div class="page-title">Allergan Moxie - Testing Guide (New Architecture)</div>
+  <div class="page-sub">Validates the EmailTemplate body resolution - CMT now points to EmailTemplate; the Flow fetches the body at runtime</div>
 
   <div class="tabs">
     <div class="tab active" onclick="show('overview',this)">Overview</div>
     <div class="tab" onclick="show('preflight',this)">Pre-flight</div>
-    <div class="tab" onclick="show('pathA',this)">Part A — First Contact</div>
-    <div class="tab" onclick="show('pathB',this)">Part B — Reply</div>
-    <div class="tab" onclick="show('pathC',this)">Part C — Patient Journey</div>
+    <div class="tab" onclick="show('pathA',this)">Part A - First Contact</div>
+    <div class="tab" onclick="show('pathB',this)">Part B - Reply</div>
+    <div class="tab" onclick="show('pathC',this)">Part C - Patient Journey</div>
     <div class="tab" onclick="show('solution',this)">Solution Scope</div>
     <div class="tab" onclick="show('customer',this)">Customer Summary</div>
   </div>
 
 
   <!-- ═══════════════════════════════════════════════════════
-       TAB 1 — OVERVIEW
+       TAB 1 - OVERVIEW
   ═══════════════════════════════════════════════════════ -->
   <div class="panel active" id="tab-overview">
 
     <h2>What changed and what you are testing</h2>
-    <p>The template body used to live inside the Custom Metadata Type record (<span class="mono">Template_Body__c</span>). It now lives in a native Salesforce Email Template. The CMT record holds only a pointer — the <span class="mono">Email_Template_API_Name__c</span> field — and the Prompt Flow fetches the body at runtime by querying <span class="mono">EmailTemplate WHERE DeveloperName = {pointer}</span>.</p>
+    <p>The template body used to live inside the Custom Metadata Type record (<span class="mono">Template_Body__c</span>). It now lives in a native Salesforce Email Template. The CMT record holds only a pointer - the <span class="mono">Email_Template_API_Name__c</span> field - and the Prompt Flow fetches the body at runtime by querying <span class="mono">EmailTemplate WHERE DeveloperName = {pointer}</span>.</p>
 
     <div class="arch-box">OLD: CMT record → Template_Body__c (body stored directly on CMT)
 NEW: CMT record → Email_Template_API_Name__c → EmailTemplate.Body (fetched at runtime)</div>
 
-    <p>The end result for the CSR is identical — same draft, same quality. What changes is where the content team edits template language: Setup → Email Templates → Allergan Demo Templates folder, not Custom Metadata records.</p>
+    <p>The end result for the CSR is identical - same draft, same quality. What changes is where the content team edits template language: Setup → Email Templates → Allergan Demo Templates folder, not Custom Metadata records.</p>
 
     <div class="grid">
       <div class="path-card path-a-card">
-        <div class="path-card-title">Part A — Credentialing First Contact</div>
+        <div class="path-card-title">Part A - Credentialing First Contact</div>
         <p>Cases A-1, A-2, A-3. No prior thread. Verifies the Flow resolves the correct EmailTemplate body and passes it to the AI prompt.</p>
       </div>
       <div class="path-card path-b-card">
-        <div class="path-card-title">Part B — Credentialing Reply</div>
+        <div class="path-card-title">Part B - Credentialing Reply</div>
         <p>Cases B-1, B-2, B-3. Existing thread. Verifies body resolution still works on reply-path cases and the follow-up template variants are selected.</p>
       </div>
       <div class="path-card path-c-card">
-        <div class="path-card-title">Part C — Patient Journey</div>
-        <p>Cases C-1 through C-4. New patient support templates — treatment planning and adverse event. Verifies the new EmailTemplate records deployed correctly.</p>
+        <div class="path-card-title">Part C - Patient Journey</div>
+        <p>Cases C-1 through C-4. New patient support templates - treatment planning and adverse event. Verifies the new EmailTemplate records deployed correctly.</p>
       </div>
     </div>
 
@@ -193,56 +193,56 @@ NEW: CMT record → Email_Template_API_Name__c → EmailTemplate.Body (fetched a
         <td><span class="mono">C-1</span></td>
         <td><span class="badge path-c-id">Part C</span></td>
         <td><span class="mono">Patient_Treatment_Planning</span></td>
-        <td>New EmailTemplate deployed — AM-PC-005, AM-TR-001, AM-AE-003, 24hr + 48hr windows</td>
+        <td>New EmailTemplate deployed - AM-PC-005, AM-TR-001, AM-AE-003, 24hr + 48hr windows</td>
       </tr>
       <tr style="background:#fafff8;">
         <td><span class="mono">C-2</span></td>
         <td><span class="badge path-c-id">Part C</span></td>
         <td><span class="mono">Patient_Treatment_Planning_Follow_Up</span></td>
-        <td>New EmailTemplate deployed — questions answered, no pre-treatment checklist repeated</td>
+        <td>New EmailTemplate deployed - questions answered, no pre-treatment checklist repeated</td>
       </tr>
       <tr style="background:#fff8f8;">
         <td><span class="mono">C-3</span></td>
         <td><span class="badge path-c-id">Part C</span></td>
         <td><span class="mono">Patient_Adverse_Event</span></td>
-        <td>New EmailTemplate deployed — AM-AE-003, 72hr window, Section 4.2</td>
+        <td>New EmailTemplate deployed - AM-AE-003, 72hr window, Section 4.2</td>
       </tr>
       <tr style="background:#fff8f8;">
         <td><span class="mono">C-4</span></td>
         <td><span class="badge path-c-id">Part C</span></td>
         <td><span class="mono">Patient_Adverse_Event_Follow_Up</span></td>
-        <td>New EmailTemplate deployed — AE questions answered, checklist not repeated</td>
+        <td>New EmailTemplate deployed - AE questions answered, checklist not repeated</td>
       </tr>
     </table>
 
-    <div class="note"><strong>What a pass looks like:</strong> The AI draft contains language from the EmailTemplate body — specific form references, SLA numbers, compliance statements. If you see <strong>[Body not found — check Email_Template_API_Name__c]</strong> in the draft, the CMT pointer is broken. Go to Pre-flight to diagnose.</div>
+    <div class="note"><strong>What a pass looks like:</strong> The AI draft contains language from the EmailTemplate body - specific form references, SLA numbers, compliance statements. If you see <strong>[Body not found - check Email_Template_API_Name__c]</strong> in the draft, the CMT pointer is broken. Go to Pre-flight to diagnose.</div>
 
   </div>
 
 
   <!-- ═══════════════════════════════════════════════════════
-       TAB 2 — PRE-FLIGHT
+       TAB 2 - PRE-FLIGHT
   ═══════════════════════════════════════════════════════ -->
   <div class="panel" id="tab-preflight">
 
-    <h2>Pre-flight — Verify before running any test cases</h2>
+    <h2>Pre-flight - Verify before running any test cases</h2>
     <p>Run through these four checks first. Each one is a 30-second confirmation that the deployment landed correctly. If any check fails, the fix is in the steps below.</p>
 
-    <h3>Check 1 — CMT field</h3>
+    <h3>Check 1 - CMT field</h3>
     <ol class="steps">
       <li>Go to <strong>Setup → Custom Metadata Types → Template Scenario → Fields</strong></li>
       <li>Confirm <strong>Email Template API Name</strong> field exists (Text, 255)</li>
-      <li>Confirm <strong>Template Body</strong> field still shows but has no values — open any record and verify the Template Body field is blank</li>
+      <li>Confirm <strong>Template Body</strong> field still shows but has no values - open any record and verify the Template Body field is blank</li>
     </ol>
     <div class="pass"><strong>Pass:</strong> Email Template API Name field present. Template Body field blank on all records.</div>
-    <div class="fail"><strong>Fail — Email Template API Name missing:</strong> Run <span class="mono">sf project deploy start --source-dir force-app/main/default/objects/Template_Scenario__mdt -o allergan-moxie</span> and re-check.</div>
+    <div class="fail"><strong>Fail - Email Template API Name missing:</strong> Run <span class="mono">sf project deploy start --source-dir force-app/main/default/objects/Template_Scenario__mdt -o allergan-moxie</span> and re-check.</div>
 
     <hr class="dashed"/>
 
-    <h3>Check 2 — CMT records have the pointer set</h3>
+    <h3>Check 2 - CMT records have the pointer set</h3>
     <ol class="steps">
       <li>Go to <strong>Setup → Custom Metadata Types → Template Scenario → Manage Records</strong></li>
-      <li>Open any record — for example <strong>AM Medical Director Change</strong></li>
+      <li>Open any record - for example <strong>AM Medical Director Change</strong></li>
       <li>Confirm <strong>Email Template API Name</strong> shows <span class="mono">Credentialing_Medical_Director_Change</span></li>
       <li>Confirm <strong>Template Body</strong> is blank</li>
     </ol>
@@ -250,46 +250,46 @@ NEW: CMT record → Email_Template_API_Name__c → EmailTemplate.Body (fetched a
 
     <hr class="dashed"/>
 
-    <h3>Check 3 — EmailTemplate records exist in the org</h3>
+    <h3>Check 3 - EmailTemplate records exist in the org</h3>
     <ol class="steps">
       <li>Go to <strong>Setup → Email Templates</strong></li>
       <li>Open the <strong>Allergan Demo Templates</strong> folder</li>
-      <li>Confirm all 10 template DeveloperNames are listed — the 6 credentialing templates and 4 patient journey templates</li>
-      <li>Click into one — for example <strong>Patient Adverse Event</strong> — and confirm the body text is visible (not blank)</li>
+      <li>Confirm all 10 template DeveloperNames are listed - the 6 credentialing templates and 4 patient journey templates</li>
+      <li>Click into one - for example <strong>Patient Adverse Event</strong> - and confirm the body text is visible (not blank)</li>
     </ol>
     <div class="pass"><strong>Pass:</strong> All 10 templates present in the folder with body text.</div>
-    <div class="fail"><strong>Fail — templates missing:</strong> Run <span class="mono">sf project deploy start --source-dir force-app/main/default/email -o allergan-moxie</span></div>
+    <div class="fail"><strong>Fail - templates missing:</strong> Run <span class="mono">sf project deploy start --source-dir force-app/main/default/email -o allergan-moxie</span></div>
 
     <hr class="dashed"/>
 
-    <h3>Check 4 — Flow is Active and has the new lookup node</h3>
+    <h3>Check 4 - Flow is Active and has the new lookup node</h3>
     <ol class="steps">
       <li>Go to <strong>Setup → Flows → Add Historical Case Emails to Prompt2</strong></li>
       <li>Confirm status is <strong>Active</strong></li>
-      <li>Click into the flow — inside the template loop, look for a node called <strong>Get Email Template Body</strong></li>
-      <li>Confirm <strong>Append Template Entry</strong> assignment uses <span class="mono">{!Get_Email_Template_Body.Body}</span> — not <span class="mono">{!CurrentTemplate.Template_Body__c}</span></li>
+      <li>Click into the flow - inside the template loop, look for a node called <strong>Get Email Template Body</strong></li>
+      <li>Confirm <strong>Append Template Entry</strong> assignment uses <span class="mono">{!Get_Email_Template_Body.Body}</span> - not <span class="mono">{!CurrentTemplate.Template_Body__c}</span></li>
     </ol>
     <div class="pass"><strong>Pass:</strong> Flow Active. Get Email Template Body node present. Append Template Entry uses the new reference.</div>
-    <div class="fail"><strong>Fail — old flow still active:</strong> Run <span class="mono">sf project deploy start --source-dir force-app/main/default/flows -o allergan-moxie</span></div>
+    <div class="fail"><strong>Fail - old flow still active:</strong> Run <span class="mono">sf project deploy start --source-dir force-app/main/default/flows -o allergan-moxie</span></div>
 
   </div>
 
 
   <!-- ═══════════════════════════════════════════════════════
-       TAB 3 — PART A
+       TAB 3 - PART A
   ═══════════════════════════════════════════════════════ -->
   <div class="panel" id="tab-pathA">
 
-    <h2>Part A — Credentialing First Contact</h2>
+    <h2>Part A - Credentialing First Contact</h2>
 
     <!-- EMAIL TEMPLATE LIBRARY -->
     <div style="background:#fff;border:1px solid #d6e8f5;border-radius:12px;padding:22px 26px;margin-bottom:28px;">
       <div style="font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#2e86c1;margin-bottom:6px;">Template Library</div>
-      <div style="font-size:16px;font-weight:900;color:#1a3a52;margin-bottom:4px;">10 Email Templates — built and deployed</div>
+      <div style="font-size:16px;font-weight:900;color:#1a3a52;margin-bottom:4px;">10 Email Templates - built and deployed</div>
       <div style="font-size:13px;color:#5a7e98;margin-bottom:18px;line-height:1.6;">Each template stores the policy-accurate language for its scenario. The Prompt Flow fetches the right one at runtime using the <code style="font-size:11px;background:#e8f1f8;padding:1px 5px;border-radius:3px;">DeveloperName</code> pointer stored in the CMT routing record.</div>
 
       <!-- Credentialing group -->
-      <div style="font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:#7fa8c4;margin-bottom:8px;">Account Support / Credentialing — 6 templates</div>
+      <div style="font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:#7fa8c4;margin-bottom:8px;">Account Support / Credentialing - 6 templates</div>
       <table style="width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:18px;">
         <thead>
           <tr style="background:#eaf4fc;">
@@ -303,44 +303,44 @@ NEW: CMT record → Email_Template_API_Name__c → EmailTemplate.Body (fetched a
           <tr style="border-bottom:1px solid #edf4fa;">
             <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">1</td>
             <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Credentialing_Medical_Director_Change</code></td>
-            <td style="padding:9px 12px;color:#3a5a72;">Medical Director Change — new request, checklist not yet sent</td>
+            <td style="padding:9px 12px;color:#3a5a72;">Medical Director Change - new request, checklist not yet sent</td>
             <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d6eaf8;color:#1a5276;">First Contact</span></td>
           </tr>
           <tr style="border-bottom:1px solid #edf4fa;background:#fafcff;">
             <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">2</td>
             <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Credentialing_Medical_Director_Change_Follow_Up</code></td>
-            <td style="padding:9px 12px;color:#3a5a72;">Medical Director Change — checklist already sent, answering follow-up questions</td>
+            <td style="padding:9px 12px;color:#3a5a72;">Medical Director Change - checklist already sent, answering follow-up questions</td>
             <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d5f5e3;color:#1e5631;">Follow-Up</span></td>
           </tr>
           <tr style="border-bottom:1px solid #edf4fa;">
             <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">3</td>
             <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Credentialing_New_Practice_Enrollment</code></td>
-            <td style="padding:9px 12px;color:#3a5a72;">New Practice Enrollment — first time enrolling as an authorized provider</td>
+            <td style="padding:9px 12px;color:#3a5a72;">New Practice Enrollment - first time enrolling as an authorized provider</td>
             <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d6eaf8;color:#1a5276;">First Contact</span></td>
           </tr>
           <tr style="border-bottom:1px solid #edf4fa;background:#fafcff;">
             <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">4</td>
             <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Credentialing_New_Practice_Enrollment_Follow_Up</code></td>
-            <td style="padding:9px 12px;color:#3a5a72;">New Practice Enrollment — requirements already sent, answering follow-up questions</td>
+            <td style="padding:9px 12px;color:#3a5a72;">New Practice Enrollment - requirements already sent, answering follow-up questions</td>
             <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d5f5e3;color:#1e5631;">Follow-Up</span></td>
           </tr>
           <tr style="border-bottom:1px solid #edf4fa;">
             <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">5</td>
             <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Product_Support_Not_Eligible</code></td>
-            <td style="padding:9px 12px;color:#3a5a72;">Product Access — practice does not meet eligibility, 30-day dispute process</td>
+            <td style="padding:9px 12px;color:#3a5a72;">Product Access - practice does not meet eligibility, 30-day dispute process</td>
             <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d6eaf8;color:#1a5276;">First Contact</span></td>
           </tr>
           <tr style="background:#fafcff;">
             <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">6</td>
             <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Product_Support_Not_Eligible_Follow_Up</code></td>
-            <td style="padding:9px 12px;color:#3a5a72;">Product Access — eligibility decision already communicated, answering dispute questions</td>
+            <td style="padding:9px 12px;color:#3a5a72;">Product Access - eligibility decision already communicated, answering dispute questions</td>
             <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d5f5e3;color:#1e5631;">Follow-Up</span></td>
           </tr>
         </tbody>
       </table>
 
       <!-- Patient Support group -->
-      <div style="font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:#7fa8c4;margin-bottom:8px;">Patient Support / Treatment — 4 templates</div>
+      <div style="font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:#7fa8c4;margin-bottom:8px;">Patient Support / Treatment - 4 templates</div>
       <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
         <thead>
           <tr style="background:#eafaf1;">
@@ -354,25 +354,25 @@ NEW: CMT record → Email_Template_API_Name__c → EmailTemplate.Body (fetched a
           <tr style="border-bottom:1px solid #edf4fa;">
             <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">7</td>
             <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Patient_Adverse_Event</code></td>
-            <td style="padding:9px 12px;color:#3a5a72;">Patient adverse event or treatment complication — compliance-sensitive, mandatory reporting steps</td>
+            <td style="padding:9px 12px;color:#3a5a72;">Patient adverse event or treatment complication - compliance-sensitive, mandatory reporting steps</td>
             <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d6eaf8;color:#1a5276;">First Contact</span></td>
           </tr>
           <tr style="border-bottom:1px solid #edf4fa;background:#fafcff;">
             <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">8</td>
             <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Patient_Adverse_Event_Follow_Up</code></td>
-            <td style="padding:9px 12px;color:#3a5a72;">Adverse event — reporting checklist already sent, answering questions about timeline or clinical next steps</td>
+            <td style="padding:9px 12px;color:#3a5a72;">Adverse event - reporting checklist already sent, answering questions about timeline or clinical next steps</td>
             <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d5f5e3;color:#1e5631;">Follow-Up</span></td>
           </tr>
           <tr style="border-bottom:1px solid #edf4fa;">
             <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">9</td>
             <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Patient_Treatment_Planning</code></td>
-            <td style="padding:9px 12px;color:#3a5a72;">Treatment planning — confirming product availability, protocol, and documentation before appointment</td>
+            <td style="padding:9px 12px;color:#3a5a72;">Treatment planning - confirming product availability, protocol, and documentation before appointment</td>
             <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d6eaf8;color:#1a5276;">First Contact</span></td>
           </tr>
           <tr style="background:#fafcff;">
             <td style="padding:9px 12px;color:#7fa8c4;font-weight:700;">10</td>
             <td style="padding:9px 12px;"><code style="font-size:11px;background:#e8f1f8;padding:2px 6px;border-radius:3px;color:#1a5276;">Patient_Treatment_Planning_Follow_Up</code></td>
-            <td style="padding:9px 12px;color:#3a5a72;">Treatment planning — requirements already communicated, answering provider questions without repeating checklist</td>
+            <td style="padding:9px 12px;color:#3a5a72;">Treatment planning - requirements already communicated, answering provider questions without repeating checklist</td>
             <td style="padding:9px 12px;"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#d5f5e3;color:#1e5631;">Follow-Up</span></td>
           </tr>
         </tbody>
@@ -380,20 +380,20 @@ NEW: CMT record → Email_Template_API_Name__c → EmailTemplate.Body (fetched a
     </div>
     <!-- END TEMPLATE LIBRARY -->
 
-    <p>Use <strong>CSR First Contact Email</strong> for all three cases below. These are the same cases from the main testing guide — here you are specifically confirming that the template body comes from <strong>EmailTemplate</strong> (not from Template_Body__c). The form references, SLA numbers, and policy language in the draft prove the EmailTemplate body was fetched correctly.</p>
+    <p>Use <strong>CSR First Contact Email</strong> for all three cases below. These are the same cases from the main testing guide - here you are specifically confirming that the template body comes from <strong>EmailTemplate</strong> (not from Template_Body__c). The form references, SLA numbers, and policy language in the draft prove the EmailTemplate body was fetched correctly.</p>
 
     <!-- A-1 -->
     <div class="test-card">
       <div class="tc-header path-a-hdr">
         <span class="tc-id path-a-id">A-1</span>
-        <span class="tc-title">Medical Director Change — Dr. Patel replacing Dr. Kim</span>
+        <span class="tc-title">Medical Director Change - Dr. Patel replacing Dr. Kim</span>
         <span class="badge tmpl-a">Credentialing_Medical_Director_Change</span>
         <span class="badge path-a-id">First Contact</span>
       </div>
       <div class="tc-body">
 
         <div class="section-lbl">Find this case</div>
-        <div class="case-id-box">Search: "TEST Path A — Medical Director Change"</div>
+        <div class="case-id-box">Search: "TEST Path A - Medical Director Change"</div>
 
         <div class="section-lbl">Click path</div>
         <ol class="steps">
@@ -402,37 +402,70 @@ NEW: CMT record → Email_Template_API_Name__c → EmailTemplate.Body (fetched a
           <li>Read the output against the checklist below</li>
         </ol>
 
-        <div class="section-lbl">What the output MUST contain — confirms EmailTemplate body was fetched</div>
+        <div class="section-lbl">What the output MUST contain - confirms EmailTemplate body was fetched</div>
         <ul class="checklist">
-          <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Form AM-CMD-001</strong> exactly — this text lives in the EmailTemplate body</span></span></li>
-          <li><span class="chk"></span><span class="chk-text"><span class="must">States <strong>5–7 business days</strong> processing time — from the EmailTemplate body</span></span></li>
-          <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found — check Email_Template_API_Name__c]"</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Form AM-CMD-001</strong> exactly - this text lives in the EmailTemplate body</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">States <strong>5–7 business days</strong> processing time - from the EmailTemplate body</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found - check Email_Template_API_Name__c]"</span></span></li>
           <li><span class="chk"></span><span class="chk-text">Greeting uses "Dear Sarah" and mentions Sunset Aesthetics Medical Group</span></li>
           <li><span class="chk"></span><span class="chk-text">Mentions Dr. Patel or Dr. Kim (personalisation from case description)</span></li>
         </ul>
 
-        <div class="section-lbl">Expected output shape</div>
+        <div class="section-lbl">Live output - Case 00001156 (tested in org)</div>
+
+        <!-- legend -->
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#3a4a5c;">
+            <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:rgba(255,240,100,0.55);border:1px solid rgba(180,160,0,0.4);flex-shrink:0;"></span>
+            <strong>Policy template</strong> — mandatory language fetched from the EmailTemplate body. The AI cannot change this.
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#3a4a5c;">
+            <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:rgba(100,210,255,0.35);border:1px solid rgba(0,130,180,0.3);flex-shrink:0;"></span>
+            <strong>Case personalisation</strong> — details pulled from the case record: account name, contact, doctors, licence number.
+          </div>
+        </div>
+
         <div class="output-box">Selected template: AM Medical Director Change
 
-Dear Sarah,
+Dear <span class="hl2">Sarah Chen</span>,
 
 Thank you for contacting the Allergan Moxie Provider Services team
-regarding the Medical Director change at Sunset Aesthetics Medical Group.
+regarding your request for a Medical Director Change at <span class="hl2">Sunset Aesthetics
+Medical Group</span>.
 
-To complete the Medical Director change, please submit the following:
+We have received your request and are currently reviewing the required
+documentation for Case #<span class="hl2">00001156</span>.
 
-<span class="hl">1. Completed Change of Medical Director Form (Form AM-CMD-001)...</span>
-2. A copy of Dr. Patel's current medical license.
-3. An updated W-9 form if applicable.
+To complete the Medical Director change, please ensure the following
+items are submitted:
 
-<span class="hl">Please allow 5–7 business days for processing</span> once all documents
-are received.
+<span class="hl">1. Completed Change of Medical Director Form (Form AM-CMD-001),
+   signed by both the outgoing and incoming Medical Directors.</span>
+<span class="hl">2. A copy of the incoming Medical Director's current medical license
+   (must be active and valid in the state of practice).</span>
+<span class="hl">3. An updated W-9 form if the new Medical Director is associated with
+   a different tax entity.</span>
+
+<span class="hl">Please allow 5–7 business days for processing.</span> You will receive a
+confirmation email when the change has been finalized.
+
+Based on your note, the outgoing Medical Director <span class="hl2">Dr. Kim is relocating</span>
+and the proposed incoming Medical Director is <span class="hl2">Dr. Anita Patel, who has
+been with the practice for six months and holds an active California
+medical license (License #CA-891234)</span>. Please ensure that Form AM-CMD-001
+is signed by both <span class="hl2">Dr. Kim and Dr. Anita Patel</span>, and include a clear
+copy of the <span class="hl2">CA-891234 license</span> when you submit the package.
 
 Warm regards,
-[Your name]</div>
+Nisar Khan
+Provider Services Representative</div>
 
-        <div class="pass"><strong>Pass:</strong> Form AM-CMD-001 present. 5–7 day SLA present. No "[Body not found]" placeholder. Both come from the <span class="mono">Credentialing_Medical_Director_Change</span> EmailTemplate — this confirms the new architecture is working.</div>
-        <div class="fail"><strong>Fail — "[Body not found]" in draft:</strong> The CMT pointer is broken. Go to Setup → Custom Metadata Types → Template Scenario → Manage Records → AM Medical Director Change → check that Email Template API Name = <span class="mono">Credentialing_Medical_Director_Change</span> (exact spelling, no spaces).</div>
+        <div style="background:#f0f4ff;border:1px solid #b8d0f0;border-left:4px solid #2e86c1;border-radius:0 8px 8px 0;padding:14px 18px;margin:12px 0;font-size:13px;color:#003580;line-height:1.7;">
+          <strong>What this shows the customer:</strong> The yellow-highlighted lines — the form reference, the three document requirements, the 5–7 day SLA — are word-for-word from the EmailTemplate body. Einstein cannot change or omit them. The blue-highlighted text — Sarah's name, the practice name, Dr. Kim, Dr. Patel, the licence number — came entirely from the case record. Neither layer existed in the other's source. This is the two-layer model working exactly as designed.
+        </div>
+
+        <div class="pass"><strong>Pass:</strong> Form AM-CMD-001 present. 5–7 day SLA present. No "[Body not found]" placeholder. Both come from the <span class="mono">Credentialing_Medical_Director_Change</span> EmailTemplate - this confirms the new architecture is working.</div>
+        <div class="fail"><strong>Fail - "[Body not found]" in draft:</strong> The CMT pointer is broken. Go to Setup → Custom Metadata Types → Template Scenario → Manage Records → AM Medical Director Change → check that Email Template API Name = <span class="mono">Credentialing_Medical_Director_Change</span> (exact spelling, no spaces).</div>
       </div>
     </div>
 
@@ -440,14 +473,14 @@ Warm regards,
     <div class="test-card">
       <div class="tc-header path-a-hdr">
         <span class="tc-id path-a-id">A-2</span>
-        <span class="tc-title">New Practice Enrollment — Pacific Coast Aesthetics</span>
+        <span class="tc-title">New Practice Enrollment - Pacific Coast Aesthetics</span>
         <span class="badge tmpl-b">Credentialing_New_Practice_Enrollment</span>
         <span class="badge path-a-id">First Contact</span>
       </div>
       <div class="tc-body">
 
         <div class="section-lbl">Find this case</div>
-        <div class="case-id-box">Search: "TEST Path A — New Practice Enrollment"</div>
+        <div class="case-id-box">Search: "TEST Path A - New Practice Enrollment"</div>
 
         <div class="section-lbl">Click path</div>
         <ol class="steps">
@@ -456,7 +489,7 @@ Warm regards,
           <li>Read the output against the checklist below</li>
         </ol>
 
-        <div class="section-lbl">What the output MUST contain — confirms EmailTemplate body was fetched</div>
+        <div class="section-lbl">What the output MUST contain - confirms EmailTemplate body was fetched</div>
         <ul class="checklist">
           <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Form AM-PE-002</strong> exactly</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Form AM-PC-005</strong> exactly</span></span></li>
@@ -475,14 +508,14 @@ Warm regards,
     <div class="test-card">
       <div class="tc-header path-a-hdr">
         <span class="tc-id path-a-id">A-3</span>
-        <span class="tc-title">Product Access Review — Eligibility Determination Needed</span>
+        <span class="tc-title">Product Access Review - Eligibility Determination Needed</span>
         <span class="badge tmpl-c">Product_Support_Not_Eligible</span>
         <span class="badge path-a-id">First Contact</span>
       </div>
       <div class="tc-body">
 
         <div class="section-lbl">Find this case</div>
-        <div class="case-id-box">Search: "TEST Path A — Product Access Review"</div>
+        <div class="case-id-box">Search: "TEST Path A - Product Access Review"</div>
 
         <div class="section-lbl">Click path</div>
         <ol class="steps">
@@ -491,7 +524,7 @@ Warm regards,
           <li>Read the output against the checklist below</li>
         </ol>
 
-        <div class="section-lbl">What the output MUST contain — confirms EmailTemplate body was fetched</div>
+        <div class="section-lbl">What the output MUST contain - confirms EmailTemplate body was fetched</div>
         <ul class="checklist">
           <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Form AM-EL-010</strong> exactly</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">States <strong>30 days</strong> dispute window</span></span></li>
@@ -508,25 +541,25 @@ Warm regards,
 
 
   <!-- ═══════════════════════════════════════════════════════
-       TAB 4 — PART B
+       TAB 4 - PART B
   ═══════════════════════════════════════════════════════ -->
   <div class="panel" id="tab-pathB">
 
-    <h2>Part B — Credentialing Reply (Follow-up)</h2>
-    <p>Use <strong>CSR Reply Email</strong> for all three cases below. Each case has an existing thread. These tests specifically verify that the <strong>follow-up variant</strong> EmailTemplates were deployed correctly — the CMT records for follow-up scenarios now point to separate <span class="mono">_Follow_Up</span> EmailTemplates. The AI will see both the first-contact and follow-up template in the candidate list and should select the follow-up based on <span class="mono">When_To_Use__c</span>.</p>
+    <h2>Part B - Credentialing Reply (Follow-up)</h2>
+    <p>Use <strong>CSR Reply Email</strong> for all three cases below. Each case has an existing thread. These tests specifically verify that the <strong>follow-up variant</strong> EmailTemplates were deployed correctly - the CMT records for follow-up scenarios now point to separate <span class="mono">_Follow_Up</span> EmailTemplates. The AI will see both the first-contact and follow-up template in the candidate list and should select the follow-up based on <span class="mono">When_To_Use__c</span>.</p>
 
     <!-- B-1 -->
     <div class="test-card">
       <div class="tc-header path-b-hdr">
         <span class="tc-id path-b-id">B-1</span>
-        <span class="tc-title">Medical Director Change — Forms Sent, Awaiting Signatures</span>
+        <span class="tc-title">Medical Director Change - Forms Sent, Awaiting Signatures</span>
         <span class="badge tmpl-a">Credentialing_Medical_Director_Change_Follow_Up</span>
         <span class="badge path-b-id">Reply</span>
       </div>
       <div class="tc-body">
 
         <div class="section-lbl">Find this case</div>
-        <div class="case-id-box">Search: "TEST Path B — Medical Director Change - Forms Sent"</div>
+        <div class="case-id-box">Search: "TEST Path B - Medical Director Change - Forms Sent"</div>
 
         <div class="section-lbl">Email thread already on this case (3 emails)</div>
         <div class="thread-box">
@@ -539,7 +572,7 @@ Warm regards,
             <div class="thread-body">Dear Sarah, please submit Form AM-CMD-001 signed by both doctors, Dr. Patel's CA license, and an updated W-9 if applicable. Please allow 5–7 business days once documents are received.</div>
           </div>
           <div class="thread-msg thread-from-cust">
-            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Yesterday — UNANSWERED</span></div>
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Yesterday - UNANSWERED</span></div>
             <div class="thread-body">Hi, I received the form. Dr. Kim is currently travelling internationally.
 <strong>Q1: Is digital/electronic signature acceptable for Form AM-CMD-001?</strong>
 <strong>Q2: Is there a hard deadline given Dr. Kim's last day is in 5 weeks?</strong></div>
@@ -548,14 +581,14 @@ Warm regards,
 
         <div class="section-lbl">Click path</div>
         <ol class="steps">
-          <li>Open the case — scroll the Activity feed to confirm the 3-email thread is visible</li>
+          <li>Open the case - scroll the Activity feed to confirm the 3-email thread is visible</li>
           <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
           <li>Read the output against the checklist below</li>
         </ol>
 
-        <div class="section-lbl">What the output MUST contain — confirms follow-up EmailTemplate was fetched</div>
+        <div class="section-lbl">What the output MUST contain - confirms follow-up EmailTemplate was fetched</div>
         <ul class="checklist">
-          <li><span class="chk"></span><span class="chk-text"><span class="must">Opens as a follow-up — NOT a first-contact greeting or full document list</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Opens as a follow-up - NOT a first-contact greeting or full document list</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q1: digital signature acceptability</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q2: deadline relative to Dr. Kim's last day</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">Does NOT re-list the AM-CMD-001, license, and W-9 again (already sent)</span></span></li>
@@ -563,8 +596,58 @@ Warm regards,
           <li><span class="chk"></span><span class="chk-text">AM-CMD-001 still referenced as the pending item (it is still needed)</span></li>
         </ul>
 
+        <div class="section-lbl">Live output - Case 00001159 (tested in org)</div>
+
+        <!-- legend - 3 layers -->
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#3a4a5c;">
+            <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:rgba(255,240,100,0.55);border:1px solid rgba(180,160,0,0.4);flex-shrink:0;"></span>
+            <strong>Policy template</strong> — mandatory language from the Follow-Up EmailTemplate body.
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#3a4a5c;">
+            <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:rgba(100,210,255,0.35);border:1px solid rgba(0,130,180,0.3);flex-shrink:0;"></span>
+            <strong>Case personalisation</strong> — details from the case record (contact, account, doctors).
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#3a4a5c;">
+            <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:rgba(160,255,160,0.45);border:1px solid rgba(0,160,60,0.3);flex-shrink:0;"></span>
+            <strong>Thread context</strong> — the AI read Sarah's last email and used the specific details she mentioned.
+          </div>
+        </div>
+
+        <div class="output-box">Dear <span class="hl2">Sarah Chen</span>,
+
+I acknowledge receipt of your note and the update that <span class="hl" style="background:rgba(160,255,160,0.3);padding:1px 2px;">Dr. Kim is travelling
+internationally</span>.
+
+<span class="hl">1. Digital signature. Electronic or digital signatures are acceptable for
+   Form AM-CMD-001.</span> Please ensure the signature is clearly attributable
+   to the signer and that the signed copy includes the date of signature.
+
+<span class="hl">2. Timeline. We will process the change once we receive the signed form
+   and the incoming license. Allow 5–7 business days for processing after
+   submission.</span> To avoid a gap in credentialing, please submit the signed
+   form as soon as <span class="hl2">Dr. Kim</span> is able to sign, including <span class="hl" style="background:rgba(160,255,160,0.3);padding:1px 2px;">signing remotely
+   if that is possible while travelling</span>.
+
+<span class="hl">If you anticipate any delay in obtaining the signature, notify me and I
+will note the case to help minimize disruption.</span>
+
+Thank you for your responsiveness and attention to this change.
+
+Nisar Khan
+Provider Services Representative
+Allergan Moxie</div>
+
+        <div style="background:#f0f4ff;border:1px solid #b8d0f0;border-left:4px solid #2e86c1;border-radius:0 8px 8px 0;padding:14px 18px;margin:12px 0;font-size:13px;color:#003580;line-height:1.7;">
+          <strong>What this shows the customer — three layers working together:</strong><br/><br/>
+          <strong style="color:#7a6000;">Yellow (policy template):</strong> The digital signature rule, the 5–7 day processing window, and the "notify me if there is a delay" instruction all come verbatim from the <span style="font-family:monospace;font-size:11px;background:#dce8f8;padding:1px 4px;border-radius:3px;">Credentialing_Medical_Director_Change_Follow_Up</span> EmailTemplate. Einstein cannot change or omit them.<br/><br/>
+          <strong style="color:#005a8a;">Blue (case record):</strong> "Sarah Chen" and "Dr. Kim" came from the case fields — the AI did not invent these names.<br/><br/>
+          <strong style="color:#1a6e30;">Green (email thread):</strong> "Dr. Kim is travelling internationally" and "signing remotely if that is possible while travelling" came directly from Sarah's last message in the thread. The AI read the thread, understood the specific situation, and wove it into the answer — this is why the reply feels contextual rather than generic.<br/><br/>
+          <strong>Also notice:</strong> The full document checklist (AM-CMD-001, licence, W-9) was NOT repeated — the AI knew from the thread that it was already sent in the previous reply. That is the Follow-Up template doing its job.
+        </div>
+
         <div class="pass"><strong>Pass:</strong> Opens as a follow-up. Both questions answered. Document list not repeated. The <span class="mono">Credentialing_Medical_Director_Change_Follow_Up</span> EmailTemplate body was fetched and used.</div>
-        <div class="fail"><strong>Fail — full document checklist repeated:</strong> The AI selected the first-contact template instead of the follow-up. The <span class="mono">When_To_Use__c</span> field on the follow-up CMT record may need clarifying. Check Setup → Custom Metadata Types → Template Scenario → AM Medical Director Change Follow Up → When To Use field.</div>
+        <div class="fail"><strong>Fail - full document checklist repeated:</strong> The AI selected the first-contact template instead of the follow-up. The <span class="mono">When_To_Use__c</span> field on the follow-up CMT record may need clarifying. Check Setup → Custom Metadata Types → Template Scenario → AM Medical Director Change Follow Up → When To Use field.</div>
       </div>
     </div>
 
@@ -572,14 +655,14 @@ Warm regards,
     <div class="test-card">
       <div class="tc-header path-b-hdr">
         <span class="tc-id path-b-id">B-2</span>
-        <span class="tc-title">New Practice Enrollment — Missing Insurance Certificate</span>
+        <span class="tc-title">New Practice Enrollment - Missing Insurance Certificate</span>
         <span class="badge tmpl-b">Credentialing_New_Practice_Enrollment_Follow_Up</span>
         <span class="badge path-b-id">Reply</span>
       </div>
       <div class="tc-body">
 
         <div class="section-lbl">Find this case</div>
-        <div class="case-id-box">Search: "TEST Path B — New Practice Enrollment - Missing Insurance"</div>
+        <div class="case-id-box">Search: "TEST Path B - New Practice Enrollment - Missing Insurance"</div>
 
         <div class="section-lbl">Email thread already on this case (3 emails)</div>
         <div class="thread-box">
@@ -589,11 +672,11 @@ Warm regards,
           </div>
           <div class="thread-msg thread-from-csr">
             <div class="thread-meta"><span class="from-csr-lbl">CSR → CUSTOMER</span><span class="thread-day">8 days ago</span></div>
-            <div class="thread-body">Dear Sarah, Received ✓ AM-PE-002 ✓ AM-PC-005 ✓ DEA Certificate ✓ Business License. Still missing: Proof of malpractice insurance — minimum $1M/$3M. Processing takes 10–14 days from receipt of a complete application.</div>
+            <div class="thread-body">Dear Sarah, Received ✓ AM-PE-002 ✓ AM-PC-005 ✓ DEA Certificate ✓ Business License. Still missing: Proof of malpractice insurance - minimum $1M/$3M. Processing takes 10–14 days from receipt of a complete application.</div>
           </div>
           <div class="thread-msg thread-from-cust">
-            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Yesterday — UNANSWERED</span></div>
-            <div class="thread-body">Hi, Our current policy is $1M/$2M. We are upgrading to $1M/$3M — insurer says 2 weeks.
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Yesterday - UNANSWERED</span></div>
+            <div class="thread-body">Hi, Our current policy is $1M/$2M. We are upgrading to $1M/$3M - insurer says 2 weeks.
 <strong>Q1: Can we proceed with the application while the upgraded policy is being issued?</strong>
 <strong>Q2: Does the 10-14 day clock start from receipt of insurance cert, or from our original submission date?</strong></div>
           </div>
@@ -601,14 +684,14 @@ Warm regards,
 
         <div class="section-lbl">Click path</div>
         <ol class="steps">
-          <li>Open the case — confirm the 3-email thread in Activity</li>
+          <li>Open the case - confirm the 3-email thread in Activity</li>
           <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
           <li>Read the output against the checklist below</li>
         </ol>
 
         <div class="section-lbl">What the output MUST contain</div>
         <ul class="checklist">
-          <li><span class="chk"></span><span class="chk-text"><span class="must">Opens as a follow-up — NOT a re-listing of all 5 enrollment documents</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Opens as a follow-up - NOT a re-listing of all 5 enrollment documents</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q1: whether application can proceed while insurance upgrades</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q2: when the 10-14 day processing clock starts</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found]"</span></span></li>
@@ -623,14 +706,14 @@ Warm regards,
     <div class="test-card">
       <div class="tc-header path-b-hdr">
         <span class="tc-id path-b-id">B-3</span>
-        <span class="tc-title">Product Access Review — Customer Disputing Eligibility</span>
+        <span class="tc-title">Product Access Review - Customer Disputing Eligibility</span>
         <span class="badge tmpl-c">Product_Support_Not_Eligible_Follow_Up</span>
         <span class="badge path-b-id">Reply</span>
       </div>
       <div class="tc-body">
 
         <div class="section-lbl">Find this case</div>
-        <div class="case-id-box">Search: "TEST Path B — Product Access Review - Customer Disputing"</div>
+        <div class="case-id-box">Search: "TEST Path B - Product Access Review - Customer Disputing"</div>
 
         <div class="section-lbl">Email thread already on this case (4 emails)</div>
         <div class="thread-box">
@@ -647,21 +730,21 @@ Warm regards,
             <div class="thread-body">Thank you. We received the renewed license and insurance declaration. Escalated to credentialing review team. Expect a decision within 5–7 business days.</div>
           </div>
           <div class="thread-msg thread-from-cust">
-            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Today — UNANSWERED</span></div>
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Today - UNANSWERED</span></div>
             <div class="thread-body">It has been 5 business days and we have not received a decision. <strong>Could you provide an update on where the review stands?</strong></div>
           </div>
         </div>
 
         <div class="section-lbl">Click path</div>
         <ol class="steps">
-          <li>Open the case — confirm the 4-email thread in Activity</li>
+          <li>Open the case - confirm the 4-email thread in Activity</li>
           <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
           <li>Read the output against the checklist below</li>
         </ol>
 
         <div class="section-lbl">What the output MUST contain</div>
         <ul class="checklist">
-          <li><span class="chk"></span><span class="chk-text"><span class="must">Opens as a status update — NOT a re-determination of eligibility</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Opens as a status update - NOT a re-determination of eligibility</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">Acknowledges the dispute was filed and is under review</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">Does NOT say "your practice does not meet requirements"</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found]"</span></span></li>
@@ -676,18 +759,18 @@ Warm regards,
 
 
   <!-- ═══════════════════════════════════════════════════════
-       TAB 5 — PART C
+       TAB 5 - PART C
   ═══════════════════════════════════════════════════════ -->
   <div class="panel" id="tab-pathC">
 
-    <h2>Part C — Patient Journey (New EmailTemplates)</h2>
+    <h2>Part C - Patient Journey (New EmailTemplates)</h2>
     <p>These four cases use brand-new EmailTemplate records deployed as part of this architecture change. Cases C-1 and C-3 are first-contact (use <strong>CSR First Contact Email</strong>). Cases C-2 and C-4 are reply cases (use <strong>CSR Reply Email</strong>). Case type on all four: <span class="mono">Patient Support</span> / Reason: <span class="mono">Treatment</span>.</p>
 
     <!-- C-1 -->
     <div class="test-card">
       <div class="tc-header path-c-hdr">
         <span class="tc-id path-c-id">C-1</span>
-        <span class="tc-title">Patient Treatment Planning — Sculptra session for 3 patients</span>
+        <span class="tc-title">Patient Treatment Planning - Sculptra session for 3 patients</span>
         <span class="badge tmpl-d">Patient_Treatment_Planning</span>
         <span class="badge path-a-id">First Contact</span>
       </div>
@@ -706,7 +789,7 @@ Warm regards,
           <li>Read the output against the checklist below</li>
         </ol>
 
-        <div class="section-lbl">What the output MUST contain — confirms new EmailTemplate body was fetched</div>
+        <div class="section-lbl">What the output MUST contain - confirms new EmailTemplate body was fetched</div>
         <ul class="checklist">
           <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Form AM-PC-005</strong> (Patient Consent Form)</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Form AM-TR-001</strong> (Treatment Record including lot number)</span></span></li>
@@ -728,11 +811,11 @@ the upcoming treatment session at Sunset Aesthetics Medical Group.
 Before proceeding with the Sculptra treatment for your patients, please
 ensure the following documentation is in place:
 
-<span class="hl">1. Patient Consent Form (Form AM-PC-005) — must be signed by each
+<span class="hl">1. Patient Consent Form (Form AM-PC-005) - must be signed by each
    patient prior to treatment.</span>
-<span class="hl">2. Treatment Record (Form AM-TR-001) — record the product lot number
+<span class="hl">2. Treatment Record (Form AM-TR-001) - record the product lot number
    and expiry date for each unit administered.</span>
-<span class="hl">3. Adverse Event Reporting (Form AM-AE-003) — any adverse events or
+<span class="hl">3. Adverse Event Reporting (Form AM-AE-003) - any adverse events or
    unexpected reactions must be reported within 24 hours of onset.</span>
 
 <span class="hl2">Regarding product availability: Please submit your product request
@@ -742,8 +825,8 @@ availability.</span>
 Warm regards,
 [Your name]</div>
 
-        <div class="pass"><strong>Pass:</strong> All three form references present (AM-PC-005, AM-TR-001, AM-AE-003). Both time windows present (24hr AE, 48hr product). All come from the new <span class="mono">Patient_Treatment_Planning</span> EmailTemplate — confirms the template was deployed and the Flow fetched it correctly.</div>
-        <div class="fail"><strong>Fail — "[Body not found]" in draft:</strong> The <span class="mono">Patient_Treatment_Planning</span> EmailTemplate may not have deployed. Check Setup → Email Templates → Allergan Demo Templates → Patient Treatment Planning. If missing: <span class="mono">sf project deploy start --source-dir force-app/main/default/email -o allergan-moxie</span></div>
+        <div class="pass"><strong>Pass:</strong> All three form references present (AM-PC-005, AM-TR-001, AM-AE-003). Both time windows present (24hr AE, 48hr product). All come from the new <span class="mono">Patient_Treatment_Planning</span> EmailTemplate - confirms the template was deployed and the Flow fetched it correctly.</div>
+        <div class="fail"><strong>Fail - "[Body not found]" in draft:</strong> The <span class="mono">Patient_Treatment_Planning</span> EmailTemplate may not have deployed. Check Setup → Email Templates → Allergan Demo Templates → Patient Treatment Planning. If missing: <span class="mono">sf project deploy start --source-dir force-app/main/default/email -o allergan-moxie</span></div>
         <div class="warn"><strong>If "AM Patient Adverse Event" is selected instead:</strong> Both templates match Patient Support / Treatment. The AI is reading When_To_Use__c to choose. Edit the case description to make "upcoming planned treatment" more explicit and re-generate.</div>
       </div>
     </div>
@@ -752,7 +835,7 @@ Warm regards,
     <div class="test-card">
       <div class="tc-header path-c-hdr">
         <span class="tc-id path-c-id">C-2</span>
-        <span class="tc-title">Patient Treatment Planning — Follow-up questions from provider</span>
+        <span class="tc-title">Patient Treatment Planning - Follow-up questions from provider</span>
         <span class="badge tmpl-d">Patient_Treatment_Planning_Follow_Up</span>
         <span class="badge path-b-id">Reply</span>
       </div>
@@ -772,31 +855,31 @@ Warm regards,
             <div class="thread-body">Dear Sarah, Patients must sign Form AM-PC-005 before treatment. Record lot number and expiry per Form AM-TR-001. Report any adverse events within 24hrs using Form AM-AE-003. You do not need to submit anything in advance.</div>
           </div>
           <div class="thread-msg thread-from-cust">
-            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Yesterday — UNANSWERED</span></div>
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Yesterday - UNANSWERED</span></div>
             <div class="thread-body">Hi, Two follow-up questions:
-<strong>Q1: One patient is on blood thinners — does that affect documentation on our end, or is that purely a clinical decision?</strong>
+<strong>Q1: One patient is on blood thinners - does that affect documentation on our end, or is that purely a clinical decision?</strong>
 <strong>Q2: How long do we need to retain the signed consent forms?</strong></div>
           </div>
         </div>
 
         <div class="section-lbl">Click path</div>
         <ol class="steps">
-          <li>Open the case — confirm the 3-email thread in Activity</li>
+          <li>Open the case - confirm the 3-email thread in Activity</li>
           <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
           <li>Read the output against the checklist below</li>
         </ol>
 
         <div class="section-lbl">What the output MUST contain</div>
         <ul class="checklist">
-          <li><span class="chk"></span><span class="chk-text"><span class="must">Opens as a follow-up — NOT a re-listing of AM-PC-005, AM-TR-001, AM-AE-003</span></span></li>
-          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q1: blood thinner patient — documentation scope vs clinical decision</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Opens as a follow-up - NOT a re-listing of AM-PC-005, AM-TR-001, AM-AE-003</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q1: blood thinner patient - documentation scope vs clinical decision</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q2: consent form retention period</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found]"</span></span></li>
           <li><span class="chk"></span><span class="chk-text">Does NOT repeat the 24hr AE window or 48hr product request from the prior email</span></li>
         </ul>
 
         <div class="pass"><strong>Pass:</strong> Both questions answered. Pre-treatment checklist not repeated. The <span class="mono">Patient_Treatment_Planning_Follow_Up</span> EmailTemplate was fetched correctly.</div>
-        <div class="fail"><strong>Fail — pre-treatment checklist repeated:</strong> The AI selected the first-contact template instead of the follow-up. Check the When_To_Use__c on the AM Patient Treatment Planning Follow Up CMT record — it should explicitly say "use when following up on an existing treatment planning case."</div>
+        <div class="fail"><strong>Fail - pre-treatment checklist repeated:</strong> The AI selected the first-contact template instead of the follow-up. Check the When_To_Use__c on the AM Patient Treatment Planning Follow Up CMT record - it should explicitly say "use when following up on an existing treatment planning case."</div>
       </div>
     </div>
 
@@ -804,7 +887,7 @@ Warm regards,
     <div class="test-card">
       <div class="tc-header path-c-hdr">
         <span class="tc-id path-c-id">C-3</span>
-        <span class="tc-title">Adverse Event Report — Post-treatment swelling and redness</span>
+        <span class="tc-title">Adverse Event Report - Post-treatment swelling and redness</span>
         <span class="badge tmpl-e">Patient_Adverse_Event</span>
         <span class="badge path-a-id">First Contact</span>
       </div>
@@ -823,15 +906,15 @@ Warm regards,
           <li>Read the output against the checklist below</li>
         </ol>
 
-        <div class="section-lbl">What the output MUST contain — confirms new AE EmailTemplate body was fetched</div>
+        <div class="section-lbl">What the output MUST contain - confirms new AE EmailTemplate body was fetched</div>
         <ul class="checklist">
           <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Form AM-AE-003</strong> exactly</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">States the <strong>72-hour</strong> submission deadline for Form AM-AE-003</span></span></li>
-          <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Section 4.2 — Safety Reporting Obligations</strong> (mandatory compliance language)</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">References <strong>Section 4.2 - Safety Reporting Obligations</strong> (mandatory compliance language)</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">States clinical team will follow up <strong>within one business day</strong> of receiving the form</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found]"</span></span></li>
           <li><span class="chk"></span><span class="chk-text">Includes product lot number JUV-2026-084512 from case description</span></li>
-          <li><span class="chk"></span><span class="chk-text">Tone is serious and supportive — not dismissive of the event</span></li>
+          <li><span class="chk"></span><span class="chk-text">Tone is serious and supportive - not dismissive of the event</span></li>
         </ul>
 
         <div class="section-lbl">Expected output shape</div>
@@ -849,7 +932,7 @@ following immediate steps:
    Include: product lot number JUV-2026-084512, expiry 2027-03,
    clinical description of onset, severity, and any interventions.</span>
 
-<span class="hl">2. Per Section 4.2 — Safety Reporting Obligations, timely adverse
+<span class="hl">2. Per Section 4.2 - Safety Reporting Obligations, timely adverse
    event reporting is a requirement under our provider agreement.
    Late reporting may affect your account standing.</span>
 
@@ -861,7 +944,7 @@ Warm regards,
 
         <div class="pass"><strong>Pass:</strong> Form AM-AE-003 present. 72hr deadline present. Section 4.2 compliance language present. 1 business day follow-up present. All mandatory language comes from the new <span class="mono">Patient_Adverse_Event</span> EmailTemplate.</div>
         <div class="warn"><strong>Compliance-sensitive template.</strong> Section 4.2 and the 72-hour window are mandatory language. If either is missing from the draft, it means the EmailTemplate body is incomplete. Open the template in Setup → Email Templates → Allergan Demo Templates → Patient Adverse Event and verify the body text.</div>
-        <div class="fail"><strong>Fail — "[Body not found]":</strong> The <span class="mono">Patient_Adverse_Event</span> EmailTemplate did not deploy. Run: <span class="mono">sf project deploy start --source-dir force-app/main/default/email -o allergan-moxie</span></div>
+        <div class="fail"><strong>Fail - "[Body not found]":</strong> The <span class="mono">Patient_Adverse_Event</span> EmailTemplate did not deploy. Run: <span class="mono">sf project deploy start --source-dir force-app/main/default/email -o allergan-moxie</span></div>
       </div>
     </div>
 
@@ -869,7 +952,7 @@ Warm regards,
     <div class="test-card">
       <div class="tc-header path-c-hdr">
         <span class="tc-id path-c-id">C-4</span>
-        <span class="tc-title">Adverse Event Follow-Up — Questions about the reporting process</span>
+        <span class="tc-title">Adverse Event Follow-Up - Questions about the reporting process</span>
         <span class="badge tmpl-e">Patient_Adverse_Event_Follow_Up</span>
         <span class="badge path-b-id">Reply</span>
       </div>
@@ -889,7 +972,7 @@ Warm regards,
             <div class="thread-body">Dear Sarah, Please submit Form AM-AE-003 within 72 hours. Include lot BTX-2026-091233. Late reporting may affect account standing under Section 4.2. Clinical team will follow up within 1 business day of receiving the form.</div>
           </div>
           <div class="thread-msg thread-from-cust">
-            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Yesterday — UNANSWERED</span></div>
+            <div class="thread-meta"><span class="from-cust-lbl">CUSTOMER → CSR</span><span class="thread-day">Yesterday - UNANSWERED</span></div>
             <div class="thread-body">Hi, We submitted Form AM-AE-003 this morning. Two questions:
 <strong>Q1: Does the 72-hour window start from when the patient called us, or from when treatment was performed?</strong>
 <strong>Q2: Will this affect the patient's ability to receive Botox in the future?</strong></div>
@@ -898,23 +981,23 @@ Warm regards,
 
         <div class="section-lbl">Click path</div>
         <ol class="steps">
-          <li>Open the case — confirm the 3-email thread in Activity</li>
+          <li>Open the case - confirm the 3-email thread in Activity</li>
           <li>Activity → Email → Draft with AI → <strong>CSR Reply Email</strong> → Generate</li>
           <li>Read the output against the checklist below</li>
         </ol>
 
         <div class="section-lbl">What the output MUST contain</div>
         <ul class="checklist">
-          <li><span class="chk"></span><span class="chk-text"><span class="must">Acknowledges Form AM-AE-003 was already submitted — does NOT ask them to submit it again</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Acknowledges Form AM-AE-003 was already submitted - does NOT ask them to submit it again</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">Answers Q1: when the 72-hour window starts</span></span></li>
-          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q2: future treatment eligibility — defers clinical decision to physician</span></span></li>
+          <li><span class="chk"></span><span class="chk-text"><span class="must">Addresses Q2: future treatment eligibility - defers clinical decision to physician</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">Does NOT re-list the full AE checklist (form, lot number, Section 4.2) already sent 2 days ago</span></span></li>
           <li><span class="chk"></span><span class="chk-text"><span class="must">Draft does NOT contain "[Body not found]"</span></span></li>
-          <li><span class="chk"></span><span class="chk-text">Tone is supportive — acknowledges the practice reported promptly and correctly</span></li>
+          <li><span class="chk"></span><span class="chk-text">Tone is supportive - acknowledges the practice reported promptly and correctly</span></li>
         </ul>
 
         <div class="pass"><strong>Pass:</strong> Both questions answered. AE checklist not repeated. Acknowledges the form was already submitted. The <span class="mono">Patient_Adverse_Event_Follow_Up</span> EmailTemplate was fetched correctly.</div>
-        <div class="fail"><strong>Fail — output asks them to submit AM-AE-003 again:</strong> The LLM did not read that the form was already submitted this morning. This is a Reply prompt failure — the thread was not read correctly. Report it for prompt tuning. As a workaround click Revise and type: "The customer already submitted Form AM-AE-003 this morning. Answer only the two questions they asked."</div>
+        <div class="fail"><strong>Fail - output asks them to submit AM-AE-003 again:</strong> The LLM did not read that the form was already submitted this morning. This is a Reply prompt failure - the thread was not read correctly. Report it for prompt tuning. As a workaround click Revise and type: "The customer already submitted Form AM-AE-003 this morning. Answer only the two questions they asked."</div>
       </div>
     </div>
 
@@ -926,69 +1009,69 @@ Warm regards,
   ══════════════════════════════ -->
   <div class="panel" id="tab-solution">
 
-    <h2>Solution Scope — What We Built, What the Gaps Are, and How to Think About It</h2>
-    <p style="color:#5a7896;margin-bottom:28px;">This is a proof-of-concept and a working demonstration of the core AI routing capability — not a finished end-to-end production system. The goal is to show the customer what is possible with Agentforce and give them a clear path forward to build the full solution on their own platform.</p>
+    <h2>Solution Scope - What We Built, What the Gaps Are, and How to Think About It</h2>
+    <p style="color:#5a7896;margin-bottom:28px;">This is a proof-of-concept and a working demonstration of the core AI routing capability - not a finished end-to-end production system. The goal is to show the customer what is possible with Agentforce and give them a clear path forward to build the full solution on their own platform.</p>
 
     <!-- FRAMING -->
-    <div class="note"><strong>How to position this to the customer:</strong> "We are not handing you a finished product. We are proving that the core capability works — AI reads a case, finds the right policy template automatically, and produces a personalised, compliance-accurate draft. The plumbing is real and tested. What you build on top of it is yours to extend."</div>
+    <div class="note"><strong>How to position this to the customer:</strong> "We are not handing you a finished product. We are proving that the core capability works - AI reads a case, finds the right policy template automatically, and produces a personalised, compliance-accurate draft. The plumbing is real and tested. What you build on top of it is yours to extend."</div>
 
     <!-- WHAT WE BUILT -->
-    <h3>What We Built — Working and Tested</h3>
+    <h3>What We Built - Working and Tested</h3>
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
-      <div class="pass" style="margin:0;"><strong>AI template routing — deterministic and reliable</strong><br/>Case Type + Case Reason → CMT routing index → EmailTemplate body fetched at runtime. Tested across 10 templates and 8 routing rules covering credentialing and patient support scenarios. Zero hardcoded content in the Flow.</div>
-      <div class="pass" style="margin:0;"><strong>Two entry points — First Contact and Reply</strong><br/>Custom GenAI Prompt Templates for both scenarios. First Contact generates an opening email with the full policy checklist. Reply reads the full email thread and answers the provider's specific questions without repeating what was already sent.</div>
-      <div class="pass" style="margin:0;"><strong>Two-layer intelligence — policy structure + personalisation</strong><br/>EmailTemplate body = mandatory policy language (forms, SLAs, compliance statements) that the AI cannot change. Case description + thread = personalisation layer. Both layers proven in live testing against real cases (00001156, 00001157).</div>
-      <div class="pass" style="margin:0;"><strong>Content team ownership — no deployment for template edits</strong><br/>EmailTemplate bodies live in Setup → Email Templates. Content and compliance teams can edit policy language instantly without admin access or deployment. CMT routing records are managed by admin with no code changes.</div>
-      <div class="pass" style="margin:0;"><strong>Extensible by design — new scenarios in two steps</strong><br/>Adding a new scenario requires only: create an EmailTemplate body + create a CMT routing record pointing to it. No Flow changes, no developer needed. Proven architecture pattern.</div>
+      <div class="pass" style="margin:0;"><strong>AI template routing - deterministic and reliable</strong><br/>Case Type + Case Reason → CMT routing index → EmailTemplate body fetched at runtime. Tested across 10 templates and 8 routing rules covering credentialing and patient support scenarios. Zero hardcoded content in the Flow.</div>
+      <div class="pass" style="margin:0;"><strong>Two entry points - First Contact and Reply</strong><br/>Custom GenAI Prompt Templates for both scenarios. First Contact generates an opening email with the full policy checklist. Reply reads the full email thread and answers the provider's specific questions without repeating what was already sent.</div>
+      <div class="pass" style="margin:0;"><strong>Two-layer intelligence - policy structure + personalisation</strong><br/>EmailTemplate body = mandatory policy language (forms, SLAs, compliance statements) that the AI cannot change. Case description + thread = personalisation layer. Both layers proven in live testing against real cases (00001156, 00001157).</div>
+      <div class="pass" style="margin:0;"><strong>Content team ownership - no deployment for template edits</strong><br/>EmailTemplate bodies live in Setup → Email Templates. Content and compliance teams can edit policy language instantly without admin access or deployment. CMT routing records are managed by admin with no code changes.</div>
+      <div class="pass" style="margin:0;"><strong>Extensible by design - new scenarios in two steps</strong><br/>Adding a new scenario requires only: create an EmailTemplate body + create a CMT routing record pointing to it. No Flow changes, no developer needed. Proven architecture pattern.</div>
     </div>
 
     <!-- THE GAPS -->
-    <h3>Gaps — What Is Not in This Proof of Concept</h3>
+    <h3>Gaps - What Is Not in This Proof of Concept</h3>
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
 
       <div class="warn" style="margin:0;">
-        <strong>Gap 1 — Historical case mining and template voting</strong><br/>
-        <strong>What the customer asked for:</strong> The system should look at historically successful closed cases, see which templates experienced reps used, and vote on the "winning template" — essentially learning from past rep behaviour.<br/><br/>
-        <strong>What we built instead:</strong> Deterministic routing — Case Type + Reason → CMT → right template, every time.<br/><br/>
-        <strong>Why our approach is actually better:</strong> The customer's own transcript reveals the problem with the voting model — different reps used different templates for the same case. Rohit used one, others used another. A vote would pick whoever handled the most cases, not whoever was most accurate. Our CMT routing puts the right human (your compliance team) in control of which template is correct, then enforces it consistently. That is more reliable and auditable than learned behaviour.<br/><br/>
-        <strong>If they still want historical mining:</strong> This would require Data Cloud or a custom analytics layer to read EmailMessage history, identify which template was used per case outcome, and surface a recommendation. That is a separate, larger engagement — not part of this proof of concept.
+        <strong>Gap 1 - Historical case mining and template voting</strong><br/>
+        <strong>What the customer asked for:</strong> The system should look at historically successful closed cases, see which templates experienced reps used, and vote on the "winning template" - essentially learning from past rep behaviour.<br/><br/>
+        <strong>What we built instead:</strong> Deterministic routing - Case Type + Reason → CMT → right template, every time.<br/><br/>
+        <strong>Why our approach is actually better:</strong> The customer's own transcript reveals the problem with the voting model - different reps used different templates for the same case. Rohit used one, others used another. A vote would pick whoever handled the most cases, not whoever was most accurate. Our CMT routing puts the right human (your compliance team) in control of which template is correct, then enforces it consistently. That is more reliable and auditable than learned behaviour.<br/><br/>
+        <strong>If they still want historical mining:</strong> This would require Data Cloud or a custom analytics layer to read EmailMessage history, identify which template was used per case outcome, and surface a recommendation. That is a separate, larger engagement - not part of this proof of concept.
       </div>
 
       <div class="warn" style="margin:0;">
-        <strong>Gap 2 — Template used is not tracked on EmailMessage</strong><br/>
-        <strong>What the customer asked about:</strong> Shankar specifically asked — "can you track down what template was used to build out that outbound email?"<br/><br/>
+        <strong>Gap 2 - Template used is not tracked on EmailMessage</strong><br/>
+        <strong>What the customer asked about:</strong> Shankar specifically asked - "can you track down what template was used to build out that outbound email?"<br/><br/>
         <strong>Current state:</strong> The standard Salesforce EmailMessage object does not store which EmailTemplate or Prompt Template generated the email body. Once the draft is sent, that link is lost.<br/><br/>
-        <strong>Path forward — custom LWC development:</strong> A custom field on EmailMessage (e.g. <span class="mono">AI_Template_Used__c</span>) could be stamped at send time via a custom LWC component or a Flow trigger. This gives the customer the audit trail they want. This is a scoped piece of custom development the customer can add — it does not require changes to the AI routing layer.
+        <strong>Path forward - custom LWC development:</strong> A custom field on EmailMessage (e.g. <span class="mono">AI_Template_Used__c</span>) could be stamped at send time via a custom LWC component or a Flow trigger. This gives the customer the audit trail they want. This is a scoped piece of custom development the customer can add - it does not require changes to the AI routing layer.
       </div>
 
       <div class="warn" style="margin:0;">
-        <strong>Gap 3 — The 1,600 email template migration</strong><br/>
+        <strong>Gap 3 - The 1,600 email template migration</strong><br/>
         <strong>What exists today:</strong> The customer org has approximately 1,600 email templates built up over many years. This proof of concept covers 10 scenarios.<br/><br/>
-        <strong>What is needed for production:</strong> The customer needs to audit their 1,600 templates, identify which scenarios are still active and relevant, create corresponding EmailTemplate records in the new folder, and create CMT routing records for each one. This is a content and admin exercise — not a technical development problem. It can be done incrementally, starting with the highest-volume case types.<br/><br/>
+        <strong>What is needed for production:</strong> The customer needs to audit their 1,600 templates, identify which scenarios are still active and relevant, create corresponding EmailTemplate records in the new folder, and create CMT routing records for each one. This is a content and admin exercise - not a technical development problem. It can be done incrementally, starting with the highest-volume case types.<br/><br/>
         <strong>Suggested approach:</strong> Start with the top 10–15 case types by volume. Prove value. Expand from there. The architecture supports as many scenarios as needed with no changes to the Flow.
       </div>
 
       <div class="warn" style="margin:0;">
-        <strong>Gap 4 — Custom LWC component integration</strong><br/>
+        <strong>Gap 4 - Custom LWC component integration</strong><br/>
         <strong>Current state in the demo:</strong> The CSR accesses Draft with AI through the standard Agentforce "Draft with AI" button on the case email composer.<br/><br/>
         <strong>What the customer currently has:</strong> A custom LWC component page with its own navigation and multiple clicks to reach the email composer. The proof of concept does not integrate with or replace that custom component.<br/><br/>
-        <strong>Path forward:</strong> If the customer wants to embed the AI drafting capability directly inside their existing custom LWC page — reducing clicks and keeping the CSR in their familiar workflow — that is a custom LWC development task. The AI routing layer (CMT + Flow + Prompt Templates) stays exactly the same. Only the surface the CSR interacts with changes.
+        <strong>Path forward:</strong> If the customer wants to embed the AI drafting capability directly inside their existing custom LWC page - reducing clicks and keeping the CSR in their familiar workflow - that is a custom LWC development task. The AI routing layer (CMT + Flow + Prompt Templates) stays exactly the same. Only the surface the CSR interacts with changes.
       </div>
 
     </div>
 
     <!-- PATH FORWARD -->
-    <h3>Path Forward — What Custom Development Covers the Gaps</h3>
+    <h3>Path Forward - What Custom Development Covers the Gaps</h3>
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
-      <div class="note" style="margin:0;"><strong>Custom LWC Development (Gaps 2 + 4)</strong><br/>A single custom LWC engagement covers both remaining gaps: embed the Draft with AI trigger inside the existing CSR component (eliminating extra clicks) and stamp <span class="mono">AI_Template_Used__c</span> on EmailMessage at send time (giving Shankar the audit trail). The AI routing layer does not change — the LWC is only the surface layer on top of it.</div>
-      <div class="note" style="margin:0;"><strong>Template Migration (Gap 3)</strong><br/>Not a development task — an admin and content exercise. SA team can provide a migration template (spreadsheet) mapping existing email templates to CMT records. Customer admin and content team execute it incrementally by case type volume.</div>
+      <div class="note" style="margin:0;"><strong>Custom LWC Development (Gaps 2 + 4)</strong><br/>A single custom LWC engagement covers both remaining gaps: embed the Draft with AI trigger inside the existing CSR component (eliminating extra clicks) and stamp <span class="mono">AI_Template_Used__c</span> on EmailMessage at send time (giving Shankar the audit trail). The AI routing layer does not change - the LWC is only the surface layer on top of it.</div>
+      <div class="note" style="margin:0;"><strong>Template Migration (Gap 3)</strong><br/>Not a development task - an admin and content exercise. SA team can provide a migration template (spreadsheet) mapping existing email templates to CMT records. Customer admin and content team execute it incrementally by case type volume.</div>
       <div class="note" style="margin:0;"><strong>Historical mining (Gap 1)</strong><br/>Not recommended as a first step. Prove the deterministic routing model first. If the customer still wants historical learning after seeing the routing in production, that conversation belongs in a separate Data Cloud or Analytics Cloud engagement.</div>
     </div>
 
     <!-- POSITIONING STATEMENT -->
     <h3>The One-Paragraph Positioning Statement</h3>
     <div style="background:#f0f4ff;border:2px solid #0070d2;border-radius:10px;padding:20px 24px;font-size:13px;color:#003580;line-height:1.75;">
-      "What we are showing you today is the core AI capability working end to end — case comes in, system finds the right policy template automatically, Einstein personalises the draft, CSR reviews and sends. That core works right now and we have tested it. What we are <em>not</em> delivering is a finished production system with your 1,600 templates migrated, your custom LWC integrated, and your EmailMessage audit trail built. Those are the next steps and they are well-defined. The routing architecture is proven — extending it to your full template library and your existing UI is a scoped implementation effort, not a research problem."
+      "What we are showing you today is the core AI capability working end to end - case comes in, system finds the right policy template automatically, Einstein personalises the draft, CSR reviews and sends. That core works right now and we have tested it. What we are <em>not</em> delivering is a finished production system with your 1,600 templates migrated, your custom LWC integrated, and your EmailMessage audit trail built. Those are the next steps and they are well-defined. The routing architecture is proven - extending it to your full template library and your existing UI is a scoped implementation effort, not a research problem."
     </div>
 
   </div><!-- end Solution Scope -->
@@ -1000,14 +1083,14 @@ Warm regards,
   <div class="panel" id="tab-customer">
 
     <h2>Customer Summary</h2>
-    <p style="color:#5a7896;margin-bottom:28px;">A high-level view of what has been delivered, where the gaps are, and the recommended path to close them. No technical detail — written for a customer conversation.</p>
+    <p style="color:#5a7896;margin-bottom:28px;">A high-level view of what has been delivered, where the gaps are, and the recommended path to close them. No technical detail - written for a customer conversation.</p>
 
     <!-- CUSTOMER ASK -->
     <h3>What the Customer Asked For</h3>
     <div style="background:#f0f4ff;border:1px solid #aed6f1;border-left:4px solid #0070d2;border-radius:8px;padding:18px 22px;margin-bottom:32px;">
-      <p style="margin-bottom:10px;color:#003580;">The Provider Services team came in with one core problem: <strong>CSRs — especially new joiners — have no reliable way to know which email template to use out of approximately 1,600 email templates in the org.</strong> Different reps use different templates for the same case type, leading to inconsistent responses and missed policy requirements.</p>
-      <p style="margin-bottom:10px;color:#003580;">Their original ask was for Agentforce to <strong>look at historically successful closed cases, learn which templates experienced reps used, and recommend the "winning" template</strong> for each new case — essentially a voting model based on past rep behaviour.</p>
-      <p style="margin-bottom:0;color:#003580;">They also wanted the system to <strong>read the full email thread</strong> on a case before drafting a reply, so CSRs are not repeating information already sent. And they wanted a <strong>human in the loop</strong> — the CSR reviews and approves every draft before it goes out.</p>
+      <p style="margin-bottom:10px;color:#003580;">The Provider Services team came in with one core problem: <strong>CSRs - especially new joiners - have no reliable way to know which email template to use out of approximately 1,600 email templates in the org.</strong> Different reps use different templates for the same case type, leading to inconsistent responses and missed policy requirements.</p>
+      <p style="margin-bottom:10px;color:#003580;">Their original ask was for Agentforce to <strong>look at historically successful closed cases, learn which templates experienced reps used, and recommend the "winning" template</strong> for each new case - essentially a voting model based on past rep behaviour.</p>
+      <p style="margin-bottom:0;color:#003580;">They also wanted the system to <strong>read the full email thread</strong> on a case before drafting a reply, so CSRs are not repeating information already sent. And they wanted a <strong>human in the loop</strong> - the CSR reviews and approves every draft before it goes out.</p>
     </div>
 
     <!-- WHAT WE DELIVERED -->
@@ -1017,54 +1100,54 @@ Warm regards,
       <div style="background:#f4faf4;border:1px solid #28a745;border-left:4px solid #28a745;border-radius:8px;padding:16px 18px;">
         <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#28a745;margin-bottom:5px;">Delivered</div>
         <div style="font-size:13px;font-weight:800;color:#155724;margin-bottom:6px;">Automatic template selection</div>
-        <div style="font-size:12.5px;color:#1a4a2a;line-height:1.65;">The system reads the case and automatically finds the right email template. No CSR needs to know which template to use — the AI picks it based on case type and reason.</div>
+        <div style="font-size:12.5px;color:#1a4a2a;line-height:1.65;">The system reads the case and automatically finds the right email template. No CSR needs to know which template to use - the AI picks it based on case type and reason.</div>
       </div>
 
       <div style="background:#f4faf4;border:1px solid #28a745;border-left:4px solid #28a745;border-radius:8px;padding:16px 18px;">
         <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#28a745;margin-bottom:5px;">Delivered</div>
         <div style="font-size:13px;font-weight:800;color:#155724;margin-bottom:6px;">Policy-accurate drafts every time</div>
-        <div style="font-size:12.5px;color:#1a4a2a;line-height:1.65;">Mandatory language — form references, SLAs, compliance statements — comes from the template and cannot be changed by the AI. Every draft is consistent regardless of which CSR generated it.</div>
+        <div style="font-size:12.5px;color:#1a4a2a;line-height:1.65;">Mandatory language - form references, SLAs, compliance statements - comes from the template and cannot be changed by the AI. Every draft is consistent regardless of which CSR generated it.</div>
       </div>
 
       <div style="background:#f4faf4;border:1px solid #28a745;border-left:4px solid #28a745;border-radius:8px;padding:16px 18px;">
         <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#28a745;margin-bottom:5px;">Delivered</div>
-        <div style="font-size:13px;font-weight:800;color:#155724;margin-bottom:6px;">First contact and reply — both covered</div>
+        <div style="font-size:13px;font-weight:800;color:#155724;margin-bottom:6px;">First contact and reply - both covered</div>
         <div style="font-size:12.5px;color:#1a4a2a;line-height:1.65;">Opening emails and follow-up replies are both handled. The reply AI reads the full email thread before drafting so it never repeats what was already sent.</div>
       </div>
 
       <div style="background:#f4faf4;border:1px solid #28a745;border-left:4px solid #28a745;border-radius:8px;padding:16px 18px;">
         <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#28a745;margin-bottom:5px;">Delivered</div>
-        <div style="font-size:13px;font-weight:800;color:#155724;margin-bottom:6px;">Your team owns the content — no developer needed</div>
+        <div style="font-size:13px;font-weight:800;color:#155724;margin-bottom:6px;">Your team owns the content - no developer needed</div>
         <div style="font-size:12.5px;color:#1a4a2a;line-height:1.65;">Template language is edited by your content team directly in Salesforce Setup. Changes are live immediately. Adding a new scenario is a two-step admin task with no code or deployment.</div>
       </div>
 
     </div>
 
     <!-- GAPS -->
-    <h3>Gaps — What Is Not in the Current Proof of Concept</h3>
+    <h3>Gaps - What Is Not in the Current Proof of Concept</h3>
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:32px;">
 
       <div style="background:#fff8e1;border:1px solid #ffc107;border-left:4px solid #ffc107;border-radius:8px;padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
         <div>
           <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#856404;margin-bottom:5px;">Gap</div>
           <div style="font-size:13px;font-weight:800;color:#664d03;margin-bottom:5px;">Historical case learning</div>
-          <div style="font-size:12.5px;color:#7a5c00;line-height:1.65;">The current solution uses fixed routing rules — not historical case data — to pick the template. The original ask was for the AI to learn from past rep behaviour and vote on the best template.</div>
+          <div style="font-size:12.5px;color:#7a5c00;line-height:1.65;">The current solution uses fixed routing rules - not historical case data - to pick the template. The original ask was for the AI to learn from past rep behaviour and vote on the best template.</div>
         </div>
         <div style="background:#fff3cd;border-radius:6px;padding:12px 14px;">
           <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#856404;margin-bottom:5px;">Recommendation</div>
-          <div style="font-size:12.5px;color:#664d03;line-height:1.65;">The fixed routing model is more reliable and auditable — the voting approach breaks down when different reps used different templates for the same case. If historical learning is still needed in future, this is a <strong>Data Cloud</strong> engagement.</div>
+          <div style="font-size:12.5px;color:#664d03;line-height:1.65;">The fixed routing model is more reliable and auditable - the voting approach breaks down when different reps used different templates for the same case. If historical learning is still needed in future, this is a <strong>Data Cloud</strong> engagement.</div>
         </div>
       </div>
 
       <div style="background:#fff8e1;border:1px solid #ffc107;border-left:4px solid #ffc107;border-radius:8px;padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
         <div>
           <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#856404;margin-bottom:5px;">Gap</div>
-          <div style="font-size:13px;font-weight:800;color:#664d03;margin-bottom:5px;">Audit trail — which template was used</div>
+          <div style="font-size:13px;font-weight:800;color:#664d03;margin-bottom:5px;">Audit trail - which template was used</div>
           <div style="font-size:12.5px;color:#7a5c00;line-height:1.65;">Once an email is sent, there is no record of which template the AI used to generate it. The team asked specifically whether this could be tracked.</div>
         </div>
         <div style="background:#fff3cd;border-radius:6px;padding:12px 14px;">
           <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#856404;margin-bottom:5px;">Recommendation</div>
-          <div style="font-size:12.5px;color:#664d03;line-height:1.65;">Stamp the template name on the EmailMessage record at send time. This is a targeted <strong>custom LWC</strong> or Flow development task — scoped, low risk, no changes to the AI routing layer.<br><strong>Path forward</strong> — custom LWC development: A custom field on EmailMessage (e.g. AI_Template_Used__c) could be stamped at send time via a custom LWC component or a Flow trigger. </div>
+          <div style="font-size:12.5px;color:#664d03;line-height:1.65;">Stamp the template name on the EmailMessage record at send time. This is a targeted <strong>custom LWC</strong> or Flow development task - scoped, low risk, no changes to the AI routing layer.<br><strong>Path forward</strong> - custom LWC development: A custom field on EmailMessage (e.g. AI_Template_Used__c) could be stamped at send time via a custom LWC component or a Flow trigger. </div>
         </div>
       </div>
 
@@ -1076,14 +1159,14 @@ Warm regards,
         </div>
         <div style="background:#fff3cd;border-radius:6px;padding:12px 14px;">
           <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#856404;margin-bottom:5px;">Recommendation</div>
-          <div style="font-size:12.5px;color:#664d03;line-height:1.65;">Embed the Draft with AI trigger inside the existing <strong>custom LWC</strong>. The AI routing layer stays exactly the same — only the surface the CSR sees changes. This reduces clicks and keeps CSRs in their familiar workflow.</div>
+          <div style="font-size:12.5px;color:#664d03;line-height:1.65;">Embed the Draft with AI trigger inside the existing <strong>custom LWC</strong>. The AI routing layer stays exactly the same - only the surface the CSR sees changes. This reduces clicks and keeps CSRs in their familiar workflow.</div>
         </div>
       </div>
 
       <div style="background:#fff8e1;border:1px solid #ffc107;border-left:4px solid #ffc107;border-radius:8px;padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
         <div>
           <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#856404;margin-bottom:5px;">Gap</div>
-          <div style="font-size:13px;font-weight:800;color:#664d03;margin-bottom:5px;">Full template library — 1,600 templates</div>
+          <div style="font-size:13px;font-weight:800;color:#664d03;margin-bottom:5px;">Full template library - 1,600 templates</div>
           <div style="font-size:12.5px;color:#7a5c00;line-height:1.65;">The proof of concept covers 10 scenarios. Your org has approximately 1,600 email templates. A production rollout requires identifying which are still active and creating routing rules for each one.</div>
         </div>
         <div style="background:#fff3cd;border-radius:6px;padding:12px 14px;">
@@ -1099,19 +1182,19 @@ Warm regards,
     <div style="display:flex;flex-direction:column;gap:8px;">
       <div style="display:flex;gap:14px;align-items:flex-start;background:#f0f4ff;border:1px solid #cce0ff;border-radius:8px;padding:14px 16px;">
         <div style="width:28px;height:28px;border-radius:50%;background:#0070d2;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
-        <div style="font-size:13px;color:#003580;line-height:1.65;"><strong>Deploy and validate in sandbox</strong> — run the 10 test cases in this testing guide against the customer's sandbox org to confirm routing and draft quality on their data.</div>
+        <div style="font-size:13px;color:#003580;line-height:1.65;"><strong>Deploy and validate in sandbox</strong> - run the 10 test cases in this testing guide against the customer's sandbox org to confirm routing and draft quality on their data.</div>
       </div>
       <div style="display:flex;gap:14px;align-items:flex-start;background:#f0f4ff;border:1px solid #cce0ff;border-radius:8px;padding:14px 16px;">
         <div style="width:28px;height:28px;border-radius:50%;background:#0070d2;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
-        <div style="font-size:13px;color:#003580;line-height:1.65;"><strong>Identify top 10–15 case types by volume</strong> — customer admin and content team map existing templates to the new routing structure. SA team provides a migration guide.</div>
+        <div style="font-size:13px;color:#003580;line-height:1.65;"><strong>Identify top 10–15 case types by volume</strong> - customer admin and content team map existing templates to the new routing structure. SA team provides a migration guide.</div>
       </div>
       <div style="display:flex;gap:14px;align-items:flex-start;background:#f0f4ff;border:1px solid #cce0ff;border-radius:8px;padding:14px 16px;">
         <div style="width:28px;height:28px;border-radius:50%;background:#0070d2;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
-        <div style="font-size:13px;color:#003580;line-height:1.65;"><strong>Custom LWC engagement</strong> — scope and deliver the two LWC items together: embed Draft with AI in the existing CSR component + stamp template name on EmailMessage at send time.</div>
+        <div style="font-size:13px;color:#003580;line-height:1.65;"><strong>Custom LWC engagement</strong> - scope and deliver the two LWC items together: embed Draft with AI in the existing CSR component + stamp template name on EmailMessage at send time.</div>
       </div>
       <div style="display:flex;gap:14px;align-items:flex-start;background:#f0f4ff;border:1px solid #cce0ff;border-radius:8px;padding:14px 16px;">
         <div style="width:28px;height:28px;border-radius:50%;background:#0070d2;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
-        <div style="font-size:13px;color:#003580;line-height:1.65;"><strong>Historical learning — revisit after step 1–3</strong> — once the deterministic routing is in production and CSRs are using it, revisit whether Data Cloud-based historical learning adds value on top of it.</div>
+        <div style="font-size:13px;color:#003580;line-height:1.65;"><strong>Historical learning - revisit after step 1–3</strong> - once the deterministic routing is in production and CSRs are using it, revisit whether Data Cloud-based historical learning adds value on top of it.</div>
       </div>
     </div>
 

@@ -25,7 +25,7 @@ CSR Name:     {!$Input:Sender.FirstName} {!$Input:Sender.LastName}
 
 ### INSTRUCTIONS
 1. State which template you selected on line 1: &quot;Selected template: [Template Name]&quot;
-2. Then output the complete email body — fill every [placeholder] with real values from the Case Details above.
+2. Then output the complete email body - fill every [placeholder] with real values from the Case Details above.
 3. Do NOT invent form names, case numbers, or contact details. Use only what is provided.
 4. Do NOT remove any form names, legal statements, or processing time commitments from the selected template.
 5. Adjust the tone to be warm and professional. The email must read as written by a human, not a system.

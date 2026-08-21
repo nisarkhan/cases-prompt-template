@@ -24,6 +24,6 @@
     </values>
     <values>
         <field>When_To_Use__c</field>
-        <value xsi:type="xsd:string">Use when a provider reports a patient adverse event, unexpected reaction, or treatment complication following an Allergan Moxie product administration. This is a compliance-sensitive communication — all mandatory reporting steps must be preserved exactly.</value>
+        <value xsi:type="xsd:string">Use when a provider reports a patient adverse event, unexpected reaction, or treatment complication following an Allergan Moxie product administration. This is a compliance-sensitive communication - all mandatory reporting steps must be preserved exactly.</value>
     </values>
 </CustomMetadata>

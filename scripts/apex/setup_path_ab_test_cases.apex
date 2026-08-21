@@ -5,20 +5,20 @@
  * Run with: sf apex run --file scripts/apex/setup_path_ab_test_cases.apex --target-org allergan-moxie
  *
  * Creates:
- *   Path A cases (no email thread) x3  — one per template
- *   Path B cases (email thread)    x3  — one per template
+ *   Path A cases (no email thread) x3  - one per template
+ *   Path B cases (email thread)    x3  - one per template
  */
 
 Account acct = [SELECT Id FROM Account WHERE Name = 'Sunset Aesthetics Medical Group' LIMIT 1];
 Contact cont = [SELECT Id FROM Contact WHERE Email = 'sarah.chen@sunsetaesthetics.example.com' LIMIT 1];
 
 // ══════════════════════════════════════════════════════════════
-// PATH A CASES — no emails, first contact
+// PATH A CASES - no emails, first contact
 // ══════════════════════════════════════════════════════════════
 
-// PATH A-1 — Template A (Medical Director Change)
+// PATH A-1 - Template A (Medical Director Change)
 Case pathA1 = new Case(
-    Subject     = 'TEST Path A — Medical Director Change - Dr. Patel replacing Dr. Kim',
+    Subject     = 'TEST Path A - Medical Director Change - Dr. Patel replacing Dr. Kim',
     Status      = 'New',
     Type        = 'Account Support',
     Reason      = 'Credentialing',
@@ -29,9 +29,9 @@ Case pathA1 = new Case(
     Description = 'Our current Medical Director Dr. Kim is relocating to New York at the end of the quarter. We would like to transition the Medical Director role to Dr. Anita Patel who has been with our practice for 6 months and holds an active California medical license (License #CA-891234). Please advise on the process and any forms we need to complete.'
 );
 
-// PATH A-2 — Template B (New Practice Enrollment)
+// PATH A-2 - Template B (New Practice Enrollment)
 Case pathA2 = new Case(
-    Subject     = 'TEST Path A — New Practice Enrollment - Pacific Coast Aesthetics',
+    Subject     = 'TEST Path A - New Practice Enrollment - Pacific Coast Aesthetics',
     Status      = 'New',
     Type        = 'Account Support',
     Reason      = 'Credentialing',
@@ -42,9 +42,9 @@ Case pathA2 = new Case(
     Description = 'We are a new aesthetic medical practice opening at 789 Pacific Coast Highway, Malibu, CA 90265. Dr. Elena Vasquez will serve as Medical Director. We would like to enroll with Allergan Moxie to access the full product portfolio including BOTOX Cosmetic and Juvederm. Dr. Vasquez holds active licenses in CA and NV. The practice carries $2M/$4M malpractice coverage. We expect approximately 150 patients per month once enrolled.'
 );
 
-// PATH A-3 — Template C (Not Eligible)
+// PATH A-3 - Template C (Not Eligible)
 Case pathA3 = new Case(
-    Subject     = 'TEST Path A — Product Access Review - Eligibility Determination Needed',
+    Subject     = 'TEST Path A - Product Access Review - Eligibility Determination Needed',
     Status      = 'New',
     Type        = 'Account Support',
     Reason      = 'Credentialing',
@@ -58,12 +58,12 @@ Case pathA3 = new Case(
 insert new List<Case>{ pathA1, pathA2, pathA3 };
 
 // ══════════════════════════════════════════════════════════════
-// PATH B CASES — existing email thread
+// PATH B CASES - existing email thread
 // ══════════════════════════════════════════════════════════════
 
-// PATH B-1 — Template A: Medical Director Change with thread
+// PATH B-1 - Template A: Medical Director Change with thread
 Case pathB1 = new Case(
-    Subject     = 'TEST Path B — Medical Director Change - Forms Sent, Awaiting Signatures',
+    Subject     = 'TEST Path B - Medical Director Change - Forms Sent, Awaiting Signatures',
     Status      = 'In Progress',
     Type        = 'Account Support',
     Reason      = 'Credentialing',
@@ -74,9 +74,9 @@ Case pathB1 = new Case(
     Description = 'Follow-up on Medical Director change from Dr. Kim to Dr. Patel. Form AM-CMD-001 was sent 5 days ago. Customer is asking about digital signature and deadline due to Dr. Kim travelling.'
 );
 
-// PATH B-2 — Template B: New Practice Enrollment with thread
+// PATH B-2 - Template B: New Practice Enrollment with thread
 Case pathB2 = new Case(
-    Subject     = 'TEST Path B — New Practice Enrollment - Missing Insurance Certificate',
+    Subject     = 'TEST Path B - New Practice Enrollment - Missing Insurance Certificate',
     Status      = 'In Progress',
     Type        = 'Account Support',
     Reason      = 'Credentialing',
@@ -87,9 +87,9 @@ Case pathB2 = new Case(
     Description = 'Pacific Coast Aesthetics submitted enrollment forms but did not include the malpractice insurance declaration page. Forms AM-PE-002 and AM-PC-005 received. DEA certificate received. Business license received. Only the insurance certificate is outstanding.'
 );
 
-// PATH B-3 — Template C: Not Eligible with thread (customer is disputing)
+// PATH B-3 - Template C: Not Eligible with thread (customer is disputing)
 Case pathB3 = new Case(
-    Subject     = 'TEST Path B — Product Access Review - Customer Disputing Eligibility Decision',
+    Subject     = 'TEST Path B - Product Access Review - Customer Disputing Eligibility Decision',
     Status      = 'In Progress',
     Type        = 'Account Support',
     Reason      = 'Credentialing',
@@ -97,7 +97,7 @@ Case pathB3 = new Case(
     ContactId   = cont.Id,
     Priority    = 'High',
     Origin      = 'Email',
-    Description = 'Account was notified they do not meet eligibility requirements (no active CA license, insufficient insurance). Customer is disputing — they claim the CA license was renewed last month and they have upgraded their insurance coverage. They have submitted supporting documents for formal review within the 30-day dispute window.'
+    Description = 'Account was notified they do not meet eligibility requirements (no active CA license, insufficient insurance). Customer is disputing - they claim the CA license was renewed last month and they have upgraded their insurance coverage. They have submitted supporting documents for formal review within the 30-day dispute window.'
 );
 
 insert new List<Case>{ pathB1, pathB2, pathB3 };
@@ -108,7 +108,7 @@ insert new List<Case>{ pathB1, pathB2, pathB3 };
 
 // ── Path B-1 thread: Medical Director Change ──────────────────
 
-// Email 1 — Customer's initial request (Day -8)
+// Email 1 - Customer's initial request (Day -8)
 insert new EmailMessage(
     ParentId    = pathB1.Id,
     Subject     = 'Medical Director Change - Dr. Patel replacing Dr. Kim',
@@ -120,7 +120,7 @@ insert new EmailMessage(
     Status      = '0'
 );
 
-// Email 2 — CSR first response (Day -7)
+// Email 2 - CSR first response (Day -7)
 insert new EmailMessage(
     ParentId    = pathB1.Id,
     Subject     = 'Re: Medical Director Change - Dr. Patel replacing Dr. Kim',
@@ -132,7 +132,7 @@ insert new EmailMessage(
     Status      = '3'
 );
 
-// Email 3 — Customer follow-up (Day -1): Dr. Kim is travelling, asks about digital signature and deadline
+// Email 3 - Customer follow-up (Day -1): Dr. Kim is travelling, asks about digital signature and deadline
 insert new EmailMessage(
     ParentId    = pathB1.Id,
     Subject     = 'Re: Medical Director Change - Dr. Patel replacing Dr. Kim',
@@ -146,7 +146,7 @@ insert new EmailMessage(
 
 // ── Path B-2 thread: New Practice Enrollment ──────────────────
 
-// Email 1 — Customer submits forms (Day -10)
+// Email 1 - Customer submits forms (Day -10)
 insert new EmailMessage(
     ParentId    = pathB2.Id,
     Subject     = 'New Provider Enrollment - Pacific Coast Aesthetics',
@@ -158,11 +158,11 @@ insert new EmailMessage(
     Status      = '0'
 );
 
-// Email 2 — CSR acknowledges and flags missing document (Day -8)
+// Email 2 - CSR acknowledges and flags missing document (Day -8)
 insert new EmailMessage(
     ParentId    = pathB2.Id,
     Subject     = 'Re: New Provider Enrollment - Pacific Coast Aesthetics',
-    TextBody    = 'Dear Sarah,\n\nThank you for submitting your enrollment documents for Pacific Coast Aesthetics. We have received and reviewed the following:\n\n✓ Form AM-PE-002 (signed)\n✓ Form AM-PC-005 (signed)\n✓ DEA Certificate\n✓ Business License\n\nWe are still missing one required document:\n- Proof of malpractice/liability insurance — minimum $1,000,000 per occurrence / $3,000,000 aggregate (insurance declaration page required)\n\nOnce we receive this document, we can proceed with the credentialing review. Processing takes 10-14 business days from receipt of a complete application.\n\nKind regards,\nAmanda P.\nProvider Enrollment Team, Allergan Moxie',
+    TextBody    = 'Dear Sarah,\n\nThank you for submitting your enrollment documents for Pacific Coast Aesthetics. We have received and reviewed the following:\n\n✓ Form AM-PE-002 (signed)\n✓ Form AM-PC-005 (signed)\n✓ DEA Certificate\n✓ Business License\n\nWe are still missing one required document:\n- Proof of malpractice/liability insurance - minimum $1,000,000 per occurrence / $3,000,000 aggregate (insurance declaration page required)\n\nOnce we receive this document, we can proceed with the credentialing review. Processing takes 10-14 business days from receipt of a complete application.\n\nKind regards,\nAmanda P.\nProvider Enrollment Team, Allergan Moxie',
     FromAddress = 'providerservices@allergancmoxie.example.com',
     ToAddress   = 'sarah.chen@sunsetaesthetics.example.com',
     Incoming    = false,
@@ -170,7 +170,7 @@ insert new EmailMessage(
     Status      = '3'
 );
 
-// Email 3 — Customer asks a question about coverage amount (Day -1)
+// Email 3 - Customer asks a question about coverage amount (Day -1)
 insert new EmailMessage(
     ParentId    = pathB2.Id,
     Subject     = 'Re: New Provider Enrollment - Pacific Coast Aesthetics',
@@ -182,9 +182,9 @@ insert new EmailMessage(
     Status      = '0'
 );
 
-// ── Path B-3 thread: Not Eligible — Customer disputing ────────
+// ── Path B-3 thread: Not Eligible - Customer disputing ────────
 
-// Email 1 — CSR sent not-eligible determination (Day -12)
+// Email 1 - CSR sent not-eligible determination (Day -12)
 insert new EmailMessage(
     ParentId    = pathB3.Id,
     Subject     = 'Product Access Review - Eligibility Determination',
@@ -196,11 +196,11 @@ insert new EmailMessage(
     Status      = '3'
 );
 
-// Email 2 — Customer disputes with evidence (Day -5)
+// Email 2 - Customer disputes with evidence (Day -5)
 insert new EmailMessage(
     ParentId    = pathB3.Id,
     Subject     = 'Re: Product Access Review - Eligibility Determination',
-    TextBody    = 'Dear Carla,\n\nThank you for your response. We believe the eligibility determination may be based on outdated information. We would like to formally dispute this under the 30-day review process.\n\nAttached please find:\n1. Dr. Patel\'s renewed California medical license — issued 3 weeks ago (License #CA-891234, valid through 2027).\n2. Updated malpractice insurance declaration page — effective last week, coverage is now $2M per occurrence / $4M aggregate, which exceeds the minimum requirement.\n\nWe respectfully request a formal review of our eligibility status in light of these updated documents.\n\nThank you,\nSarah Chen\nSunset Aesthetics Medical Group',
+    TextBody    = 'Dear Carla,\n\nThank you for your response. We believe the eligibility determination may be based on outdated information. We would like to formally dispute this under the 30-day review process.\n\nAttached please find:\n1. Dr. Patel\'s renewed California medical license - issued 3 weeks ago (License #CA-891234, valid through 2027).\n2. Updated malpractice insurance declaration page - effective last week, coverage is now $2M per occurrence / $4M aggregate, which exceeds the minimum requirement.\n\nWe respectfully request a formal review of our eligibility status in light of these updated documents.\n\nThank you,\nSarah Chen\nSunset Aesthetics Medical Group',
     FromAddress = 'sarah.chen@sunsetaesthetics.example.com',
     ToAddress   = 'providerservices@allergancmoxie.example.com',
     Incoming    = true,
@@ -208,7 +208,7 @@ insert new EmailMessage(
     Status      = '0'
 );
 
-// Email 3 — CSR acknowledged receipt of dispute (Day -4)
+// Email 3 - CSR acknowledged receipt of dispute (Day -4)
 insert new EmailMessage(
     ParentId    = pathB3.Id,
     Subject     = 'Re: Product Access Review - Eligibility Determination',
@@ -220,7 +220,7 @@ insert new EmailMessage(
     Status      = '3'
 );
 
-// Email 4 — Customer follows up asking for status (today)
+// Email 4 - Customer follows up asking for status (today)
 insert new EmailMessage(
     ParentId    = pathB3.Id,
     Subject     = 'Re: Product Access Review - Eligibility Determination',
@@ -236,14 +236,14 @@ insert new EmailMessage(
 System.debug('');
 System.debug('=== PATH A/B TEST CASES CREATED SUCCESSFULLY ===');
 System.debug('');
-System.debug('PATH A (no thread — first contact):');
-System.debug('  A-1 Template A: ' + pathA1.Id + ' — ' + pathA1.Subject);
-System.debug('  A-2 Template B: ' + pathA2.Id + ' — ' + pathA2.Subject);
-System.debug('  A-3 Template C: ' + pathA3.Id + ' — ' + pathA3.Subject);
+System.debug('PATH A (no thread - first contact):');
+System.debug('  A-1 Template A: ' + pathA1.Id + ' - ' + pathA1.Subject);
+System.debug('  A-2 Template B: ' + pathA2.Id + ' - ' + pathA2.Subject);
+System.debug('  A-3 Template C: ' + pathA3.Id + ' - ' + pathA3.Subject);
 System.debug('');
-System.debug('PATH B (email thread — follow-up reply):');
-System.debug('  B-1 Template A: ' + pathB1.Id + ' — ' + pathB1.Subject + ' (3 emails)');
-System.debug('  B-2 Template B: ' + pathB2.Id + ' — ' + pathB2.Subject + ' (3 emails)');
-System.debug('  B-3 Template C: ' + pathB3.Id + ' — ' + pathB3.Subject + ' (4 emails)');
+System.debug('PATH B (email thread - follow-up reply):');
+System.debug('  B-1 Template A: ' + pathB1.Id + ' - ' + pathB1.Subject + ' (3 emails)');
+System.debug('  B-2 Template B: ' + pathB2.Id + ' - ' + pathB2.Subject + ' (3 emails)');
+System.debug('  B-3 Template C: ' + pathB3.Id + ' - ' + pathB3.Subject + ' (4 emails)');
 System.debug('');
 System.debug('Open each case, click Email tab, Draft with AI, Custom CSR Response, Generate.');

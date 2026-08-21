@@ -4,7 +4,7 @@
 Account acct = [SELECT Id FROM Account WHERE Name = 'Sunset Aesthetics Medical Group' LIMIT 1];
 Contact cont = [SELECT Id FROM Contact WHERE Email = 'sarah.chen@sunsetaesthetics.example.com' LIMIT 1];
 
-// ── CASE D — triggers Template B (New Practice Enrollment) ──────────────────
+// ── CASE D - triggers Template B (New Practice Enrollment) ──────────────────
 Case caseD = new Case(
     Subject       = 'New Practice Enrollment - Pacific Coast Aesthetics',
     Status        = 'New',
@@ -17,7 +17,7 @@ Case caseD = new Case(
     Description   = 'We are a new aesthetic medical practice opening at 789 Pacific Coast Highway, Malibu, CA 90265. Dr. Elena Vasquez will serve as Medical Director. We would like to enroll with Allergan Moxie to access the full product portfolio including BOTOX Cosmetic and Juvederm. We need to start the new provider enrollment process and understand which credentialing forms to submit. Dr. Vasquez holds active licenses in CA and NV and the practice carries $2M/$4M malpractice coverage. We expect to treat approximately 150 patients per month once enrolled.'
 );
 
-// ── CASE E — triggers Template C (Not Eligible for Products) ────────────────
+// ── CASE E - triggers Template C (Not Eligible for Products) ────────────────
 Case caseE = new Case(
     Subject       = 'Product Access Review - Eligibility Determination Needed',
     Status        = 'New',
@@ -34,4 +34,4 @@ insert new List<Case>{ caseD, caseE };
 
 System.debug('Case D inserted: ' + caseD.Id + ' → expect Template B (New Practice Enrollment)');
 System.debug('Case E inserted: ' + caseE.Id + ' → expect Template C (Not Eligible for Products)');
-System.debug('Done — open these cases and click Draft with AI → Custom CSR Response.');
+System.debug('Done - open these cases and click Draft with AI → Custom CSR Response.');

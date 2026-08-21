@@ -1,5 +1,5 @@
 /**
- * Demo data setup — Patient Treatment Journey cases (Part C)
+ * Demo data setup - Patient Treatment Journey cases (Part C)
  *
  * Run with:
  *   sf apex run --file scripts/apex/setup_patient_journey_cases.apex --target-org <alias>
@@ -7,13 +7,13 @@
  * Creates:
  *   - 3 CLOSED historical cases (Patient Support / Treatment) with outbound emails
  *     for Prompt Flow tone grounding
- *   - Case C-1: Treatment Planning — new case, no thread (Path A, First Contact)
- *   - Case C-2: Treatment Planning — existing thread, provider has follow-up questions
- *   - Case C-3: Adverse Event — new case, no thread (Path A, First Contact)
- *   - Case C-4: Adverse Event — existing thread, provider asking about timeline
+ *   - Case C-1: Treatment Planning - new case, no thread (Path A, First Contact)
+ *   - Case C-2: Treatment Planning - existing thread, provider has follow-up questions
+ *   - Case C-3: Adverse Event - new case, no thread (Path A, First Contact)
+ *   - Case C-4: Adverse Event - existing thread, provider asking about timeline
  *
  * Reuses the existing Sunset Aesthetics Medical Group account and Sarah Chen contact
- * if they already exist — otherwise creates them.
+ * if they already exist - otherwise creates them.
  */
 
 // ── 1. Find or create Account ──────────────────────────────────────────────
@@ -118,7 +118,7 @@ List<EmailMessage> historicalEmails = new List<EmailMessage>{
 };
 insert historicalEmails;
 
-// ── 4. Case C-1 — Treatment Planning, no thread (First Contact demo) ───────
+// ── 4. Case C-1 - Treatment Planning, no thread (First Contact demo) ───────
 Case caseC1 = new Case(
     Subject = 'Patient Treatment Planning - Sculptra session for 3 patients',
     Type = 'Patient Support',
@@ -130,7 +130,7 @@ Case caseC1 = new Case(
 );
 insert caseC1;
 
-// ── 5. Case C-2 — Treatment Planning, existing thread (Reply demo) ─────────
+// ── 5. Case C-2 - Treatment Planning, existing thread (Reply demo) ─────────
 Case caseC2 = new Case(
     Subject = 'Patient Treatment Planning - Pre-treatment checklist questions',
     Type = 'Patient Support',
@@ -159,7 +159,7 @@ insert c2Inbound1;
 EmailMessage c2Outbound1 = new EmailMessage(
     ParentId = caseC2.Id,
     Subject = 'Re: Patient Treatment Planning - Pre-treatment checklist questions',
-    TextBody = 'Dear Sarah,\n\nThank you for reaching out ahead of your upcoming Botox session. Your account is in good standing and the products are available.\n\nPlease ensure the following before the appointment:\n1. Each patient completes and signs Form AM-PC-005 (Patient Consent Form) prior to treatment.\n2. Record the product lot number and expiry date in each patient file at time of administration — this is required under Form AM-TR-001.\n3. Any adverse events must be reported within 24 hours using Form AM-AE-003.\n\nYou do not need to submit anything to us in advance — just retain the signed consent forms in each patient file.\n\nPlease let us know if you have any questions.\n\nWarm regards,\nDerek S.\nProvider Services, Allergan Moxie',
+    TextBody = 'Dear Sarah,\n\nThank you for reaching out ahead of your upcoming Botox session. Your account is in good standing and the products are available.\n\nPlease ensure the following before the appointment:\n1. Each patient completes and signs Form AM-PC-005 (Patient Consent Form) prior to treatment.\n2. Record the product lot number and expiry date in each patient file at time of administration - this is required under Form AM-TR-001.\n3. Any adverse events must be reported within 24 hours using Form AM-AE-003.\n\nYou do not need to submit anything to us in advance - just retain the signed consent forms in each patient file.\n\nPlease let us know if you have any questions.\n\nWarm regards,\nDerek S.\nProvider Services, Allergan Moxie',
     FromAddress = 'providerservices@allergancmoxie.example.com',
     ToAddress = 'sarah.chen@sunsetaesthetics.example.com',
     Incoming = false,
@@ -172,7 +172,7 @@ insert c2Outbound1;
 EmailMessage c2Inbound2 = new EmailMessage(
     ParentId = caseC2.Id,
     Subject = 'Re: Patient Treatment Planning - Pre-treatment checklist questions',
-    TextBody = 'Hi Derek,\n\nThank you for the information. A couple of follow-up questions:\n1. One of our patients is on blood thinners. Does that affect anything on our end from a documentation standpoint, or is that purely a clinical decision for Dr. Patel?\n2. How long do we need to retain the signed consent forms — is there a minimum retention period?\n\nThanks,\nSarah',
+    TextBody = 'Hi Derek,\n\nThank you for the information. A couple of follow-up questions:\n1. One of our patients is on blood thinners. Does that affect anything on our end from a documentation standpoint, or is that purely a clinical decision for Dr. Patel?\n2. How long do we need to retain the signed consent forms - is there a minimum retention period?\n\nThanks,\nSarah',
     FromAddress = 'sarah.chen@sunsetaesthetics.example.com',
     ToAddress = 'providerservices@allergancmoxie.example.com',
     Incoming = true,
@@ -181,7 +181,7 @@ EmailMessage c2Inbound2 = new EmailMessage(
 );
 insert c2Inbound2;
 
-// ── 6. Case C-3 — Adverse Event, no thread (First Contact demo) ────────────
+// ── 6. Case C-3 - Adverse Event, no thread (First Contact demo) ────────────
 Case caseC3 = new Case(
     Subject = 'Adverse Event Report - Post-treatment swelling and redness',
     Type = 'Patient Support',
@@ -193,7 +193,7 @@ Case caseC3 = new Case(
 );
 insert caseC3;
 
-// ── 7. Case C-4 — Adverse Event, existing thread (Reply demo) ─────────────
+// ── 7. Case C-4 - Adverse Event, existing thread (Reply demo) ─────────────
 Case caseC4 = new Case(
     Subject = 'Adverse Event Follow-Up - Form AM-AE-003 submission questions',
     Type = 'Patient Support',
@@ -205,7 +205,7 @@ Case caseC4 = new Case(
 );
 insert caseC4;
 
-// First inbound — provider reporting the event
+// First inbound - provider reporting the event
 EmailMessage c4Inbound1 = new EmailMessage(
     ParentId = caseC4.Id,
     Subject = 'Adverse Event - Patient reaction after Botox treatment',
@@ -222,7 +222,7 @@ insert c4Inbound1;
 EmailMessage c4Outbound1 = new EmailMessage(
     ParentId = caseC4.Id,
     Subject = 'Re: Adverse Event - Patient reaction after Botox treatment',
-    TextBody = 'Dear Sarah,\n\nThank you for promptly reporting this. We take all adverse events seriously.\n\nPlease complete the following as soon as possible:\n1. Submit Form AM-AE-003 (Adverse Event Reporting Form) — this must be submitted within 72 hours of identification.\n2. Include the product lot number BTX-2026-091233 and expiry 2027-06 on the form.\n3. Provide a brief clinical description: onset timing, severity, any intervention provided.\n4. Retain the patient\'s signed Form AM-PC-005 in her file — do not submit it but keep it available for review.\n\nPlease note that late reporting may affect your account standing under Section 4.2 of the Provider Agreement.\n\nOur clinical team will follow up within one business day of receiving the completed form.\n\nWarm regards,\nDerek S.\nProvider Services, Allergan Moxie',
+    TextBody = 'Dear Sarah,\n\nThank you for promptly reporting this. We take all adverse events seriously.\n\nPlease complete the following as soon as possible:\n1. Submit Form AM-AE-003 (Adverse Event Reporting Form) - this must be submitted within 72 hours of identification.\n2. Include the product lot number BTX-2026-091233 and expiry 2027-06 on the form.\n3. Provide a brief clinical description: onset timing, severity, any intervention provided.\n4. Retain the patient\'s signed Form AM-PC-005 in her file - do not submit it but keep it available for review.\n\nPlease note that late reporting may affect your account standing under Section 4.2 of the Provider Agreement.\n\nOur clinical team will follow up within one business day of receiving the completed form.\n\nWarm regards,\nDerek S.\nProvider Services, Allergan Moxie',
     FromAddress = 'providerservices@allergancmoxie.example.com',
     ToAddress = 'sarah.chen@sunsetaesthetics.example.com',
     Incoming = false,
@@ -235,7 +235,7 @@ insert c4Outbound1;
 EmailMessage c4Inbound2 = new EmailMessage(
     ParentId = caseC4.Id,
     Subject = 'Re: Adverse Event - Patient reaction after Botox treatment',
-    TextBody = 'Hi Derek,\n\nThank you. We submitted Form AM-AE-003 this morning. A couple of questions:\n1. The 72-hour window — does that start from when the patient called us to report it, or from when the treatment was performed?\n2. The patient is asking if this will affect her ability to receive Botox treatments in the future. Is that something you can advise on, or should she consult her physician?\n\nThanks,\nSarah',
+    TextBody = 'Hi Derek,\n\nThank you. We submitted Form AM-AE-003 this morning. A couple of questions:\n1. The 72-hour window - does that start from when the patient called us to report it, or from when the treatment was performed?\n2. The patient is asking if this will affect her ability to receive Botox treatments in the future. Is that something you can advise on, or should she consult her physician?\n\nThanks,\nSarah',
     FromAddress = 'sarah.chen@sunsetaesthetics.example.com',
     ToAddress = 'providerservices@allergancmoxie.example.com',
     Incoming = true,

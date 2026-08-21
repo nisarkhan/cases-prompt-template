@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <title>Allergan Moxie — Architecture Walkthrough</title>
+  <title>Allergan Moxie - Architecture Walkthrough</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0a1628; color: #e8f0f8; min-height: 100vh; }
@@ -27,7 +27,7 @@
     .section-sub   { font-size: 13px; color: #7090b0; margin-bottom: 36px; }
 
     /* ══════════════════════════════════
-       TAB 1 — LIVE FLOW
+       TAB 1 - LIVE FLOW
     ══════════════════════════════════ */
     .flow-container { display: flex; flex-direction: column; align-items: center; gap: 0; max-width: 820px; margin: 0 auto; }
 
@@ -91,7 +91,7 @@
     .arrow-label { text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #304050; margin: 6px 0; }
 
     /* ══════════════════════════════════
-       TAB 2 — COMPONENT MAP
+       TAB 2 - COMPONENT MAP
     ══════════════════════════════════ */
     .comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 900px; }
     @media(max-width:640px){.comp-grid{grid-template-columns:1fr;}}
@@ -134,7 +134,7 @@
     .cc-ai p { color: #906878; }
 
     /* ══════════════════════════════════
-       TAB 3 — TEMPLATE MAP
+       TAB 3 - TEMPLATE MAP
     ══════════════════════════════════ */
     .tmpl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 900px; }
     @media(max-width:640px){.tmpl-grid{grid-template-columns:1fr;}}
@@ -180,7 +180,7 @@
     .sub-heading:first-child { margin-top: 0; }
 
     /* ══════════════════════════════════
-       TAB 4 — BEFORE / AFTER
+       TAB 4 - BEFORE / AFTER
     ══════════════════════════════════ */
     .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 900px; }
     @media(max-width:640px){.ba-grid{grid-template-columns:1fr;}}
@@ -217,7 +217,7 @@
 <div class="hdr">
   <div class="hdr-eyebrow">Allergan Moxie · Agentforce Email Draft</div>
   <div class="hdr-title">Architecture Walkthrough</div>
-  <div class="hdr-sub">How the system routes a case to the right email template — and drafts the response</div>
+  <div class="hdr-sub">How the system routes a case to the right email template - and drafts the response</div>
 </div>
 
 <div class="tab-bar">
@@ -229,7 +229,7 @@
 
 
 <!-- ══════════════════════════════════
-     TAB 1 — LIVE FLOW
+     TAB 1 - LIVE FLOW
 ══════════════════════════════════ -->
 <div class="tab-panel active" id="panel-flow">
   <div class="section-title">End-to-end: CSR clicks "Draft with AI"</div>
@@ -239,11 +239,11 @@
 
     <!-- Step 1 -->
     <div class="flow-node node-csr">
-      <div class="node-step">Step 1 — Salesforce Case</div>
+      <div class="node-step">Step 1 - Salesforce Case</div>
       <div class="node-title">CSR opens a case and clicks "Draft with AI"</div>
       <div class="node-detail">
         The case already has a <strong>Case Type</strong> and <strong>Case Reason</strong> set by the CSR or intake process.
-        These two fields are the routing keys — everything downstream depends on them.<br/><br/>
+        These two fields are the routing keys - everything downstream depends on them.<br/><br/>
         <span class="node-badge" style="background:#1a3a6a;color:#7ec8ff;">Case Type</span>
         <span class="node-badge" style="background:#1a3a6a;color:#7ec8ff;">Case Reason</span>
         <span class="node-badge" style="background:#1a3a6a;color:#7ec8ff;">Email Thread (Activity)</span>
@@ -254,7 +254,7 @@
 
     <!-- Step 2 -->
     <div class="flow-node node-agent">
-      <div class="node-step">Step 2 — GenAI Prompt Template (Agentforce)</div>
+      <div class="node-step">Step 2 - GenAI Prompt Template (Agentforce)</div>
       <div class="node-title">CSR picks a template: "CSR First Contact Email" or "CSR Reply Email"</div>
       <div class="node-detail">
         Two GenAI Prompt Templates are available. The CSR picks one based on whether this is a new enquiry or an ongoing thread.<br/><br/>
@@ -270,12 +270,12 @@
 
     <!-- Step 3 -->
     <div class="flow-node node-flow">
-      <div class="node-step">Step 3 — Prompt Flow</div>
+      <div class="node-step">Step 3 - Prompt Flow</div>
       <div class="node-title">Add Historical Case Emails to Prompt2</div>
       <div class="node-detail">
         The flow reads the Case fields and does two things in parallel:<br/><br/>
-        <strong>1. Fetches the email history</strong> — loops the Activity timeline and appends prior emails to the prompt so the AI has full context.<br/><br/>
-        <strong>2. Finds candidate templates</strong> — queries <span class="node-code">Template_Scenario__mdt</span> where Case Type and Case Reason match.
+        <strong>1. Fetches the email history</strong> - loops the Activity timeline and appends prior emails to the prompt so the AI has full context.<br/><br/>
+        <strong>2. Finds candidate templates</strong> - queries <span class="node-code">Template_Scenario__mdt</span> where Case Type and Case Reason match.
         For each match, it reads the <span class="node-code">Email_Template_API_Name__c</span> pointer and fetches the body from <span class="node-code">EmailTemplate</span>.
         The template name, when-to-use guidance, and body are all appended to the prompt.
       </div>
@@ -287,14 +287,14 @@
 
     <!-- Step 4 -->
     <div class="flow-node node-cmt">
-      <div class="node-step">Step 4 — Custom Metadata Type (Routing Index)</div>
-      <div class="node-title">Template_Scenario__mdt — matches Case Type + Reason to a template pointer</div>
+      <div class="node-step">Step 4 - Custom Metadata Type (Routing Index)</div>
+      <div class="node-title">Template_Scenario__mdt - matches Case Type + Reason to a template pointer</div>
       <div class="node-detail">
         Each CMT record is a routing rule. The flow queries: <span class="node-code">WHERE Case_Type__c = [case type] AND Case_Reason__c = [case reason]</span><br/><br/>
         <strong>What it returns:</strong> one or more records, each with:<br/>
-        &nbsp;· <span class="node-code">MasterLabel</span> — human-readable template name<br/>
-        &nbsp;· <span class="node-code">When_To_Use__c</span> — guidance text for the AI on when to pick this template<br/>
-        &nbsp;· <span class="node-code">Email_Template_API_Name__c</span> — the pointer to the actual EmailTemplate<br/><br/>
+        &nbsp;· <span class="node-code">MasterLabel</span> - human-readable template name<br/>
+        &nbsp;· <span class="node-code">When_To_Use__c</span> - guidance text for the AI on when to pick this template<br/>
+        &nbsp;· <span class="node-code">Email_Template_API_Name__c</span> - the pointer to the actual EmailTemplate<br/><br/>
         <span class="node-badge" style="background:#503800;color:#ffc060;">8 records</span> covering credentialing + patient support scenarios.
       </div>
     </div>
@@ -305,12 +305,12 @@
 
     <!-- Step 5 -->
     <div class="flow-node node-template">
-      <div class="node-step">Step 5 — EmailTemplate (Body Source)</div>
+      <div class="node-step">Step 5 - EmailTemplate (Body Source)</div>
       <div class="node-title">Flow fetches body: EmailTemplate WHERE DeveloperName = [pointer]</div>
       <div class="node-detail">
-        The EmailTemplate <span class="node-code">Body</span> field holds the full template text — form references, SLA numbers, compliance language, policy statements.<br/><br/>
+        The EmailTemplate <span class="node-code">Body</span> field holds the full template text - form references, SLA numbers, compliance language, policy statements.<br/><br/>
         <strong>Why here?</strong> Content teams edit template language in Setup → Email Templates, a familiar UI. They never touch CMT or Flow metadata.<br/><br/>
-        <span class="node-badge" style="background:#003850;color:#50d8f0;">10 EmailTemplates</span> in the Allergan Demo Templates folder — 6 credentialing + 4 patient journey.
+        <span class="node-badge" style="background:#003850;color:#50d8f0;">10 EmailTemplates</span> in the Allergan Demo Templates folder - 6 credentialing + 4 patient journey.
       </div>
     </div>
 
@@ -320,7 +320,7 @@
 
     <!-- Step 6 -->
     <div class="flow-node node-ai">
-      <div class="node-step">Step 6 — Einstein AI (LLM)</div>
+      <div class="node-step">Step 6 - Einstein AI (LLM)</div>
       <div class="node-title">AI selects the best template and writes the personalised draft</div>
       <div class="node-detail">
         The AI receives a prompt containing:<br/>
@@ -335,7 +335,7 @@
 
     <!-- Step 7 -->
     <div class="flow-node node-output">
-      <div class="node-step">Step 7 — Output</div>
+      <div class="node-step">Step 7 - Output</div>
       <div class="node-title">Draft appears in the Email composer. CSR reviews and sends.</div>
       <div class="node-detail">
         The draft is pre-populated in the Salesforce Email composer. The CSR can edit, revise, or regenerate before sending. The selected template name appears at the top of the draft so the CSR knows which template drove the output.
@@ -347,7 +347,7 @@
 
 
 <!-- ══════════════════════════════════
-     TAB 2 — COMPONENTS
+     TAB 2 - COMPONENTS
 ══════════════════════════════════ -->
 <div class="tab-panel" id="panel-components">
   <div class="section-title">Component Inventory</div>
@@ -359,17 +359,17 @@
       <div class="comp-card-sub">Salesforce Platform</div>
       <div class="comp-card-title">Case Record</div>
       <p><strong>What it is:</strong> A standard Salesforce Service Cloud Case. Holds the customer inquiry, contact, and email Activity thread.</p>
-      <p><strong>Key fields used:</strong> <span class="code">Type</span> (Case Type) and <span class="code">Reason</span> (Case Reason) — the two routing keys that determine which templates are returned.</p>
-      <p><strong>Who owns it:</strong> Allergan Moxie team — CSRs create and manage cases.</p>
+      <p><strong>Key fields used:</strong> <span class="code">Type</span> (Case Type) and <span class="code">Reason</span> (Case Reason) - the two routing keys that determine which templates are returned.</p>
+      <p><strong>Who owns it:</strong> Allergan Moxie team - CSRs create and manage cases.</p>
     </div>
 
     <div class="comp-card cc-pt">
       <div class="comp-card-sub">Agentforce / Einstein GenAI</div>
       <div class="comp-card-title">GenAI Prompt Templates</div>
-      <p><strong>What it is:</strong> Two Salesforce GenAI Prompt Templates configured in the org. These are the entry points — the CSR picks one from the Draft with AI menu.</p>
+      <p><strong>What it is:</strong> Two Salesforce GenAI Prompt Templates configured in the org. These are the entry points - the CSR picks one from the Draft with AI menu.</p>
       <p><strong>Records:</strong><br/>
-        <span class="code">Custom_CSR_Response</span> — "CSR First Contact Email"<br/>
-        <span class="code">Custom_CSR_Reply</span> — "CSR Reply Email"
+        <span class="code">Custom_CSR_Response</span> - "CSR First Contact Email"<br/>
+        <span class="code">Custom_CSR_Reply</span> - "CSR Reply Email"
       </p>
       <p><strong>Who owns it:</strong> Salesforce admin / SA. Each template calls the Prompt Flow to assemble context.</p>
     </div>
@@ -377,7 +377,7 @@
     <div class="comp-card cc-flow">
       <div class="comp-card-sub">Salesforce Flow (PromptFlow type)</div>
       <div class="comp-card-title">Prompt Flow</div>
-      <p><strong>What it is:</strong> A Flow of type <span class="code">PromptFlow</span>. It assembles the full AI prompt — email history + template candidates + template bodies.</p>
+      <p><strong>What it is:</strong> A Flow of type <span class="code">PromptFlow</span>. It assembles the full AI prompt - email history + template candidates + template bodies.</p>
       <p><strong>Record:</strong> <span class="code">Add_Historical_Case_Emails_to_Prompt2</span></p>
       <p><strong>Key nodes:</strong><br/>
         <span class="code">Get_Candidate_Templates</span> → CMT query<br/>
@@ -390,11 +390,11 @@
     <div class="comp-card cc-cmt">
       <div class="comp-card-sub">Custom Metadata Type</div>
       <div class="comp-card-title">Template Scenario (Routing Index)</div>
-      <p><strong>What it is:</strong> <span class="code">Template_Scenario__mdt</span> — a Custom Metadata Type where each record maps a Case Type + Reason combination to a template pointer.</p>
+      <p><strong>What it is:</strong> <span class="code">Template_Scenario__mdt</span> - a Custom Metadata Type where each record maps a Case Type + Reason combination to a template pointer.</p>
       <p><strong>Key fields:</strong><br/>
-        <span class="code">Case_Type__c</span> · <span class="code">Case_Reason__c</span> — routing keys<br/>
-        <span class="code">Email_Template_API_Name__c</span> — pointer to EmailTemplate<br/>
-        <span class="code">When_To_Use__c</span> — guidance text passed to the AI
+        <span class="code">Case_Type__c</span> · <span class="code">Case_Reason__c</span> - routing keys<br/>
+        <span class="code">Email_Template_API_Name__c</span> - pointer to EmailTemplate<br/>
+        <span class="code">When_To_Use__c</span> - guidance text passed to the AI
       </p>
       <p><strong>Who owns it:</strong> Salesforce admin. Allergan team can add new routing rules here when new scenarios are needed.</p>
     </div>
@@ -404,7 +404,7 @@
       <div class="comp-card-title">EmailTemplate (Body Source)</div>
       <p><strong>What it is:</strong> Native Salesforce Email Templates, stored in the <strong>Allergan Demo Templates</strong> folder. Each template's <span class="code">Body</span> field holds the full template text.</p>
       <p><strong>10 templates deployed:</strong> 6 credentialing + 4 patient journey. Each has a unique <span class="code">DeveloperName</span> that the CMT record points to.</p>
-      <p><strong>Who owns it:</strong> Content team / Allergan. Template language is edited here — no code changes needed to update an email template.</p>
+      <p><strong>Who owns it:</strong> Content team / Allergan. Template language is edited here - no code changes needed to update an email template.</p>
     </div>
 
     <div class="comp-card cc-ai">
@@ -420,13 +420,13 @@
 
 
 <!-- ══════════════════════════════════
-     TAB 3 — TEMPLATE MAP
+     TAB 3 - TEMPLATE MAP
 ══════════════════════════════════ -->
 <div class="tab-panel" id="panel-templates">
   <div class="section-title">Template Map</div>
   <div class="section-sub">All 8 CMT records and which EmailTemplate each one points to</div>
 
-  <div class="sub-heading">Credentialing — First Contact</div>
+  <div class="sub-heading">Credentialing - First Contact</div>
   <div class="tmpl-grid">
     <div class="tmpl-card tc-cred-fc">
       <div class="tmpl-card-header">
@@ -454,7 +454,7 @@
     </div>
     <div class="tmpl-card tc-cred-fc">
       <div class="tmpl-card-header">
-        <div class="tmpl-card-title">Product Access — Not Eligible</div>
+        <div class="tmpl-card-title">Product Access - Not Eligible</div>
         <span class="tmpl-card-badge">First Contact</span>
       </div>
       <div class="tmpl-use">CMT Label</div>
@@ -462,15 +462,15 @@
       <div class="tmpl-use">Points to EmailTemplate</div>
       <div class="tmpl-pointer">Product_Support_Not_Eligible</div>
       <div class="tmpl-use">When to use</div>
-      <div class="tmpl-when">First contact when a practice does not meet the eligibility requirements. Compliance-sensitive — do not change the not-eligible determination language.</div>
+      <div class="tmpl-when">First contact when a practice does not meet the eligibility requirements. Compliance-sensitive - do not change the not-eligible determination language.</div>
     </div>
   </div>
 
-  <div class="sub-heading">Credentialing — Follow-Up (Reply)</div>
+  <div class="sub-heading">Credentialing - Follow-Up (Reply)</div>
   <div class="tmpl-grid">
     <div class="tmpl-card tc-cred-fu">
       <div class="tmpl-card-header">
-        <div class="tmpl-card-title">Medical Director Change — Follow Up</div>
+        <div class="tmpl-card-title">Medical Director Change - Follow Up</div>
         <span class="tmpl-card-badge">Reply</span>
       </div>
       <div class="tmpl-use">CMT Label</div>
@@ -482,7 +482,7 @@
     </div>
     <div class="tmpl-card tc-cred-fu">
       <div class="tmpl-card-header">
-        <div class="tmpl-card-title">New Practice Enrollment — Follow Up</div>
+        <div class="tmpl-card-title">New Practice Enrollment - Follow Up</div>
         <span class="tmpl-card-badge">Reply</span>
       </div>
       <div class="tmpl-use">CMT Label</div>
@@ -494,7 +494,7 @@
     </div>
     <div class="tmpl-card tc-cred-fu">
       <div class="tmpl-card-header">
-        <div class="tmpl-card-title">Product Access — Not Eligible Follow Up</div>
+        <div class="tmpl-card-title">Product Access - Not Eligible Follow Up</div>
         <span class="tmpl-card-badge">Reply</span>
       </div>
       <div class="tmpl-use">CMT Label</div>
@@ -502,11 +502,11 @@
       <div class="tmpl-use">Points to EmailTemplate</div>
       <div class="tmpl-pointer">Product_Support_Not_Eligible_Follow_Up</div>
       <div class="tmpl-use">When to use</div>
-      <div class="tmpl-when">Follow-up when a dispute has been filed. Status update tone — no re-determination.</div>
+      <div class="tmpl-when">Follow-up when a dispute has been filed. Status update tone - no re-determination.</div>
     </div>
   </div>
 
-  <div class="sub-heading">Patient Journey — First Contact</div>
+  <div class="sub-heading">Patient Journey - First Contact</div>
   <div class="tmpl-grid">
     <div class="tmpl-card tc-pat-fc">
       <div class="tmpl-card-header">
@@ -530,15 +530,15 @@
       <div class="tmpl-use">Points to EmailTemplate</div>
       <div class="tmpl-pointer">Patient_Adverse_Event</div>
       <div class="tmpl-use">When to use</div>
-      <div class="tmpl-when">First contact when a provider reports a patient adverse event or unexpected reaction. Compliance-sensitive — 72hr window and Section 4.2 language are mandatory.</div>
+      <div class="tmpl-when">First contact when a provider reports a patient adverse event or unexpected reaction. Compliance-sensitive - 72hr window and Section 4.2 language are mandatory.</div>
     </div>
   </div>
 
-  <div class="sub-heading">Patient Journey — Follow-Up (Reply)</div>
+  <div class="sub-heading">Patient Journey - Follow-Up (Reply)</div>
   <div class="tmpl-grid">
     <div class="tmpl-card tc-pat-fu">
       <div class="tmpl-card-header">
-        <div class="tmpl-card-title">Patient Treatment Planning — Follow Up</div>
+        <div class="tmpl-card-title">Patient Treatment Planning - Follow Up</div>
         <span class="tmpl-card-badge">Reply</span>
       </div>
       <div class="tmpl-use">CMT Label</div>
@@ -550,7 +550,7 @@
     </div>
     <div class="tmpl-card tc-pat-fu">
       <div class="tmpl-card-header">
-        <div class="tmpl-card-title">Patient Adverse Event — Follow Up</div>
+        <div class="tmpl-card-title">Patient Adverse Event - Follow Up</div>
         <span class="tmpl-card-badge">Reply</span>
       </div>
       <div class="tmpl-use">CMT Label</div>
@@ -565,7 +565,7 @@
 
 
 <!-- ══════════════════════════════════
-     TAB 4 — BEFORE / AFTER
+     TAB 4 - BEFORE / AFTER
 ══════════════════════════════════ -->
 <div class="tab-panel" id="panel-beforeafter">
   <div class="section-title">Before vs After</div>
@@ -574,11 +574,11 @@
   <div class="ba-grid">
 
     <div class="ba-before">
-      <div class="ba-col-title">Before — Template body stored in CMT</div>
+      <div class="ba-col-title">Before - Template body stored in CMT</div>
 
       <div class="ba-item">
         <strong>Where the body lived</strong>
-        <span class="code" style="font-family:monospace;font-size:11px;background:rgba(255,100,0,0.15);padding:2px 6px;border-radius:3px;color:#d08060;">Template_Body__c</span> field on each CMT record — a long text area baked into the metadata object.
+        <span class="code" style="font-family:monospace;font-size:11px;background:rgba(255,100,0,0.15);padding:2px 6px;border-radius:3px;color:#d08060;">Template_Body__c</span> field on each CMT record - a long text area baked into the metadata object.
       </div>
       <div class="ba-item">
         <strong>How to update template language</strong>
@@ -586,11 +586,11 @@
       </div>
       <div class="ba-item">
         <strong>Who can edit it</strong>
-        Salesforce admin or SA only — requires metadata deployment access in most orgs. Content teams cannot edit CMT records in production without a release.
+        Salesforce admin or SA only - requires metadata deployment access in most orgs. Content teams cannot edit CMT records in production without a release.
       </div>
       <div class="ba-item">
         <strong>Flow behaviour</strong>
-        Flow read <span class="code" style="font-family:monospace;font-size:11px;background:rgba(255,100,0,0.15);padding:2px 6px;border-radius:3px;color:#d08060;">{!CurrentTemplate.Template_Body__c}</span> directly — simple, but body was frozen in deployed metadata.
+        Flow read <span class="code" style="font-family:monospace;font-size:11px;background:rgba(255,100,0,0.15);padding:2px 6px;border-radius:3px;color:#d08060;">{!CurrentTemplate.Template_Body__c}</span> directly - simple, but body was frozen in deployed metadata.
       </div>
       <div class="ba-item">
         <strong>Adding a new scenario</strong>
@@ -599,11 +599,11 @@
     </div>
 
     <div class="ba-after">
-      <div class="ba-col-title">After — Template body stored in EmailTemplate</div>
+      <div class="ba-col-title">After - Template body stored in EmailTemplate</div>
 
       <div class="ba-item">
         <strong>Where the body lives</strong>
-        <span class="code" style="font-family:monospace;font-size:11px;background:rgba(0,200,100,0.15);padding:2px 6px;border-radius:3px;color:#60d090;">EmailTemplate.Body</span> — native Salesforce Email Templates in the Allergan Demo Templates folder.
+        <span class="code" style="font-family:monospace;font-size:11px;background:rgba(0,200,100,0.15);padding:2px 6px;border-radius:3px;color:#60d090;">EmailTemplate.Body</span> - native Salesforce Email Templates in the Allergan Demo Templates folder.
       </div>
       <div class="ba-item">
         <strong>How to update template language</strong>
@@ -611,7 +611,7 @@
       </div>
       <div class="ba-item">
         <strong>Who can edit it</strong>
-        Any Salesforce user with the Manage Public Classic Email Templates permission — no metadata deployment access needed for edits.
+        Any Salesforce user with the Manage Public Classic Email Templates permission - no metadata deployment access needed for edits.
       </div>
       <div class="ba-item">
         <strong>Flow behaviour</strong>
@@ -627,7 +627,7 @@
 
   <div class="ba-callout">
     <div class="ba-callout-title">What stayed exactly the same for the CSR</div>
-    <p>The CSR experience is identical. Same "Draft with AI" button. Same template names in the dropdown. Same draft quality. Same ability to revise or regenerate. The change is entirely under the hood — the CSR never sees CMT fields or EmailTemplate DeveloperNames. The only observable difference is that when Allergan's content team updates template language, the next draft generation reflects the change immediately — no waiting for a deployment.</p>
+    <p>The CSR experience is identical. Same "Draft with AI" button. Same template names in the dropdown. Same draft quality. Same ability to revise or regenerate. The change is entirely under the hood - the CSR never sees CMT fields or EmailTemplate DeveloperNames. The only observable difference is that when Allergan's content team updates template language, the next draft generation reflects the change immediately - no waiting for a deployment.</p>
   </div>
 
 </div>

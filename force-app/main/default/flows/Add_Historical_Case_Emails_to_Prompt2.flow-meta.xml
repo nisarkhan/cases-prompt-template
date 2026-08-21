@@ -173,7 +173,7 @@ No matching email templates were found. Draft a professional response based on t
             <operator>Add</operator>
             <value>
                 <stringValue>### CANDIDATE EMAIL TEMPLATES
-The following templates are the closest matches for this case. Choose the single most appropriate one based on the case context and the When to use description for each. After selecting, use it as your structural foundation — fill all placeholders with real values. Do NOT remove, reorder, or paraphrase any mandatory language, form names, or legal statements.
+The following templates are the closest matches for this case. Choose the single most appropriate one based on the case context and the When to use description for each. After selecting, use it as your structural foundation - fill all placeholders with real values. Do NOT remove, reorder, or paraphrase any mandatory language, form names, or legal statements.
 
 </stringValue>
             </value>
@@ -213,7 +213,7 @@ Template body: [Body not found - check Email_Template_API_Name__c on the CMT rec
             <operator>Assign</operator>
             <value>
                 <stringValue>### CURRENT EMAIL THREAD
-The following emails are the existing conversation on this open case. This is a follow-up reply — read the thread carefully before drafting.
+The following emails are the existing conversation on this open case. This is a follow-up reply - read the thread carefully before drafting.
 
 </stringValue>
             </value>

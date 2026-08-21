@@ -7,10 +7,10 @@
  *   - 1 Account (Sunset Aesthetics Medical Group)
  *   - 1 Contact (Dr. Sarah Chen)
  *   - 3 CLOSED historical cases (same Type/Reason as the demo cases)
- *     with outbound EmailMessages attached — these feed the Prompt Flow
+ *     with outbound EmailMessages attached - these feed the Prompt Flow
  *   - 2 OPEN demo cases ready to show:
- *       Demo Case A: New credentialing case (no emails yet) — Path A demo
- *       Demo Case B: Existing case with reply thread — Path B demo
+ *       Demo Case A: New credentialing case (no emails yet) - Path A demo
+ *       Demo Case B: Existing case with reply thread - Path B demo
  */
 
 // ── 1. Account ────────────────────────────────────────────────────────────
@@ -99,7 +99,7 @@ List<EmailMessage> historicalEmails = new List<EmailMessage>{
 };
 insert historicalEmails;
 
-// ── 5. Demo Case A — NEW case, no emails yet (Path A demo) ────────────────
+// ── 5. Demo Case A - NEW case, no emails yet (Path A demo) ────────────────
 Case demoCaseA = new Case(
     Subject = 'Medical Director Change Request - New Director Dr. Patel',
     Type = 'Account Support',
@@ -111,7 +111,7 @@ Case demoCaseA = new Case(
 );
 insert demoCaseA;
 
-// ── 6. Demo Case B — EXISTING case with reply thread (Path B demo) ────────
+// ── 6. Demo Case B - EXISTING case with reply thread (Path B demo) ────────
 Case demoCaseB = new Case(
     Subject = 'Medical Director Change - Awaiting Form AM-CMD-001',
     Type = 'Account Support',
@@ -149,7 +149,7 @@ EmailMessage outbound1 = new EmailMessage(
 );
 insert outbound1;
 
-// Second inbound — customer following up again today, forms still not returned
+// Second inbound - customer following up again today, forms still not returned
 EmailMessage inbound2 = new EmailMessage(
     ParentId = demoCaseB.Id,
     Subject = 'Re: Medical Director Change - Awaiting Form AM-CMD-001',
@@ -165,12 +165,12 @@ insert inbound2;
 System.debug('=== DEMO DATA CREATED SUCCESSFULLY ===');
 System.debug('Account ID:    ' + acct.Id);
 System.debug('Contact ID:    ' + con.Id);
-System.debug('Demo Case A (Path A - New, no emails): ' + demoCaseA.Id + ' — ' + demoCaseA.Subject);
-System.debug('Demo Case B (Path B - Existing thread): ' + demoCaseB.Id + ' — ' + demoCaseB.Subject);
+System.debug('Demo Case A (Path A - New, no emails): ' + demoCaseA.Id + ' - ' + demoCaseA.Subject);
+System.debug('Demo Case B (Path B - Existing thread): ' + demoCaseB.Id + ' - ' + demoCaseB.Subject);
 System.debug('Historical Cases: ' + historicalCases[0].Id + ', ' + historicalCases[1].Id + ', ' + historicalCases[2].Id);
 System.debug('');
 System.debug('NEXT STEPS:');
 System.debug('1. Open Demo Case A in your org, go to the Email tab, click Draft with AI');
-System.debug('2. Select "Custom CSR Response" prompt template — should recommend Template A');
+System.debug('2. Select "Custom CSR Response" prompt template - should recommend Template A');
 System.debug('3. Open Demo Case B, go to the Email tab, click Draft with AI');
 System.debug('4. Should produce a follow-up reply addressing Dr. Kim\'s travel and the digital signature question');
